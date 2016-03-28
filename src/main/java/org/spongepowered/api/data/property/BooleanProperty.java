@@ -25,6 +25,8 @@
 package org.spongepowered.api.data.property;
 
 import org.spongepowered.api.data.Property;
+import org.spongepowered.api.data.property.item.FoodRestorationProperty;
+import org.spongepowered.api.data.property.item.SaturationProperty;
 import org.spongepowered.api.util.Coerce;
 
 /**
@@ -72,8 +74,8 @@ public class BooleanProperty extends AbstractProperty<String, Boolean> {
     }
 
     /**
-     * Create an DoubleProperty property which matches DoubleProperty properties with
-     * equal value.
+     * Create an DoubleProperty property which matches DoubleProperty properties
+     * with equal value.
      *
      * @param value value to match
      * @return new property
@@ -83,8 +85,8 @@ public class BooleanProperty extends AbstractProperty<String, Boolean> {
     }
 
     /**
-     * Create an DoubleProperty property which matches DoubleProperty properties with
-     * unequal value.
+     * Create an DoubleProperty property which matches DoubleProperty properties
+     * with unequal value.
      *
      * @param value value to match
      * @return new property
@@ -94,8 +96,8 @@ public class BooleanProperty extends AbstractProperty<String, Boolean> {
     }
 
     /**
-     * Create an DoubleProperty property which matches DoubleProperty properties with
-     * value greater than this value.
+     * Create an DoubleProperty property which matches DoubleProperty properties
+     * with value greater than this value.
      *
      * @param value value to match
      * @return new property
@@ -105,8 +107,8 @@ public class BooleanProperty extends AbstractProperty<String, Boolean> {
     }
 
     /**
-     * Create an DoubleProperty property which matches DoubleProperty properties with
-     * value greater than or equal to this value.
+     * Create an DoubleProperty property which matches DoubleProperty properties
+     * with value greater than or equal to this value.
      *
      * @param value value to match
      * @return new property
@@ -116,8 +118,8 @@ public class BooleanProperty extends AbstractProperty<String, Boolean> {
     }
 
     /**
-     * Create an DoubleProperty property which matches DoubleProperty properties with
-     * value less than this value.
+     * Create an DoubleProperty property which matches DoubleProperty properties
+     * with value less than this value.
      *
      * @param value value to match
      * @return new property
@@ -127,8 +129,8 @@ public class BooleanProperty extends AbstractProperty<String, Boolean> {
     }
 
     /**
-     * Create an DoubleProperty property which matches DoubleProperty properties with
-     * value less than or equal to this value.
+     * Create an DoubleProperty property which matches DoubleProperty properties
+     * with value less than or equal to this value.
      *
      * @param value value to match
      * @return new property

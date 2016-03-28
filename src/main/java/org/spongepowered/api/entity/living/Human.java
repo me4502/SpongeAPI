@@ -24,55 +24,6 @@
  */
 package org.spongepowered.api.entity.living;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
-import org.spongepowered.api.entity.ArmorEquipable;
-import org.spongepowered.api.entity.Tamer;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.entity.projectile.source.ProjectileSource;
-import org.spongepowered.api.item.inventory.Carrier;
-import org.spongepowered.api.item.inventory.Inventory;
-
-/**
- * Represents a HumanEntity in game, such as {@link Player}.
- */
-public interface Human extends Living, ProjectileSource, ArmorEquipable, Tamer, Carrier {
-
-    /**
-     * Returns whether this human entity has an open inventory at the moment
-     * or not.
-     *
-     * @return Whether this human is viewing an inventory or not
-     */
-    boolean isViewingInventory();
-
-    /**
-     * Gets the currently viewed inventory of this human entity, if it is
-     * currently viewing one.
-     *
-     * @return An inventory if this human entity is viewing one, otherwise
-     * {@link Optional#absent()}
-     */
-    Optional<Inventory> getOpenInventory();
-
-    /**
-     * Opens the given Inventory for the player to view.
-     *
-     * @param inventory The inventory to view
-     */
-    void openInventory(Inventory inventory);
-
-    /**
-     * Closes the currently viewed entity of this human entity, if it is
-     * currently viewing one.
-     */
-    void closeInventory();
-
-    /**
-     * Gets a copy of the current {@link FoodData} for this {@link Human}.
-     *
-     * @return A copy of the current food data
-     */
-    FoodData foodData();
+public interface Human extends Creature, Humanoid {
 
 }

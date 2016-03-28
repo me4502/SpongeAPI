@@ -26,12 +26,12 @@ package org.spongepowered.api.data.meta;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static org.spongepowered.api.data.DataQuery.of;
 
 import com.google.common.base.Objects;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.data.MemoryDataContainer;
+import org.spongepowered.api.data.Queries;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.inventory.ItemStack;
 
@@ -77,10 +77,16 @@ public final class ItemEnchantment implements DataSerializable {
     }
 
     @Override
+    public int getContentVersion() {
+        return 1;
+    }
+
+    @Override
     public DataContainer toContainer() {
         return new MemoryDataContainer()
-                .set(of("Enchantment"), this.enchantment.getId())
-                .set(of("Level"), this.level);
+                .set(Queries.CONTENT_VERSION, getContentVersion())
+                .set(Queries.ENCHANTMENT_ID, this.enchantment.getId())
+                .set(Queries.LEVEL, this.level);
     }
 
     @Override

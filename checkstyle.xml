@@ -21,9 +21,13 @@
 
  -->
 
-<module name="Checker">
+<module name = "Checker">
     <property name="charset" value="UTF-8"/>
 
+    <!--<property name="severity" value="warning"/>-->
+    <property name="severity" value="${severity}"/>
+
+    <property name="fileExtensions" value="java, properties, xml"/>
     <!-- Checks for whitespace                               -->
     <!-- See http://checkstyle.sf.net/config_whitespace.html -->
     <module name="FileTabCharacter">
@@ -43,16 +47,21 @@
             <property name="allowNonPrintableEscapes" value="true"/>
         </module>
         <module name="LineLength">
-            <!--<property name="max" value="100"/>-->
             <property name="max" value="150"/>
             <property name="ignorePattern" value="^package.*|^import.*|a href|href|http://|https://|ftp://"/>
+            <message key="maxLineLen" value="Code line is longer than {0,number,integer} characters (found {1,number,integer})."/>
+        </module>
+        <module name="LineLength">
+            <property name="max" value="80"/>
+            <property name="ignorePattern" value="^[ \t]*([a-zA-Z0-9\{\}\+\|\&amp;\&quot;@\(\)&gt;&lt;\.]|//)|@link|@see"/>
+            <message key="maxLineLen" value="Comment line is longer than {0,number,integer} characters (found {1,number,integer})."/>
         </module>
         <module name="AvoidStarImport"/>
         <module name="OneTopLevelClass"/>
         <module name="NoLineWrap"/>
         <module name="EmptyBlock">
             <property name="option" value="TEXT"/>
-            <property name="tokens" value="LITERAL_TRY, LITERAL_CATCH, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
+            <property name="tokens" value="LITERAL_TRY, LITERAL_FINALLY, LITERAL_IF, LITERAL_ELSE, LITERAL_SWITCH"/>
         </module>
         <module name="NeedBraces"/>
         <module name="LeftCurly">
@@ -70,7 +79,7 @@
             <property name="allowEmptyTypes" value="true"/>
             <property name="allowEmptyLoops" value="true"/>
             <message key="ws.notFollowed"
-                     value="WhitespaceAround: ''{0}'' is not followed by whitespace."/>
+                     value="WhitespaceAround: ''{0}'' is not followed by whitespace. Empty blocks may only be represented as '{}' when not part of a multi-block statement (4.1.3)"/>
             <message key="ws.notPreceded"
                      value="WhitespaceAround: ''{0}'' is not preceded with whitespace."/>
         </module>
@@ -82,10 +91,11 @@
         <module name="UpperEll"/>
         <module name="ModifierOrder"/>
         <module name="EmptyLineSeparator">
-            <!-- TODO: This is disabled for package because the Gradle License plugin doesn't create a new line after the license header, do we want to enable this? -->
-            <property name="tokens"
-                      value="IMPORT, CLASS_DEF, ENUM_DEF, INTERFACE_DEF, CTOR_DEF, METHOD_DEF, STATIC_INIT, INSTANCE_INIT, VARIABLE_DEF"/>
             <property name="allowNoEmptyLineBetweenFields" value="true"/>
+
+            <!-- TODO: This is disabled for package because the Gradle License plugin doesn't create a new line after the license header, do we want to enable this? -->
+            <property name="tokens" value="IMPORT, CLASS_DEF, ENUM_DEF, INTERFACE_DEF, CTOR_DEF, METHOD_DEF, STATIC_INIT, INSTANCE_INIT, VARIABLE_DEF"/>
+
         </module>
         <module name="SeparatorWrap">
             <property name="tokens" value="DOT"/>
@@ -163,16 +173,17 @@
         <module name="OverloadMethodsDeclarationOrder"/>
         <module name="VariableDeclarationUsageDistance"/>
         <module name="CustomImportOrder">
-            <property name="thirdPartyPackageRegExp" value=".*"/>
             <!--<property name="specialImportsRegExp" value="com.google"/>-->
             <property name="sortImportsInGroupAlphabetically" value="true"/>
             <property name="customImportOrderRules" value="STATIC###SPECIAL_IMPORTS###THIRD_PARTY_PACKAGE###STANDARD_JAVA_PACKAGE"/>
+
+            <property name="thirdPartyPackageRegExp" value=".*"/>
+
         </module>
         <module name="MethodParamPad"/>
         <module name="OperatorWrap">
             <property name="option" value="NL"/>
-            <property name="tokens"
-                      value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR "/>
+            <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR "/>
         </module>
         <module name="AnnotationLocation">
             <property name="tokens" value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, METHOD_DEF, CTOR_DEF"/>
@@ -208,7 +219,13 @@
             <message key="name.invalidPattern"
                      value="Method name ''{0}'' must match pattern ''{1}''."/>
         </module>
-        <module name="SingleLineJavadoc"/>
+        <module name="SingleLineJavadoc">
+            <property name="ignoreInlineTags" value="false"/>
+        </module>
+        <module name="EmptyCatchBlock">
+            <property name="exceptionVariableName" value="expected"/>
+        </module>
+        <module name="CommentsIndentation"/>
 
 
         <module name="RedundantImport"/>
@@ -224,5 +241,4 @@
     </module>
 
     <property name="basedir" value="${basedir}"/>
-    <property name="severity" value="${severity}"/>
 </module>

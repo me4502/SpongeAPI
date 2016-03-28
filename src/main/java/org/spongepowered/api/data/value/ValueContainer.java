@@ -24,7 +24,8 @@
  */
 package org.spongepowered.api.data.value;
 
-import com.google.common.base.Optional;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.google.common.collect.ImmutableSet;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.key.Key;
@@ -32,6 +33,9 @@ import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
 import org.spongepowered.api.data.value.immutable.ImmutableValueStore;
 import org.spongepowered.api.data.value.mutable.CompositeValueStore;
+
+import java.util.Optional;
+import java.util.Set;
 
 import javax.annotation.Nullable;
 
@@ -55,7 +59,7 @@ public interface ValueContainer<C extends ValueContainer<C>> {
     /**
      * Attempts to get the underlying value backed by a {@link BaseValue}
      * linked to the provided {@link Key}. If the {@link Key} is not
-     * supported, {@link Optional#absent()} is returned. It is important
+     * supported, {@link Optional#empty()} is returned. It is important
      * to check for support of a {@link Key} by either calling
      * {@link #supports(BaseValue)} or {@link #supports(Key)}.
      *
@@ -75,7 +79,16 @@ public interface ValueContainer<C extends ValueContainer<C>> {
      * @return The value, or null if not set
      */
     @Nullable
-    <E> E getOrNull(Key<? extends BaseValue<E>> key);
+    default <E> E getOrNull(Key<? extends BaseValue<E>> key) {
+        Optional<E> value = get(key);
+        if (value.isPresent()) {
+            return value.get();
+        }
+        if (!supports(key)) {
+            throw new UnsupportedOperationException("Key not supported. Key: " + key);
+        }
+        return null;
+    }
 
     /**
      * Attempts to get the underlying value if available. If the value is not
@@ -87,7 +100,9 @@ public interface ValueContainer<C extends ValueContainer<C>> {
      * @param <E> The type of value
      * @return The value, or default if not set
      */
-    <E> E getOrElse(Key<? extends BaseValue<E>> key, E defaultValue);
+    default <E> E getOrElse(Key<? extends BaseValue<E>> key, E defaultValue) {
+        return get(key).orElse(checkNotNull(defaultValue, "Provided a null default value for 'getOrElse(Key, null)'!"));
+    }
 
     /**
      * Gets the {@link BaseValue} for the given {@link Key}.
@@ -114,7 +129,9 @@ public interface ValueContainer<C extends ValueContainer<C>> {
      * @param baseValue The base value to check
      * @return True if the base value is supported
      */
-    boolean supports(BaseValue<?> baseValue);
+    default boolean supports(BaseValue<?> baseValue) {
+        return supports(baseValue.getKey());
+    }
 
     /**
      * Creates a clone copy of this {@link ValueContainer} as a new
@@ -133,7 +150,7 @@ public interface ValueContainer<C extends ValueContainer<C>> {
      *
      * @return An immutable set of known {@link Key}s
      */
-    ImmutableSet<Key<?>> getKeys();
+    Set<Key<?>> getKeys();
 
     /**
      * Gets all applicable {@link BaseValue}s associated with this
@@ -143,6 +160,6 @@ public interface ValueContainer<C extends ValueContainer<C>> {
      *
      * @return An immutable set of copied values
      */
-    ImmutableSet<ImmutableValue<?>> getValues();
+    Set<ImmutableValue<?>> getValues();
 
 }

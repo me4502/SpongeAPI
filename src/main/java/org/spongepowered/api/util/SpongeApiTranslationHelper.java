@@ -24,15 +24,12 @@
  */
 package org.spongepowered.api.util;
 
-import com.google.common.base.Function;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.Texts;
 import org.spongepowered.api.text.translation.ResourceBundleTranslation;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
-
-import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * This class provides translations for strings within SpongeAPI. Plugins
@@ -43,13 +40,8 @@ import javax.annotation.Nullable;
  */
 public class SpongeApiTranslationHelper {
 
-    private static final Function<Locale, ResourceBundle> LOOKUP_FUNC = new Function<Locale, ResourceBundle>() {
-        @Nullable
-        @Override
-        public ResourceBundle apply(Locale input) {
-            return ResourceBundle.getBundle("org.spongepowered.api.Translations", input);
-        }
-    };
+    private static final Function<Locale, ResourceBundle> LOOKUP_FUNC =
+            input -> ResourceBundle.getBundle("org.spongepowered.api.Translations", input);
 
     private SpongeApiTranslationHelper() {
     } // Prevent instance creation
@@ -62,7 +54,7 @@ public class SpongeApiTranslationHelper {
      * @return The translatable text
      */
     public static Text t(String key, Object... args) {
-        return Texts.of(new ResourceBundleTranslation(key, LOOKUP_FUNC), args);
+        return Text.of(new ResourceBundleTranslation(key, LOOKUP_FUNC), args);
     }
 
 }

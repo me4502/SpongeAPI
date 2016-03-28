@@ -26,15 +26,12 @@ package org.spongepowered.api.world;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
-import static org.spongepowered.api.data.DataQuery.of;
 
 import com.flowpowered.math.vector.Vector2i;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
-import com.google.common.base.Function;
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
-import com.google.common.collect.ImmutableSet;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.block.BlockSnapshot;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
@@ -46,18 +43,23 @@ import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.MemoryDataContainer;
 import org.spongepowered.api.data.Property;
+import org.spongepowered.api.data.Queries;
 import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.merge.MergeFunction;
+import org.spongepowered.api.data.persistence.InvalidDataException;
 import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.service.persistence.InvalidDataException;
 import org.spongepowered.api.util.Direction;
 import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.extent.Extent;
 
+import java.lang.ref.WeakReference;
 import java.util.Collection;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -65,13 +67,13 @@ import javax.annotation.Nullable;
  * A position within a particular {@link Extent}.
  *
  * <p>This class is primarily a helper class to represent a location in a
- * particular {@link Extent}. The methods provided are proxy methods to ones
- * on {@link Extent}.</p>
+ * particular {@link Extent}. The methods provided are proxy methods to ones on
+ * {@link Extent}.</p>
  *
- * <p>Each instance can be used to either represent a block or a location on
- * a continuous coordinate system. Internally, positions are stored using
- * doubles. When a block-related method is used, the components of the
- * position are each rounded to an integer.</p>
+ * <p>Each instance can be used to either represent a block or a location on a
+ * continuous coordinate system. Internally, positions are stored using doubles.
+ * When a block-related method is used, the components of the position are each
+ * rounded to an integer.</p>
  *
  * <p>Locations are immutable. Methods that change the properties of the
  * location create a new instance.</p>
@@ -80,12 +82,14 @@ import javax.annotation.Nullable;
  */
 public final class Location<E extends Extent> implements DataHolder {
 
-    private final E extent;
+    private final WeakReference<E> extent;
     // Lazily computed, either position or blockPosition is set by the constructor
     @Nullable
     private Vector3d position = null;
     @Nullable
     private Vector3i blockPosition = null;
+    @Nullable
+    private Vector3i chunkPosition = null;
     @Nullable
     private Vector2i biomePosition = null;
 
@@ -96,7 +100,7 @@ public final class Location<E extends Extent> implements DataHolder {
      * @param position The position
      */
     public Location(E extent, Vector3d position) {
-        this.extent = checkNotNull(extent, "extent");
+        this.extent = new WeakReference<>(checkNotNull(extent, "extent"));
         this.position = checkNotNull(position, "position");
     }
 
@@ -119,7 +123,7 @@ public final class Location<E extends Extent> implements DataHolder {
      * @param blockPosition The position
      */
     public Location(E extent, Vector3i blockPosition) {
-        this.extent = checkNotNull(extent, "extent");
+        this.extent = new WeakReference<>(checkNotNull(extent, "extent"));
         this.blockPosition = checkNotNull(blockPosition, "blockPosition");
     }
 
@@ -138,10 +142,18 @@ public final class Location<E extends Extent> implements DataHolder {
     /**
      * Get the underlying extent.
      *
-     * @return The extent
+     * <p>Note: This can be null if the {@link Extent} is unloaded and garbage
+     * collected.</p>
+     *
+     * @return The extent, if available
+     * @throws IllegalStateException If the {@link Extent} is null
      */
     public E getExtent() {
-        return this.extent;
+        final E currentExtent = this.extent.get();
+        if (currentExtent == null) {
+            throw new IllegalStateException();
+        }
+        return currentExtent;
     }
 
     /**
@@ -168,6 +180,18 @@ public final class Location<E extends Extent> implements DataHolder {
             this.blockPosition = getPosition().toInt();
         }
         return this.blockPosition;
+    }
+
+    /**
+     * Get the underlying chunk position.
+     *
+     * @return The underlying chunk position
+     */
+    public Vector3i getChunkPosition() {
+        if (this.chunkPosition == null) {
+            this.chunkPosition = Sponge.getServer().getChunkLayout().forceToChunk(getBlockPosition());
+        }
+        return this.chunkPosition;
     }
 
     /**
@@ -237,8 +261,8 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
-     * Returns true if this location is in the given extent.
-     * This is implemented as an {@link Object#equals(Object)} check.
+     * Returns true if this location is in the given extent. This is implemented
+     * as an {@link Object#equals(Object)} check.
      *
      * @param extent The extent to check
      * @return Whether this location is in the extent
@@ -278,7 +302,7 @@ public final class Location<E extends Extent> implements DataHolder {
         if (extent == getExtent()) {
             return this;
         }
-        return new Location<E>(extent, getPosition());
+        return new Location<>(extent, getPosition());
     }
 
     /**
@@ -292,7 +316,7 @@ public final class Location<E extends Extent> implements DataHolder {
         if (position == getPosition()) {
             return this;
         }
-        return new Location<E>(getExtent(), position);
+        return new Location<>(getExtent(), position);
     }
 
     /**
@@ -307,8 +331,8 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
-     * Subtract vector components to the position on this instance, returning
-     * a new Location instance.
+     * Subtract vector components to the position on this instance, returning a
+     * new Location instance.
      *
      * @param x The x component
      * @param y The y component
@@ -320,8 +344,8 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
-     * Add another Vector3d to the position on this instance, returning
-     * a new Location instance.
+     * Add another Vector3d to the position on this instance, returning a new
+     * Location instance.
      *
      * @param v The vector to add
      * @return A new instance
@@ -331,8 +355,8 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
-     * Add vector components to the position on this instance, returning
-     * a new Location instance.
+     * Add vector components to the position on this instance, returning a new
+     * Location instance.
      *
      * @param x The x component
      * @param y The y component
@@ -341,6 +365,50 @@ public final class Location<E extends Extent> implements DataHolder {
      */
     public Location<E> add(double x, double y, double z) {
         return setPosition(getPosition().add(x, y, z));
+    }
+
+    /**
+     * Calls the mapper function on the extent and position.
+     *
+     * @param mapper The mapper
+     * @param <T> The return type of the mapper
+     * @return The results of the mapping
+     */
+    public <T> T map(BiFunction<E, Vector3d, T> mapper) {
+        return mapper.apply(getExtent(), getPosition());
+    }
+
+    /**
+     * Calls the mapper function on the extent and block position.
+     *
+     * @param mapper The mapper
+     * @param <T> The return type of the mapper
+     * @return The results of the mapping
+     */
+    public <T> T mapBlock(BiFunction<E, Vector3i, T> mapper) {
+        return mapper.apply(getExtent(), getBlockPosition());
+    }
+
+    /**
+     * Calls the mapper function on the extent and chunk position.
+     *
+     * @param mapper The mapper
+     * @param <T> The return type of the mapper
+     * @return The results of the mapping
+     */
+    public <T> T mapChunk(BiFunction<E, Vector3i, T> mapper) {
+        return mapper.apply(getExtent(), getChunkPosition());
+    }
+
+    /**
+     * Calls the mapper function on the extent and biome position.
+     *
+     * @param mapper The mapper
+     * @param <T> The return type of the mapper
+     * @return The results of the mapping
+     */
+    public <T> T mapBiome(BiFunction<E, Vector2i, T> mapper) {
+        return mapper.apply(getExtent(), getBiomePosition());
     }
 
     /**
@@ -386,7 +454,8 @@ public final class Location<E extends Extent> implements DataHolder {
     /**
      * Checks for whether the block at this position contains tile entity data.
      *
-     * @return True if the block at this position has tile entity data, false otherwise
+     * @return True if the block at this position has tile entity data, false
+     * otherwise
      */
     public boolean hasTileEntity() {
         return getExtent().getTileEntity(getBlockPosition()).isPresent();
@@ -413,6 +482,19 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
+     * Replace the block at this position with a new state.
+     *
+     * <p>This will remove any extended block data at the given position.</p>
+     *
+     * @param state The new block state
+     * @param notifyNeighbors Whether or not you want to notify neighboring
+     * blocks of this change. If true, this may cause blocks to change.
+     */
+    public void setBlock(BlockState state, boolean notifyNeighbors) {
+        getExtent().setBlock(getBlockPosition(), state, notifyNeighbors);
+    }
+
+    /**
      * Replace the block type at this position by a new type.
      *
      * <p>This will remove any extended block data at the given position.</p>
@@ -424,25 +506,43 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
+     * Replace the block type at this position by a new type.
+     *
+     * <p>This will remove any extended block data at the given position.</p>
+     *
+     * @param type The new type
+     * @param notifyNeighbors Whether or not you want to notify neighboring
+     * blocks of this change. If true, this may cause blocks to change.
+     */
+    public void setBlockType(BlockType type, boolean notifyNeighbors) {
+        getExtent().setBlockType(getBlockPosition(), type, notifyNeighbors);
+    }
+
+    /**
      * Replace the block at this position with a copy of the given snapshot.
      *
      * <p>Changing the snapshot afterwards will not affect the block that has
      * been placed at this location.</p>
      *
      * @param snapshot The snapshot
+     * @param force If true, forces block state to be set even if the
+     * {@link BlockType} does not match the snapshot one.
+     * @param notifyNeighbors Whether or not you want to notify neighboring
+     * blocks of this change. If true, this may cause blocks to change.
      */
-    public void setBlockSnapshot(BlockSnapshot snapshot) {
-        getExtent().setBlockSnapshot(getBlockPosition(), snapshot);
+    public void restoreSnapshot(BlockSnapshot snapshot, boolean force, boolean notifyNeighbors) {
+        getExtent().restoreSnapshot(getBlockPosition(), snapshot, force, notifyNeighbors);
     }
 
     /**
-     * Remove the block at this position by replacing it with {@link BlockTypes#AIR}.
+     * Remove the block at this position by replacing it with
+     * {@link BlockTypes#AIR}.
      *
      * <p>This will remove any extended block data at the given position.</p>
      */
     @SuppressWarnings("ConstantConditions")
     public void removeBlock() {
-        getExtent().setBlockType(getBlockPosition(), BlockTypes.AIR);
+        getExtent().setBlockType(getBlockPosition(), BlockTypes.AIR, true);
     }
 
     @Override
@@ -461,104 +561,6 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     /**
-     * Simulates the interaction with this object as if a player had done so.
-     *
-     * @param side The side of the block to interact with
-     */
-    public void interactBlock(Direction side) {
-        getExtent().interactBlock(getBlockPosition(), side);
-    }
-
-    /**
-     * Simulates the interaction with this object using the given item as if
-     * the player had done so.
-     *
-     * @param itemStack The item
-     * @param side The side of the block to interact with
-     */
-    public void interactBlockWith(ItemStack itemStack, Direction side) {
-        getExtent().interactBlockWith(getBlockPosition(), itemStack, side);
-    }
-
-    /**
-     * Simulate the digging of the block as if a player had done so.
-     *
-     * @return Whether the block was destroyed
-     */
-    public boolean digBlock() {
-        return getExtent().digBlock(getBlockPosition());
-    }
-
-    /**
-     * Simulate the digging of the block with the given tool as if a player had
-     * done so.
-     *
-     * @param itemStack The tool
-     * @return Whether the block was destroyed
-     */
-    public boolean digBlockWith(ItemStack itemStack) {
-        return getExtent().digBlockWith(getBlockPosition(), itemStack);
-    }
-
-    /**
-     * Gets the time it takes to dig this block the specified item in ticks.
-     *
-     * @param itemStack The item to pretend-dig with
-     * @return The time in ticks
-     */
-    public int getBlockDigTimeWith(ItemStack itemStack) {
-        return getExtent().getBlockDigTimeWith(getBlockPosition(), itemStack);
-    }
-
-    /**
-     * Test whether the face in the given direction is powered.
-     *
-     * @param direction The direction
-     * @return Whether powered
-     */
-    public boolean isBlockFacePowered(Direction direction) {
-        return getExtent().isBlockFacePowered(getBlockPosition(), direction);
-    }
-
-    /**
-     * Test whether the face in the given direction is indirectly powered.
-     *
-     * @param direction The direction
-     * @return Whether powered
-     */
-    public boolean isBlockFaceIndirectlyPowered(Direction direction) {
-        return getExtent().isBlockFaceIndirectlyPowered(getBlockPosition(), direction);
-    }
-
-    /**
-     * Get all the faces of this block that are directly powered.
-     *
-     * @return Faces powered
-     */
-    public Collection<Direction> getPoweredBlockFaces() {
-        return getExtent().getPoweredBlockFaces(getBlockPosition());
-    }
-
-    /**
-     * Get all faces of this block that are indirectly powered.
-     *
-     * @return Faces indirectly powered
-     */
-    public Collection<Direction> getIndirectlyPoweredBlockFaces() {
-        return getExtent().getIndirectlyPoweredBlockFaces(getBlockPosition());
-    }
-
-    /**
-     * Test whether the given face of the block can catch fire.
-     *
-     * @param direction The face of the block to check
-     * @return Is flammable
-     */
-    public boolean isBlockFaceFlammable(Direction direction) {
-        return getExtent().isBlockFlammable(getBlockPosition(), direction);
-    }
-
-    /**
      * Get a snapshot of this block at the current point in time.
      *
      * <p>A snapshot is disconnected from the {@link Extent} that it was taken
@@ -566,8 +568,8 @@ public final class Location<E extends Extent> implements DataHolder {
      *
      * @return A snapshot
      */
-    public BlockSnapshot getBlockSnapshot() {
-        return getExtent().getBlockSnapshot(getBlockPosition());
+    public BlockSnapshot createSnapshot() {
+        return getExtent().createSnapshot(getBlockPosition());
     }
 
     /**
@@ -605,7 +607,7 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     @Override
-    public Collection<Property<?, ?>> getProperties() {
+    public Collection<Property<?, ?>> getApplicableProperties() {
         return getExtent().getProperties(getBlockPosition());
     }
 
@@ -620,23 +622,28 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     @Override
+    public int getContentVersion() {
+        return 1;
+    }
+
+    @Override
     public DataContainer toContainer() {
-        DataContainer container = new MemoryDataContainer();
+        final DataContainer container = new MemoryDataContainer();
+        container.set(Queries.CONTENT_VERSION, getContentVersion());
         if (getExtent() instanceof World) {
-            container.set(of("WorldName"), ((World) getExtent()).getName());
-            container.set(of("WorldUuid"), getExtent().getUniqueId().toString());
+            container.set(Queries.WORLD_NAME, ((World) getExtent()).getName());
+            container.set(Queries.WORLD_ID, getExtent().getUniqueId().toString());
         } else if (getExtent() instanceof Chunk) {
-            container.set(of("ChunkX"), ((Chunk) getExtent()).getPosition().getX())
-                .set(of("ChunkY"), ((Chunk) getExtent()).getPosition().getY())
-                .set(of("ChunkZ"), ((Chunk) getExtent()).getPosition().getZ())
-                .set(of("WorldName"), ((Chunk) getExtent()).getWorld().getName())
-                .set(of("WorldUuiD"), ((Chunk) getExtent()).getWorld().getUniqueId().toString());
+            container.set(Queries.CHUNK_X, ((Chunk) getExtent()).getPosition().getX())
+                .set(Queries.CHUNK_Y, ((Chunk) getExtent()).getPosition().getY())
+                .set(Queries.CHUNK_Z, ((Chunk) getExtent()).getPosition().getZ())
+                .set(Queries.WORLD_NAME, ((Chunk) getExtent()).getWorld().getName())
+                .set(Queries.WORLD_ID, ((Chunk) getExtent()).getWorld().getUniqueId().toString());
         }
-        container.set(of("BlockType"), this.getExtent().getBlockType(getBlockPosition()).getId())
-            .set(of("x"), this.getX())
-            .set(of("y"), this.getY())
-            .set(of("z"), this.getZ())
-            .set(of("Manipulators"), getContainers());
+        container.set(Queries.BLOCK_TYPE, this.getExtent().getBlockType(getBlockPosition()).getId())
+            .set(Queries.POSITION_X, this.getX())
+            .set(Queries.POSITION_Y, this.getY())
+            .set(Queries.POSITION_Z, this.getZ());
         return container;
     }
 
@@ -646,7 +653,7 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     @Override
-    public <E> Optional<E> get(Key<? extends BaseValue<E>> key) {
+    public <T> Optional<T> get(Key<? extends BaseValue<T>> key) {
         return getExtent().get(getBlockPosition(), key);
     }
 
@@ -655,19 +662,8 @@ public final class Location<E extends Extent> implements DataHolder {
         return getExtent().getOrCreate(getBlockPosition(), containerClass);
     }
 
-    @Nullable
     @Override
-    public <E> E getOrNull(Key<? extends BaseValue<E>> key) {
-        return getExtent().getOrNull(getBlockPosition(), key);
-    }
-
-    @Override
-    public <E> E getOrElse(Key<? extends BaseValue<E>> key, E defaultValue) {
-        return getExtent().getOrElse(getBlockPosition(), key, defaultValue);
-    }
-
-    @Override
-    public <E> DataTransactionResult offer(Key<? extends BaseValue<E>> key, E value) {
+    public <T> DataTransactionResult offer(Key<? extends BaseValue<T>> key, T value) {
         return getExtent().offer(getBlockPosition(), key, value);
     }
 
@@ -682,7 +678,7 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     @Override
-    public DataTransactionResult offer(BaseValue<?> value) {
+    public <T> DataTransactionResult offer(BaseValue<T> value) {
         return getExtent().offer(getBlockPosition(), value);
     }
 
@@ -712,12 +708,7 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     @Override
-    public boolean supports(BaseValue<?> baseValue) {
-        return getExtent().supports(getBlockPosition(), baseValue);
-    }
-
-    @Override
-    public <E> DataTransactionResult transform(Key<? extends BaseValue<E>> key, Function<E, E> function) {
+    public <T> DataTransactionResult transform(Key<? extends BaseValue<T>> key, Function<T, T> function) {
         return getExtent().transform(getBlockPosition(), key, function);
     }
 
@@ -737,22 +728,22 @@ public final class Location<E extends Extent> implements DataHolder {
     }
 
     @Override
-    public <E, V extends BaseValue<E>> Optional<V> getValue(Key<V> key) {
+    public <T, V extends BaseValue<T>> Optional<V> getValue(Key<V> key) {
         return getExtent().getValue(getBlockPosition(), key);
     }
 
     @Override
     public DataHolder copy() {
-        return new Location<E>(this.extent, getPosition());
+        return new Location<>(getExtent(), getPosition());
     }
 
     @Override
-    public ImmutableSet<Key<?>> getKeys() {
+    public Set<Key<?>> getKeys() {
         return getExtent().getKeys(getBlockPosition());
     }
 
     @Override
-    public ImmutableSet<ImmutableValue<?>> getValues() {
+    public Set<ImmutableValue<?>> getValues() {
         return getExtent().getValues(getBlockPosition());
     }
 
@@ -763,7 +754,7 @@ public final class Location<E extends Extent> implements DataHolder {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.extent, this.getPosition());
+        return Objects.hashCode(getExtent(), getPosition());
     }
 
     @Override
@@ -772,7 +763,8 @@ public final class Location<E extends Extent> implements DataHolder {
             return false;
         }
         Location<?> otherLoc = (Location<?>) other;
-        return otherLoc.extent.equals(this.extent) && otherLoc.getPosition().equals(this.getPosition());
+        return otherLoc.getExtent().equals(getExtent())
+            && otherLoc.getPosition().equals(getPosition());
     }
 
 }

@@ -25,14 +25,15 @@
 package org.spongepowered.api.data.translator;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static org.spongepowered.api.data.DataQuery.of;
 
 import ninja.leaping.configurate.ConfigurationNode;
 import ninja.leaping.configurate.SimpleConfigurationNode;
 import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.data.MemoryDataContainer;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -58,20 +59,19 @@ public final class ConfigurateTranslator implements DataTranslator<Configuration
     private static void populateNode(ConfigurationNode node, DataView container) {
         checkNotNull(node, "node");
         checkNotNull(container, "container");
-        Map<DataQuery, Object> values = container.getValues(false);
-        for (Map.Entry<DataQuery, Object> entry : values.entrySet()) {
-            node.getNode(entry.getKey().getParts()).setValue(entry.getValue());
-        }
+        node.setValue(container.getMap(of()).get());
     }
 
-    private static DataView translateFromNode(ConfigurationNode node) {
+    private static DataContainer translateFromNode(ConfigurationNode node) {
         checkNotNull(node, "node");
         DataContainer dataContainer = new MemoryDataContainer();
-        if (node.getValue() != null) {
-            if (node.getKey() == null) {
+        Object value = node.getValue();
+        Object key = node.getKey();
+        if (value != null) {
+            if (key == null || value instanceof Map || value instanceof List) {
                 translateMapOrList(node, dataContainer);
             } else {
-                dataContainer.set(DataQuery.of('.', node.getKey().toString()), node.getValue());
+                dataContainer.set(of('.', key.toString()), value);
             }
         }
         return dataContainer;
@@ -82,12 +82,11 @@ public final class ConfigurateTranslator implements DataTranslator<Configuration
         Object value = node.getValue();
         if (value instanceof Map) {
             for (Map.Entry<Object, Object> entry : ((Map<Object, Object>) value).entrySet()) {
-                container.set(DataQuery.of('.', entry.getKey().toString()), entry.getValue());
+                container.set(of('.', entry.getKey().toString()), entry.getValue());
             }
         } else if (value != null) {
-            container.set(DataQuery.of(node.getKey().toString()), value);
+            container.set(of(node.getKey().toString()), value);
         }
-
     }
 
     @Override
@@ -103,7 +102,7 @@ public final class ConfigurateTranslator implements DataTranslator<Configuration
     }
 
     @Override
-    public DataView translateFrom(ConfigurationNode node) {
+    public DataContainer translateFrom(ConfigurationNode node) {
         return ConfigurateTranslator.translateFromNode(node);
     }
 

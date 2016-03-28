@@ -24,9 +24,11 @@
  */
 package org.spongepowered.api.data.manipulator;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.data.DataHolder;
-import org.spongepowered.api.service.persistence.DataBuilder;
+import org.spongepowered.api.data.DataManager;
+import org.spongepowered.api.data.persistence.DataBuilder;
+
+import java.util.Optional;
 
 /**
  * A builder of {@link DataManipulator}s. This builder can build
@@ -34,7 +36,7 @@ import org.spongepowered.api.service.persistence.DataBuilder;
  * customized data prior to applying to a {@link DataHolder}.
  *
  * <p>{@link DataManipulatorBuilder}s must be registered with the
- * {@link DataManipulatorRegistry} before they can be used by the game
+ * {@link DataManager} before they can be used by the game
  * and plugins. Failure to do so may prevent the {@link DataManipulator} from
  * being used.</p>
  *
@@ -50,13 +52,6 @@ public interface DataManipulatorBuilder<T extends DataManipulator<T, I>, I exten
     T create();
 
     /**
-     * Creates a new specific {@link ImmutableDataManipulator} for consumption.
-     *
-     * @return The newly created immutable data manipulator
-     */
-    I createImmutable();
-
-    /**
      * Attempts to read data from the given {@link DataHolder} and constructs
      * a new copy of the {@link DataManipulator} as an instance of
      * <code>T</code>.
@@ -64,7 +59,7 @@ public interface DataManipulatorBuilder<T extends DataManipulator<T, I>, I exten
      * <p>If the {@link DataHolder} does not contain the necessary information
      * to pre-populate the {@link DataManipulator}, a fresh new
      * {@link DataManipulator} is returned. If the {@link DataManipulator} is
-     * incompatible with the {@link DataHolder}, {@link Optional#absent()} is
+     * incompatible with the {@link DataHolder}, {@link Optional#empty()} is
      * returned.</p>
      *
      * @param dataHolder The {@link DataHolder} to extract data

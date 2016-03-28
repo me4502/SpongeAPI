@@ -28,6 +28,7 @@ import org.spongepowered.api.data.manipulator.ImmutableDataManipulator;
 import org.spongepowered.api.data.manipulator.mutable.entity.PassengerData;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntitySnapshot;
 
 /**
  * An {@link ImmutableDataManipulator} handling the link to the current
@@ -37,19 +38,11 @@ import org.spongepowered.api.entity.Entity;
 public interface ImmutablePassengerData extends ImmutableDataManipulator<ImmutablePassengerData, PassengerData> {
 
     /**
-     * Gets the {@link ImmutableValue} for the current "vehicle" being ridden.
+     * Gets the {@link ImmutableValue} for the current {@link Entity} acting
+     * as a passenger.
      *
-     * @return The immutable value for the vehicle being ridden
+     * @return The immutable value for the passenger entity
      */
-    ImmutableValue<Entity> vehicle();
-
-    /**
-     * Gets the base {@link ImmutableValue} for the "base vehicle" being ridden
-     * such that the current vehicle may be riding another {@link Entity},
-     * causing that entity to be called the "base vehicle".
-     *
-     * @return The immutable value for the base vehicle
-     */
-    ImmutableValue<Entity> baseVehicle();
+    ImmutableValue<EntitySnapshot> passenger();
 
 }

@@ -24,7 +24,9 @@
  */
 package org.spongepowered.api.entity.explosive;
 
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.ExplosiveRadiusData;
+import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.Entity;
 
 /**
@@ -43,6 +45,19 @@ public interface Explosive extends Entity {
      *
      * @return A copy of the explosive radius data
      */
-    ExplosiveRadiusData getExplosiveRadiusData();
+    default ExplosiveRadiusData getExplosiveRadiusData() {
+        return get(ExplosiveRadiusData.class).get();
+    }
+
+    /**
+     * Gets the {@link Value} for the explosive radius of the {@link Explosive}.
+     *
+     * <p>The explosion radius may be affected by other data manipulators.</p>
+     *
+     * @return The explosion radius of the entity
+     */
+    default Value<Integer> explosiveRadius() {
+        return getValue(Keys.EXPLOSIVE_RADIUS).get();
+    }
 
 }

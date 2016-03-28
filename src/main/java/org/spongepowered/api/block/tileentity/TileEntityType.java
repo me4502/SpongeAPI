@@ -25,7 +25,6 @@
 package org.spongepowered.api.block.tileentity;
 
 import org.spongepowered.api.CatalogType;
-import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
 /**
@@ -33,14 +32,6 @@ import org.spongepowered.api.util.annotation.CatalogedBy;
  */
 @CatalogedBy(TileEntityTypes.class)
 public interface TileEntityType extends CatalogType {
-
-    /**
-     * Gets the type of {@link BlockType} that this {@link TileEntityType}
-     * can be created from.
-     *
-     * @return The type of block this tile entity type can be created with
-     */
-    BlockType getParentBlockType();
 
     /**
      * Returns the tile entity class for this type.

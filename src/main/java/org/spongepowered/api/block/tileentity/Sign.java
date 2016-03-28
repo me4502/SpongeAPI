@@ -24,15 +24,28 @@
  */
 package org.spongepowered.api.block.tileentity;
 
-import com.google.common.base.Optional;
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.tileentity.SignData;
+import org.spongepowered.api.data.value.mutable.ListValue;
+import org.spongepowered.api.text.Text;
 
 /**
  * Represents a sign.
  */
 public interface Sign extends TileEntity {
 
-    @Override
-    Optional<SignData> getData();
+    default SignData getSignData() {
+        return get(SignData.class).get();
+    }
+
+    /**
+     * Gets the {@link ListValue} of {@link Text} for the {@link Sign}
+     * to show.
+     *
+     * @return The list of text lines
+     */
+    default ListValue<Text> lines() {
+        return getValue(Keys.SIGN_LINES).get();
+    }
 
 }

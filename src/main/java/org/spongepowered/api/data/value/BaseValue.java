@@ -24,11 +24,12 @@
  */
 package org.spongepowered.api.data.value;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.Living;
+
+import java.util.Optional;
 
 /**
  * The abstract base interface for all of the "Value API". In short, a
@@ -74,7 +75,9 @@ public interface BaseValue<E> {
     boolean exists();
 
     /**
-     * Gets the default value if there is one.
+     * Gets the default value. There is always a default value, however,
+     * usability of the default value may be questionable in certain
+     * circumstances.
      *
      * @return The default value
      */

@@ -24,23 +24,23 @@
  */
 package org.spongepowered.api.world.storage;
 
+import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
-import com.google.common.base.Optional;
 import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.data.DataContainer;
 import org.spongepowered.api.data.DataQuery;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.data.DataView;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.player.gamemode.GameMode;
+import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.GeneratorType;
-import org.spongepowered.api.world.WorldBorder;
 import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.gen.WorldGeneratorModifier;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -52,7 +52,7 @@ public interface WorldProperties extends DataSerializable {
      * Gets whether this world is enabled. A world which is enabled but unloaded
      * may be loaded automatically if an attempt is made to transfer an entity
      * to the world using {@link Entity#transferToWorld} .
-     * 
+     *
      * @return Is enabled
      */
     boolean isEnabled();
@@ -61,28 +61,28 @@ public interface WorldProperties extends DataSerializable {
      * Sets this world as enabled. A world which is enabled but unloaded may be
      * loaded automatically if an attempt is made to transfer an entity to the
      * world using {@link Entity#transferToWorld} .
-     * 
+     *
      * @param state The new state
      */
     void setEnabled(boolean state);
 
     /**
      * Gets whether this world will load when the server starts up.
-     * 
+     *
      * @return Loads on startup
      */
     boolean loadOnStartup();
 
     /**
      * Sets whether this world should load when the server starts up.
-     * 
+     *
      * @param state Should load on startup
      */
     void setLoadOnStartup(boolean state);
 
     /**
-     * Gets whether spawn chunks of this world remain loaded when no players
-     * are present.
+     * Gets whether spawn chunks of this world remain loaded when no players are
+     * present.
      *
      * @return True if spawn chunks of this world remain loaded without players,
      *         false if not
@@ -92,42 +92,56 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Sets whether the spawn chunks of the world should remain loaded when no
      * players are present.
-     * 
+     *
      * @param state Should keep spawn loaded
      */
     void setKeepSpawnLoaded(boolean state);
 
     /**
+     * Gets whether spawn chunks of this world will generate on load.
+     *
+     * @return True if spawn chunks of this world generate on load.
+     */
+    boolean doesGenerateSpawnOnLoad();
+
+    /**
+     * Sets whether the spawn chunks of the world will generate on load.
+     *
+     * @param state Should generate spawn chunks on load.
+     */
+    void setGenerateSpawnOnLoad(boolean state);
+
+    /**
      * Gets the name of this world.
-     * 
+     *
      * @return The name
      */
     String getWorldName();
 
     /**
      * Gets the {@link UUID} of the world.
-     * 
+     *
      * @return The unique Id
      */
     UUID getUniqueId();
 
     /**
      * Gets the default spawn position of this world.
-     * 
+     *
      * @return The spawn position
      */
     Vector3i getSpawnPosition();
 
     /**
      * Sets the default spawn position of this world.
-     * 
+     *
      * @param position The spawn position
      */
     void setSpawnPosition(Vector3i position);
 
     /**
      * Gets the {@link GeneratorType} of this world.
-     * 
+     *
      * @return The type
      */
     GeneratorType getGeneratorType();
@@ -141,14 +155,14 @@ public interface WorldProperties extends DataSerializable {
 
     /**
      * Gets the seed of this world.
-     * 
+     *
      * @return The seed
      */
     long getSeed();
 
     /**
      * Gets the number of ticks which have occurred since the world was created.
-     * 
+     *
      * @return The total time in ticks
      */
     long getTotalTime();
@@ -157,7 +171,7 @@ public interface WorldProperties extends DataSerializable {
      * Gets the time of day, in ticks. The total number of ticks in a day is
      * 24000, however this value does not reset to zero at the start of each day
      * but rather keeps counting passed 24000.
-     * 
+     *
      * @return The time of day
      */
     long getWorldTime();
@@ -166,31 +180,45 @@ public interface WorldProperties extends DataSerializable {
      * Sets the time of day, in ticks. The total number of ticks in a day is
      * 24000, however this value does not reset to zero at the start of each day
      * but rather keeps counting passed 24000.
-     * 
+     *
      * @param time The time of day
      */
     void setWorldTime(long time);
 
     /*
      * TODO pending decision on handling client only API
-     * 
+     *
      * Gets the Unix time stamp of when this world was last played on.
-     * 
+     *
      * @return The time this world was last loaded
      */
     // long getLastTimePlayed();
 
     /**
      * Gets the {@link DimensionType} of this world.
-     * 
+     *
      * @return The dimension type
      */
     DimensionType getDimensionType();
 
     /**
+     * Gets whether PVP combat is enabled in this world.
+     *
+     * @return Whether PVP is enabled
+     */
+    boolean isPVPEnabled();
+
+    /**
+     * Sets whether PVP combat is enabled in this world.
+     *
+     * @param enabled Whether PVP is enabled
+     */
+    void setPVPEnabled(boolean enabled);
+
+    /**
      * Gets whether this world is currently experiencing rain/snow/cloud-cover
      * (depending on the biome of a specific location).
-     * 
+     *
      * @return Is raining
      */
     boolean isRaining();
@@ -198,7 +226,7 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Sets whether this world is currently experiencing rain/snow/cloud-cover
      * (depending on the biome of a specific location).
-     * 
+     *
      * @param state Is raining
      */
     void setRaining(boolean state);
@@ -206,7 +234,7 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Gets the number of ticks until the weather is next toggled to a new
      * random value.
-     * 
+     *
      * @return The time until the weather changes
      */
     int getRainTime();
@@ -214,21 +242,21 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Sets the number of ticks until the weather is next toggled to a new
      * random value.
-     * 
+     *
      * @param time The time until the weather changes
      */
     void setRainTime(int time);
 
     /**
      * Gets whether this world is currently experiencing a lightning storm.
-     * 
+     *
      * @return Is thundering
      */
     boolean isThundering();
 
     /**
      * Sets whether this world is currently experiencing a lightning storm.
-     * 
+     *
      * @param state Is thundering
      */
     void setThundering(boolean state);
@@ -236,7 +264,7 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Gets the number of ticks until the {@link #isThundering()} state is
      * toggled to a new random value.
-     * 
+     *
      * @return The time until the thundering state changes
      */
     int getThunderTime();
@@ -244,21 +272,21 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Sets the number of ticks until the {@link #isThundering()} state is
      * toggled to a new random value.
-     * 
+     *
      * @param time The time until the thundering state changes
      */
     void setThunderTime(int time);
 
     /**
      * Gets the default {@link GameMode} of this world.
-     * 
+     *
      * @return The game mode
      */
     GameMode getGameMode();
 
     /**
      * Sets the default {@link GameMode} of this world.
-     * 
+     *
      * @param gamemode The game mode
      */
     void setGameMode(GameMode gamemode);
@@ -266,7 +294,7 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Gets whether this world will generate map features such as villages and
      * strongholds.
-     * 
+     *
      * @return Whether map features enabled
      */
     boolean usesMapFeatures();
@@ -274,21 +302,21 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Sets whether this world will generate map features such as villages and
      * strongholds.
-     * 
+     *
      * @param state Whether map features enabled
      */
     void setMapFeaturesEnabled(boolean state);
 
     /**
      * Gets whether this world is set to hardcore mode.
-     * 
+     *
      * @return Is hardcore
      */
     boolean isHardcore();
 
     /**
      * Sets whether this world is set to hardcore mode.
-     * 
+     *
      * @param state Is hardcore
      */
     void setHardcore(boolean state);
@@ -296,7 +324,7 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Gets whether commands are allowed within this world. May not be respected
      * when not in single player.
-     * 
+     *
      * @return Whether commands are allowed
      */
     boolean areCommandsAllowed();
@@ -304,38 +332,184 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Sets whether commands are allowed within this world. May not be respected
      * when not in single player.
-     * 
+     *
      * @param state Whether commands are allowed
      */
     void setCommandsAllowed(boolean state);
 
     /**
      * Gets whether this world has been initialized.
-     * 
+     *
      * @return Is initialized
      */
     boolean isInitialized();
 
     /**
      * Gets the difficulty of this world.
-     * 
+     *
      * @return The difficulty
      */
     Difficulty getDifficulty();
 
     /**
      * Sets the difficulty of this world.
-     * 
+     *
      * @param difficulty The difficulty
      */
     void setDifficulty(Difficulty difficulty);
 
     /**
-     * Gets the {@link WorldBorder} of this world.
-     * 
-     * @return The world border
+     * Gets the center of the world border.
+     *
+     * <p>The returned position is three-dimensional. As the worldborder extends
+     * over the entire y-axis, the returned position will always have a
+     * {@code y} set to 0.</p>
+     *
+     * @return The center
      */
-    WorldBorder getWorldBorder();
+    Vector3d getWorldBorderCenter();
+
+    /**
+     * Sets the center of the world border.
+     *
+     * @param x The x-axis center of the world border
+     * @param z The z-axis center of the world border
+     */
+    void setWorldBorderCenter(double x, double z);
+
+    /**
+     * Gets the diameter of the world border.
+     *
+     * <p>The returned diameter applies to the x and z axis. The world border
+     * extends over the entire y-axis.</p>
+     *
+     * @return The diameter
+     */
+    double getWorldBorderDiameter();
+
+    /**
+     * Sets the diameter of the world border.
+     *
+     * <p>The specified diameter applies to the x and z axis. The world border
+     * extends over the entire y-axis.</p>
+     *
+     * @param diameter The diameter
+     */
+    void setWorldBorderDiameter(double diameter);
+
+    /**
+     * Get the time remaining until the world border stops expanding or
+     * contracting.
+     *
+     * @return The time remaining, in milliseconds
+     */
+    long getWorldBorderTimeRemaining();
+
+    /**
+     * Sets the time remaining until the world border stops expanding or
+     * contracting.
+     *
+     * @param time The new remaining time
+     */
+    void setWorldBorderTimeRemaining(long time);
+
+    /**
+     * Gets the diameter the world border is expanding or contracting to.
+     *
+     * <p>This will return the same value as {@link #getWorldBorderDiameter}
+     * unless {@link #getWorldBorderTimeRemaining} is greater than 0.</p>
+     *
+     * @return The diameter being changed to
+     */
+    double getWorldBorderTargetDiameter();
+
+    /**
+     * Sets the target diameter of the world border.
+     *
+     * <p>The world border diameter increases/decrease linearly over time
+     * specified in {@link #getWorldBorderTimeRemaining()}. The specified
+     * diameter applies to the x and z axis. The world border extends over the
+     * entire y-axis.</p>
+     *
+     * @param diameter The diameter where the border will expand/contract to
+     */
+    void setWorldBorderTargetDiameter(double diameter);
+
+    /**
+     * Get the distance a player may be outside the world border before taking
+     * damage.
+     *
+     * @return The distance
+     */
+    double getWorldBorderDamageThreshold();
+
+    /**
+     * Set the distance a player may be be outside the world border before
+     * taking damage.
+     *
+     * @param distance The distance
+     */
+    void setWorldBorderDamageThreshold(double distance);
+
+    /**
+     * Get the damage done to a player per block per tick when outside the
+     * buffer.
+     *
+     * @return The damage amount
+     */
+    double getWorldBorderDamageAmount();
+
+    /**
+     * Set the damage done to a player per block per tick when outside the
+     * buffer.
+     *
+     * @param damage The damage amount
+     */
+    void setWorldBorderDamageAmount(double damage);
+
+    /**
+     * Get the time when a contracting world border will warn a player for whom
+     * the world border will reach in {@code time} seconds.
+     *
+     * <p>In Minecraft, the warning is displayed in the form of a reddish
+     * tint.</p>
+     *
+     * @return The time, in seconds
+     */
+    int getWorldBorderWarningTime();
+
+    /**
+     * Set the time when a contracting world border will warn a player for whom
+     * the world border will reach in {@code time} seconds.
+     *
+     * <p>In Minecraft, the warning is displayed in the form of a reddish
+     * tint.</p>
+     *
+     * @param time The time, in seconds
+     */
+    void setWorldBorderWarningTime(int time);
+
+    /**
+     * Get the distance when a contracting world border will warn a player for
+     * whom the world border is {@code distance} blocks away.
+     *
+     * <p>In Minecraft, the warning is displayed in the form of a reddish
+     * tint.</p>
+     *
+     * @return The distance, in blocks
+     */
+    int getWorldBorderWarningDistance();
+
+    /**
+     * Set the distance when a contracting world border will warn a player for
+     * whom the world border is {@code distance} blocks away.
+     *
+     * <p>In Minecraft, the warning is displayed in the form of a reddish
+     * tint.</p>
+     *
+     * @param distance The distance, in blocks
+     */
+    void setWorldBorderWarningDistance(int distance);
 
     /**
      * Gets the specified GameRule value.
@@ -347,7 +521,7 @@ public interface WorldProperties extends DataSerializable {
 
     /**
      * Gets a map of the currently set game rules and their values.
-     * 
+     *
      * @return An immutable map of the game rules
      */
     Map<String, String> getGameRules();
@@ -364,7 +538,7 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Gets a {@link DataContainer} containing any additional properties for
      * this world. The returned data is a snapshot of the data and is not live.
-     * 
+     *
      * @return Any additional properties
      */
     DataContainer getAdditionalProperties();
@@ -373,7 +547,7 @@ public interface WorldProperties extends DataSerializable {
      * Gets a section of the additional properties returned by
      * {@link #getAdditionalProperties()}. The returned data is a snapshot of
      * the data and is not live.
-     * 
+     *
      * @param path The path for the section.
      * @return The data view representing the requested section
      */
@@ -383,7 +557,7 @@ public interface WorldProperties extends DataSerializable {
      * Sets a path within the additional data to the given {@link DataView}. If
      * you are using this to store data related to your mod/plugin is is HIGHLY
      * recommended that the identifier you pass in be your mod/plugin id.
-     * 
+     *
      * @param path The path for the section
      * @param data The new data
      */
@@ -392,22 +566,23 @@ public interface WorldProperties extends DataSerializable {
     /**
      * Gets an immutable collection of the world generator modifiers currently
      * in use.
+     * 
      * @return The world generator modifiers in use.
      */
     Collection<WorldGeneratorModifier> getGeneratorModifiers();
 
     /**
      * Sets the given world generator modifiers to be used.
-     * 
+     *
      * @param modifiers The modifiers to set.
      * @throws IllegalArgumentException If any of the modifiers has not been
-     *             registered in the {@link GameRegistry}.
+     *         registered in the {@link GameRegistry}.
      */
     void setGeneratorModifiers(Collection<WorldGeneratorModifier> modifiers);
 
     /**
-     * Gets the generator settings. These can be used by the generator type and/or
-     * by the generator modifiers.
+     * Gets the generator settings. These can be used by the generator type
+     * and/or by the generator modifiers.
      *
      * @return The generator settings.
      */

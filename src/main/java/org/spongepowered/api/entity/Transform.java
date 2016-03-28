@@ -24,15 +24,20 @@
  */
 package org.spongepowered.api.entity;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import com.flowpowered.math.imaginary.Quaterniond;
 import com.flowpowered.math.matrix.Matrix4d;
 import com.flowpowered.math.vector.Vector3d;
+import com.google.common.base.Objects;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.extent.Extent;
 
+import javax.annotation.Nullable;
+
 /**
- * Represents the world attributes of an {@link Entity}. Comprised of a
- * {@link Location} and two {@link Vector3d} representing the rotation
+ * Represents the immutable world attributes of an {@link Entity}. Comprised of
+ * a {@link Location} and two {@link Vector3d} representing the rotation
  * and the scale. The implementation may internally use a location or a
  * separate extent and position. Be wary that calling {@link #getLocation()}
  * could result in object creation.
@@ -51,7 +56,42 @@ import org.spongepowered.api.world.extent.Extent;
  *
  * @param <E> The extent containing the transform
  */
-public interface Transform<E extends Extent> {
+public final class Transform<E extends Extent> {
+
+    private final E extent;
+    private final Vector3d position;
+    private final Vector3d rotation;
+    private final Vector3d scale;
+    @Nullable private Location<E> location = null;
+    @Nullable private Quaterniond rotationQuaternion = null;
+
+    public Transform(Location<E> location) {
+        this(location.getExtent(), location.getPosition());
+    }
+
+    public Transform(E extent) {
+        this(extent, Vector3d.ZERO);
+    }
+
+    public Transform(E extent, Vector3d position) {
+        this(extent, position, Vector3d.ZERO);
+    }
+
+    public Transform(E extent, Vector3d position, Vector3d rotation) {
+        this(extent, position, rotation, Vector3d.ONE);
+    }
+
+    public Transform(Location<E> location, Vector3d rotation, Vector3d scale) {
+        this(location.getExtent(), location.getPosition(), rotation, scale);
+    }
+
+    public Transform(E extent, Vector3d position, Vector3d rotation, Vector3d scale) {
+        this.extent = checkNotNull(extent, "extent");
+        this.position = checkNotNull(position, "position");
+        this.rotation = checkNotNull(rotation, "rotation");
+        this.scale = checkNotNull(scale, "scale");
+    }
+
 
     /**
      * Gets the {@link Location} this transform contains.
@@ -60,48 +100,65 @@ public interface Transform<E extends Extent> {
      * @return The location
      * @throws IllegalStateException If the transform doesn't have an extent
      */
-    Location<E> getLocation();
+    public Location<E> getLocation() {
+        if (this.location == null) {
+            this.location = new Location<>(this.extent, this.position);
+        }
+        return this.location;
+    }
 
     /**
-     * Sets the {@link Location} of this transform.
+     * Creates a copy of this transform and sets the {@link Location}.
      * This sets both the position and the extent.
      *
      * @param location The new location
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> setLocation(Location<E> location);
-
+    public Transform<E> setLocation(Location<E> location) {
+        checkNotNull(location, "location");
+        return new Transform<>(location, getRotation(), getScale());
+    }
     /**
      * Gets the {@link Extent} this transform contains.
+     *
+     * <p>Note: This can be null if the {@link Extent} is unloaded and garbage
+     * collected.</p>
      *
      * @return The extent
      * @throws IllegalStateException If the transform doesn't have an extent
      */
-    E getExtent();
+    public E getExtent() {
+        return this.extent;
+    }
 
     /**
-     * Sets the {@link Extent} of this transform.
+     * Creates a copy of this transform and sets the {@link Extent}.
      *
      * @param extent The new extent
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> setExtent(E extent);
-
+    public Transform<E> setExtent(E extent) {
+        checkNotNull(extent, "extent");
+        return new Transform<>(extent, getPosition(), getRotation(), getScale());
+    }
     /**
      * Gets the coordinates of this transform.
      *
      * @return The coordinates
      */
-    Vector3d getPosition();
+    public Vector3d getPosition() {
+        return this.position;
+    }
 
     /**
-     * Sets the coordinates of this transform.
-     *
-     * @param position The new position
-     * @return The object, for chaining
+     * Creates a copy of this transform while setting the position of the new one.
+     * @param position The position
+     * @return A new transform
      */
-    Transform<E> setPosition(Vector3d position);
-
+    public Transform<E> setPosition(Vector3d position) {
+        checkNotNull(position, "position");
+        return new Transform<>(getExtent(), position, getRotation(), getScale());
+    }
     /**
      * Gets the rotation of this transform, as a {@link Vector3d}.
      *
@@ -114,10 +171,12 @@ public interface Transform<E extends Extent> {
      *
      * @return The rotation vector
      */
-    Vector3d getRotation();
+    public Vector3d getRotation() {
+        return this.rotation;
+    }
 
     /**
-     * Sets the rotation of this transform.
+     * Creates a copy of this transform and sets the rotation.
      *
      * <p>The format of the rotation is represented by:</p>
      * <ul>
@@ -127,12 +186,15 @@ public interface Transform<E extends Extent> {
      * </ul>
      *
      * @param rotation The new rotation
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> setRotation(Vector3d rotation);
-
+    public Transform<E> setRotation(Quaterniond rotation) {
+        checkNotNull(rotation, "rotation");
+        return setRotation(toAxesAngles(rotation));
+    }
     /**
      * Returns the rotation as a quaternion.
+     *
      * Quaternions are objectively better than
      * the Euler angles preferred by Minecraft.
      * This is for compatibility with
@@ -140,82 +202,117 @@ public interface Transform<E extends Extent> {
      *
      * @return The rotation
      */
-    Quaterniond getRotationAsQuaternion();
+    public Quaterniond getRotationAsQuaternion() {
+        if (this.rotationQuaternion == null) {
+            this.rotationQuaternion = fromAxesAngles(this.rotation);
+        }
+        return this.rotationQuaternion;
+    }
 
     /**
-     * Sets the rotation as a quaternion.
+     * Creates a copy of this transform and sets the rotation as
+     * a quaternion.
+     *
      * Quaternions are objectively better than
      * the Euler angles preferred by Minecraft.
      * This is for compatibility with
      * the flow-math library.
      *
-     * @param rotation The rotation
-     * @return This object, for chaining
+     * @param rotation The new rotation
+     * @return A new transform
      */
-    Transform<E> setRotation(Quaterniond rotation);
-
+    public Transform<E> setRotation(Vector3d rotation) {
+        checkNotNull(rotation, "rotation");
+        return new Transform<>(getExtent(), getPosition(), rotation, getScale());
+    }
     /**
      * Gets the pitch component of this transform rotation
      *
      * @return The pitch
      */
-    double getPitch();
+    public double getPitch() {
+        return this.rotation.getX();
+    }
 
     /**
      * Gets the yaw component of this transform rotation
      *
      * @return The yaw
      */
-    double getYaw();
+    public double getYaw() {
+        return this.rotation.getY();
+    }
 
     /**
      * Gets the roll component of this transform rotation
      *
      * @return The roll
      */
-    double getRoll();
+    public double getRoll() {
+        return this.rotation.getZ();
+    }
 
     /**
      * Gets the scale of the transform for each axis.
      *
      * @return The scale
      */
-    Vector3d getScale();
+    public Vector3d getScale() {
+        return this.scale;
+    }
 
     /**
-     * Sets the scale of the transform for each axis.
+     * Creates a copy of this transform and sets the scale for
+     * each axis.
      *
-     * @return This object, for chaining
+     * @param scale The scale
+     * @return A new transform
      */
-    Transform<E> setScale(Vector3d scale);
-
+    public Transform<E> setScale(Vector3d scale) {
+        checkNotNull(scale, "scale");
+        return new Transform<>(getExtent(), getPosition(), getRotation(), scale);
+    }
     /**
      * "Adds" another transform to this one.
      * This is equivalent to adding the
      * translation, rotation and scale
-     * individually.
+     * individually. Returns the results
+     * as a new copy.
      *
      * @param other The transform to add
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> add(Transform<E> other);
-
+    public Transform<E> add(Transform<E> other) {
+        checkNotNull(other, "other");
+        return new Transform<>(
+            getExtent(),
+            getPosition().add(other.getPosition()),
+            toAxesAngles(other.getRotationAsQuaternion().mul(getRotationAsQuaternion())),
+            getScale().mul(other.getScale())
+        );
+    }
     /**
      * Adds a translation to this transform.
+     * Returns the results as a new copy.
      *
      * @param translation The translation to add
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> addTranslation(Vector3d translation);
-
+    public Transform<E> addTranslation(Vector3d translation) {
+        checkNotNull(translation, "translation");
+        return new Transform<>(getExtent(), getPosition().add(translation));
+    }
     /**
      * Adds a rotation to this transform.
+     * Returns the results as a new copy.
      *
      * @param rotation The rotation to add
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> addRotation(Vector3d rotation);
-
+    public Transform<E> addRotation(Vector3d rotation) {
+        checkNotNull(rotation, "rotation");
+        return addRotation(fromAxesAngles(rotation));
+    }
     /**
      * Adds a rotation to this transform.
      * Quaternions are objectively better than
@@ -224,23 +321,29 @@ public interface Transform<E extends Extent> {
      * dealing with rotation additions.
      * This is for compatibility with
      * the flow-math library.
+     * Returns the results as a new copy.
      *
      * @param rotation The rotation to add
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> addRotation(Quaterniond rotation);
-
+    public Transform<E> addRotation(Quaterniond rotation) {
+        checkNotNull(rotation, "rotation");
+        return new Transform<>(getExtent(), getPosition(), toAxesAngles(rotation.mul(getRotationAsQuaternion())), getScale());
+    }
     /**
      * "Adds" a scale to this transform.
      * Scales are multiplicative, so
      * this actually multiplies the
      * current scale.
+     * Returns the results as a new copy.
      *
      * @param scale The scale to add
-     * @return This object, for chaining
+     * @return A new transform
      */
-    Transform<E> addScale(Vector3d scale);
-
+    public Transform<E> addScale(Vector3d scale) {
+        checkNotNull(scale, "scale");
+        return new Transform<>(getExtent(), getPosition(), getRotation(), getScale().mul(scale));
+    }
     /**
      * Returns a matrix representation of this transform.
      * This includes the position, rotation and scale.
@@ -261,7 +364,9 @@ public interface Transform<E extends Extent> {
      *
      * @return The transform as a matrix
      */
-    Matrix4d toMatrix();
+    public Matrix4d toMatrix() {
+        return Matrix4d.createScaling(getScale().toVector4(1)).rotate(getRotationAsQuaternion()).translate(getPosition());
+    }
 
     /**
      * Returns if this {@link Transform} is still valid.
@@ -274,11 +379,47 @@ public interface Transform<E extends Extent> {
      *
      * @return True if valid, false if not
      */
-    boolean isValid();
+    public boolean isValid() {
+        return this.extent.isLoaded();
+    }
 
-    /**
-     * Invalidates this transform. {@link #isValid()} will return false.
-     */
-    void invalidate();
+    @Override
+    public int hashCode() {
+        int result = extent.hashCode();
+        result = 31 * result + position.hashCode();
+        result = 31 * result + rotation.hashCode();
+        result = 31 * result + scale.hashCode();
+        return result;
+    }
 
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (!(other instanceof Transform<?>)) {
+            return false;
+        }
+        final Transform<?> otherTransform = (Transform<?>) other;
+        return otherTransform.extent.equals(this.extent) && otherTransform.getPosition().equals(getPosition())
+                && otherTransform.getRotation().equals(getRotation()) && otherTransform.getScale().equals(getScale());
+    }
+
+    @Override
+    public String toString() {
+        return Objects.toStringHelper(this)
+                .add("location", getLocation())
+                .add("rotation", rotation)
+                .add("scale", scale)
+                .toString();
+    }
+
+    private static Vector3d toAxesAngles(Quaterniond quaternion) {
+        final Vector3d axesAngles = quaternion.getAxesAnglesDeg();
+        return new Vector3d(axesAngles.getX(), -axesAngles.getY(), axesAngles.getZ());
+    }
+
+    private static Quaterniond fromAxesAngles(Vector3d angles) {
+        return Quaterniond.fromAxesAnglesDeg(angles.getX(), -angles.getY(), angles.getZ());
+    }
 }

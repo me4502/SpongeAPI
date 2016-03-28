@@ -24,8 +24,8 @@
  */
 package org.spongepowered.api;
 
-import org.spongepowered.api.event.server.StatusPingEvent;
-import org.spongepowered.api.status.StatusResponse;
+import org.spongepowered.api.event.server.ClientPingServerEvent;
+import org.spongepowered.api.network.status.StatusResponse;
 
 /**
  * Represents a specific Minecraft version of a client or a server.
@@ -48,7 +48,7 @@ public interface MinecraftVersion extends Comparable<MinecraftVersion> {
     /**
      * Returns whether this version is an older version that doesn't support
      * all of the features in {@link StatusResponse}. These versions are only
-     * supported for the {@link StatusPingEvent}, normally they should not be
+     * supported for the {@link ClientPingServerEvent}, normally they should not be
      * able to join the server.
      * <p>
      * For Vanilla, this returns {@code true} for all clients older than 1.7.

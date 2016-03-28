@@ -26,11 +26,11 @@ package org.spongepowered.api.data.merge;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Function;
-import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.data.value.mutable.CompositeValueStore;
+
+import java.util.function.Function;
 
 import javax.annotation.Nullable;
 
@@ -40,7 +40,8 @@ import javax.annotation.Nullable;
  * A merge function is similar to a {@link Function} such that it can be reused
  * for multiple purposes and should be "stateless" on its own.
  */
-public abstract class MergeFunction {
+@FunctionalInterface
+public interface MergeFunction {
 
     /**
      * Performs a merge of a type of {@link ValueContainer} such that a merge
@@ -73,7 +74,7 @@ public abstract class MergeFunction {
      * @param <C> The type of {@link ValueContainer}
      * @return The "merged" {@link ValueContainer}
      */
-    public abstract <C extends ValueContainer<?>> C merge(@Nullable C original, @Nullable C replacement);
+    <C extends ValueContainer<?>> C merge(@Nullable C original, @Nullable C replacement);
 
     /**
      * Creates a new {@link MergeFunction} chaining this current merge function
@@ -87,7 +88,7 @@ public abstract class MergeFunction {
      * @param that The {@link MergeFunction} to chain
      * @return The new {@link MergeFunction}
      */
-    public MergeFunction andThen(final MergeFunction that) {
+    default MergeFunction andThen(final MergeFunction that) {
         final MergeFunction self = this;
         return new MergeFunction() {
             @Override
@@ -101,10 +102,10 @@ public abstract class MergeFunction {
      * Represents a {@link MergeFunction} that ignores all merges and uses the
      * replacement, or the original if the replacement is {@code null}.
      */
-    public static final MergeFunction IGNORE_ALL = new MergeFunction() {
+    MergeFunction IGNORE_ALL = new MergeFunction() {
         @Override
         public <C extends ValueContainer<?>> C merge(@Nullable C original, @Nullable C replacement) {
-            return replacement == null ? checkNotNull(original) : replacement;
+            return replacement == null ? checkNotNull(original, "Original and replacement cannot be null!") : replacement;
         }
     };
 
@@ -112,10 +113,10 @@ public abstract class MergeFunction {
      * Represents a {@link MergeFunction} that forces no merges and uses the
      * original, or proposed replacement if the original is {@code null}.
      */
-    public static final MergeFunction FORCE_NOTHING = new MergeFunction() {
+    MergeFunction FORCE_NOTHING = new MergeFunction() {
         @Override
         public <C extends ValueContainer<?>> C merge(@Nullable C original, @Nullable C replacement) {
-            return original == null ? checkNotNull(replacement) : original;
+            return original == null ? checkNotNull(replacement, "Replacement and original cannot be null!") : original;
         }
     };
 

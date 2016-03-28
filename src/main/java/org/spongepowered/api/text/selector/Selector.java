@@ -24,15 +24,18 @@
  */
 package org.spongepowered.api.text.selector;
 
-import com.google.common.base.Optional;
+import static org.spongepowered.api.text.selector.ArgumentTypes.getFactory;
+
+import org.spongepowered.api.command.CommandSource;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.util.ResettableBuilder;
 import org.spongepowered.api.world.Location;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.Extent;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -48,7 +51,7 @@ import java.util.Set;
  * 20 it would be {@code @a[r=20]}.
  * </p>
  * </p>
- * 
+ *
  * <p>
  * Additionally, Vanilla will ignore position data unless one of the following
  * arguments is present:
@@ -65,6 +68,35 @@ import java.util.Set;
  *      Target selectors on the Minecraft Wiki</a>
  */
 public interface Selector {
+
+    /**
+     * Creates a {@link Selector.Builder}.
+     *
+     * @return A new selector builder with the specified type
+     */
+    static Builder builder() {
+        return getFactory().createBuilder();
+    }
+
+    /**
+     * Parses a {@link Selector} from the given selector string.
+     *
+     * @param selector The raw selector string
+     * @return A new selector containing the given selector data
+     */
+    static Selector parse(String selector) {
+        return getFactory().parseRawSelector(selector);
+    }
+
+    /**
+     * Fetch completions for a selector command argument.
+     * 
+     * @param selector The partial selector
+     * @return Tab completions for the next part of the selector
+     */
+    static List<String> complete(String selector) {
+        return getFactory().complete(selector);
+    }
 
     /**
      * Returns the type of this {@link Selector}.
@@ -114,7 +146,7 @@ public interface Selector {
 
     /**
      * Checks for the presence of {@code type} in this {@link Selector}.
-     * 
+     *
      * @param type - The {@link ArgumentType} to check for
      * @return {@code true} if the given type is present in this
      *         {@link Selector}, otherwise {@code false}
@@ -123,9 +155,9 @@ public interface Selector {
 
     /**
      * Checks for the inversion state of {@code type} in this {@link Selector}.
-     * 
+     *
      * @param type - The invertible {@link ArgumentType} to check inversion
-     *         status on
+     *        status on
      * @return {@code true} if the given type is inverted in this
      *         {@link Selector}, otherwise {@code false}
      */
@@ -217,6 +249,79 @@ public interface Selector {
      *
      * @return A new selector builder with the content of this selector
      */
-    SelectorBuilder builder();
+    Builder toBuilder();
+
+    interface Builder extends ResettableBuilder<Selector, Builder> {
+
+        /**
+         * Sets the type of this selector.
+         *
+         * @param type The type to set
+         * @return This selector builder
+         */
+        Builder type(SelectorType type);
+
+        /**
+         * Adds some arguments to this selector.
+         *
+         * @param arguments The arguments to add
+         * @return This selector builder
+         */
+        Builder add(Argument<?>... arguments);
+
+        /**
+         * Adds some arguments to this selector.
+         *
+         * @param arguments The arguments to add
+         * @return This selector builder
+         */
+        Builder add(Iterable<Argument<?>> arguments);
+
+        /**
+         * Adds a new {@link Argument} with the specified {@link ArgumentType} and
+         * value to this selector.
+         *
+         * @param type The type of the argument
+         * @param value The value of the argument
+         * @param <T> The type of the argument value
+         * @return This selector builder
+         */
+        <T> Builder add(ArgumentType<T> type, T value);
+
+        /**
+         * Removes the specified arguments, if they exist.
+         *
+         * @param arguments The arguments to remove
+         * @return This selector builder
+         */
+        Builder remove(Argument<?>... arguments);
+
+        /**
+         * Removes the specified arguments, if they exist.
+         *
+         * @param arguments The arguments to remove
+         * @return This selector builder
+         */
+        Builder remove(Iterable<Argument<?>> arguments);
+
+        /**
+         * Removes the arguments with the specified {@link ArgumentType}, if they
+         * exist.
+         *
+         * @param types The argument types
+         * @return This selector builder
+         */
+        Builder remove(ArgumentType<?>... types);
+
+        /**
+         * Builds an immutable instance of the current state of this selector
+         * builder.
+         *
+         * @return An immutable {@link Selector} with the current properties of this
+         *         builder
+         */
+        Selector build();
+
+    }
 
 }

@@ -24,16 +24,17 @@
  */
 package org.spongepowered.api.data.value.mutable;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import org.spongepowered.api.data.DataTransactionResult;
 import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.merge.MergeFunction;
 import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.data.value.ValueContainer;
-import org.spongepowered.api.data.value.immutable.ImmutableValue;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * Represents a {@link ValueContainer} that contains a various bundle of
@@ -80,8 +81,8 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * existing data for the {@link ValueContainer}.</p>
      *
      * <p>If it is necessary to ignore the {@link Optional},
-     * {@link Optional#orNull()} can be used to return a potentially
-     * {@code null} {@link ValueContainer}.</p>
+     * {@link Optional#orElse(Object)} can be used to return a potentially
+     * <code>null</code> {@link ValueContainer}.</p>
      *
      *
      * @param containerClass The container class
@@ -123,12 +124,12 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * {@link ValueContainer} may be unsupported, the required data missing
      * and ignoring the possibility of {@code null}s, it is a guarantee that if
      * the {@link Optional#isPresent()} is {@code true}, the
-     * {@link ValueContainer} not only is supported, but there is already pre-
-     * existing data for the {@link ValueContainer}.</p>
+     * {@link ValueContainer} not only is supported, but some default values
+     * can be generated to create the desired {@link ValueContainer}.</p>
      *
      * <p>If it is necessary to ignore the {@link Optional},
-     * {@link Optional#orNull()} can be used to return a potentially
-     * {@code null} {@link ValueContainer}.</p>
+     * {@link Optional#orElse(Object)} can be used to return a potentially
+     * <code>null</code> {@link ValueContainer}.</p>
      *
      *
      * @param containerClass The container class
@@ -160,7 +161,12 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * @param <E> The type of value
      * @return The end resulting value
      */
-    <E> DataTransactionResult transform(Key<? extends BaseValue<E>> key, Function<E, E> function);
+    default <E> DataTransactionResult transform(Key<? extends BaseValue<E>> key, Function<E, E> function) {
+        if (supports(key)) {
+            return offer(key, checkNotNull(function.apply(get(key).orElse(null))));
+        }
+        return DataTransactionResult.failNoData();
+    }
 
     /**
      * Offers the given {@code value} as defined by the provided {@link Key}
@@ -182,9 +188,12 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * {@link CompositeValueStore}.
      *
      * @param value The value to set
+     * @param <E> The type of the element wrapped by the value
      * @return The transaction result
      */
-    DataTransactionResult offer(BaseValue<?> value);
+    default <E> DataTransactionResult offer(BaseValue<E> value) {
+        return offer(value.getKey(), value.get());
+    }
 
     /**
      * Offers the given {@link ValueContainer} such that all of the available
@@ -196,7 +205,9 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * @param valueContainer The value to set
      * @return The transaction result
      */
-    DataTransactionResult offer(H valueContainer);
+    default DataTransactionResult offer(H valueContainer) {
+        return offer(valueContainer, MergeFunction.IGNORE_ALL);
+    }
 
     /**
      * Offers the given {@link ValueContainer} such that all of the available
@@ -222,7 +233,9 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * @param valueContainers The values to set
      * @return The transaction result
      */
-    DataTransactionResult offer(Iterable<H> valueContainers);
+    default DataTransactionResult offer(Iterable<H> valueContainers) {
+        return offer(valueContainers, MergeFunction.IGNORE_ALL);
+    }
 
     /**
      * Offers all provided {@link ValueContainer}s to this
@@ -236,7 +249,13 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * @param function The function to resolve the values
      * @return The transaction result
      */
-    DataTransactionResult offer(Iterable<H> valueContainers, MergeFunction function);
+    default DataTransactionResult offer(Iterable<H> valueContainers, MergeFunction function) {
+        final DataTransactionResult.Builder builder = DataTransactionResult.builder();
+        for (H valueContainer : valueContainers) {
+            builder.absorbResult(offer(valueContainer, function));
+        }
+        return builder.build();
+    }
 
     /**
      * Attempts to remove all {@link Value}s associated with the class of the
@@ -244,7 +263,7 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * removed will be provided in
      * {@link DataTransactionResult#getReplacedData()}. If the data can not be
      * removed, the result will be an expected
-     * {@link org.spongepowered.api.data.DataTransactionResult.Type#FAILURE}.
+     * {@link DataTransactionResult.Type#FAILURE}.
      *
      * @param containerClass The container class
      * @return The transaction result
@@ -256,19 +275,21 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * successfully removed will be provided in
      * {@link DataTransactionResult#getReplacedData()}. If the data can not be
      * removed, the result will be an expected
-     * {@link org.spongepowered.api.data.DataTransactionResult.Type#FAILURE}.
+     * {@link DataTransactionResult.Type#FAILURE}.
      *
      * @param value The value to remove
      * @return The transaction result
      */
-    DataTransactionResult remove(BaseValue<?> value);
+    default DataTransactionResult remove(BaseValue<?> value) {
+        return remove(value.getKey());
+    }
 
     /**
      * Attempts to remove the data associated with the provided {@link Key}.
      * All values that were successfully removed will be provided in
      * {@link DataTransactionResult#getReplacedData()}. If the data can not be
      * removed, the result will be an expected
-     * {@link org.spongepowered.api.data.DataTransactionResult.Type#FAILURE}.
+     * {@link DataTransactionResult.Type#FAILURE}.
      *
      * @param key The key of the data
      * @return The transaction result
@@ -296,7 +317,9 @@ public interface CompositeValueStore<S extends CompositeValueStore<S, H>, H exte
      * @param that The other {@link CompositeValueStore} to copy values from
      * @return The transaction result
      */
-    DataTransactionResult copyFrom(S that);
+    default DataTransactionResult copyFrom(S that) {
+        return copyFrom(that, MergeFunction.IGNORE_ALL);
+    }
 
     /**
      * Performs an absolute copy of all {@link Value}s and

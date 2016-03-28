@@ -26,13 +26,18 @@ package org.spongepowered.api.world.extent;
 
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
 import org.spongepowered.api.data.DataContainer;
+import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.entity.Entity;
+import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.cause.entity.spawn.SpawnCause;
+import org.spongepowered.api.event.entity.SpawnEntityEvent;
 
 import java.util.Collection;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 /**
  * A container of {@link Entity} instances.
@@ -40,8 +45,8 @@ import java.util.Collection;
 public interface EntityUniverse {
 
     /**
-     * Return a collection of entities contained within this universe,
-     * possibly only returning entities only in loaded areas.
+     * Return a collection of entities contained within this universe, possibly
+     * only returning entities only in loaded areas.
      *
      * <p>For world implementations, only some parts of the world is usually
      * loaded, so this method will only return entities within those loaded
@@ -52,10 +57,9 @@ public interface EntityUniverse {
     Collection<Entity> getEntities();
 
     /**
-     * Return a collection of entities contained within this universe,
-     * possibly only returning entities only in loaded areas. The returned
-     * entities are filtered by the given {@link Predicate} before being
-     * returned.
+     * Return a collection of entities contained within this universe, possibly
+     * only returning entities only in loaded areas. The returned entities are
+     * filtered by the given {@link Predicate} before being returned.
      *
      * <p>For world implementations, only some parts of the world is usually
      * loaded, so this method will only return entities within those loaded
@@ -71,10 +75,10 @@ public interface EntityUniverse {
      *
      * <p>Creating an entity does not spawn the entity into the world. An entity
      * created means the entity can be spawned at the given location. If
-     * {@link Optional#absent()} was returned, the entity is not able to spawn
-     * at the given location. Furthermore, this allows for the {@link Entity} to
-     * be customized further prior to traditional "ticking" and processing by
-     * core systems.</p>
+     * {@link Optional#empty()} was returned, the entity is not able to spawn at
+     * the given location. Furthermore, this allows for the {@link Entity} to be
+     * customized further prior to traditional "ticking" and processing by core
+     * systems.</p>
      *
      * @param type The type
      * @param position The position
@@ -87,26 +91,28 @@ public interface EntityUniverse {
      *
      * <p>Creating an entity does not spawn the entity into the world. An entity
      * created means the entity can be spawned at the given location. If
-     * {@link Optional#absent()} was returned, the entity is not able to spawn
-     * at the given location. Furthermore, this allows for the {@link Entity} to
-     * be customized further prior to traditional "ticking" and processing by
-     * core systems.</p>
+     * {@link Optional#empty()} was returned, the entity is not able to spawn at
+     * the given location. Furthermore, this allows for the {@link Entity} to be
+     * customized further prior to traditional "ticking" and processing by core
+     * systems.</p>
      *
      * @param type The type
      * @param position The position
      * @return An entity, if one was created
      */
-    Optional<Entity> createEntity(EntityType type, Vector3i position);
+    default Optional<Entity> createEntity(EntityType type, Vector3i position) {
+        return createEntity(type, position.toDouble());
+    }
 
     /**
      * Create an entity instance at the given position.
      *
      * <p>Creating an entity does not spawn the entity into the world. An entity
      * created means the entity can be spawned at the given location. If
-     * {@link Optional#absent()} was returned, the entity is not able to spawn
-     * at the given location. Furthermore, this allows for the {@link Entity} to
-     * be customized further prior to traditional "ticking" and processing by
-     * core systems.</p>
+     * {@link Optional#empty()} was returned, the entity is not able to spawn at
+     * the given location. Furthermore, this allows for the {@link Entity} to be
+     * customized further prior to traditional "ticking" and processing by core
+     * systems.</p>
      *
      * @param entityContainer The data container of the entity
      * @return An entity, if one was created
@@ -118,10 +124,10 @@ public interface EntityUniverse {
      *
      * <p>Creating an entity does not spawn the entity into the world. An entity
      * created means the entity can be spawned at the given location. If
-     * {@link Optional#absent()} was returned, the entity is not able to spawn
-     * at the given location. Furthermore, this allows for the {@link Entity} to
-     * be customized further prior to traditional "ticking" and processing by
-     * core systems.</p>
+     * {@link Optional#empty()} was returned, the entity is not able to spawn at
+     * the given location. Furthermore, this allows for the {@link Entity} to be
+     * customized further prior to traditional "ticking" and processing by core
+     * systems.</p>
      *
      * @param entityContainer The data container of the entity
      * @param position The position of the entity to spawn at
@@ -130,8 +136,31 @@ public interface EntityUniverse {
     Optional<Entity> createEntity(DataContainer entityContainer, Vector3d position);
 
     /**
-     * Spawns an entity using the already set properties (extent, position,
-     * rotation).
+     * Creates and restores an {@link Entity} from the provided
+     * {@link EntitySnapshot} at the provided {@link Vector3d} position.
+     *
+     * <p>Creating an entity does not spawn the entity into the world. An entity
+     * created means the entity can be spawned at the given location. If
+     * {@link Optional#empty()} was returned, the entity is not able to spawn at
+     * the given location. Furthermore, this allows for the {@link Entity} to be
+     * customized further prior to traditional "ticking" and processing by core
+     * systems.</p>
+     *
+     * @param snapshot The entity snapshot of the entity
+     * @param position The position of the entity to spawn at
+     * @return An entity, if one was created
+     */
+    Optional<Entity> restoreSnapshot(EntitySnapshot snapshot, Vector3d position);
+
+    /**
+     * Spawns an {@link Entity} using the already set properties (extent,
+     * position, rotation) and applicable {@link DataManipulator}s with the
+     * specified {@link Cause} for spawning the entity.
+     *
+     * <p>Note that for the {@link Cause} to be useful in the expected
+     * {@link SpawnEntityEvent}, a {@link SpawnCause} should be provided in the
+     * {@link Cause} for other plugins to understand and have finer control over
+     * the event.</p>
      *
      * <p>The requirements involve that all necessary setup of states and data
      * is already preformed on the entity retrieved from the various
@@ -142,7 +171,8 @@ public interface EntityUniverse {
      * should be taken note that there can be many reasons for a failure.</p>
      *
      * @param entity The entity to spawn
+     * @param cause The cause for the entity spawn
      * @return True if successful, false if not
      */
-    boolean spawnEntity(Entity entity);
+    boolean spawnEntity(Entity entity, Cause cause);
 }

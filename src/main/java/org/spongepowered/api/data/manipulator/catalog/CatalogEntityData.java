@@ -24,15 +24,13 @@
  */
 package org.spongepowered.api.data.manipulator.catalog;
 
-import org.spongepowered.api.GameProfile;
-import org.spongepowered.api.attribute.Attribute;
+import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.manipulator.DataManipulator;
-import org.spongepowered.api.data.manipulator.mutable.AttributeData;
 import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.DyeableData;
-import org.spongepowered.api.data.manipulator.mutable.FireworkData;
-import org.spongepowered.api.data.manipulator.mutable.OwnableData;
+import org.spongepowered.api.data.manipulator.mutable.FireworkEffectData;
+import org.spongepowered.api.data.manipulator.mutable.FireworkRocketData;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.data.manipulator.mutable.RepresentedItemData;
 import org.spongepowered.api.data.manipulator.mutable.TargetedLocationData;
@@ -43,7 +41,6 @@ import org.spongepowered.api.data.manipulator.mutable.entity.AgentData;
 import org.spongepowered.api.data.manipulator.mutable.entity.AggressiveData;
 import org.spongepowered.api.data.manipulator.mutable.entity.AngerableData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ArtData;
-import org.spongepowered.api.data.manipulator.mutable.entity.BanData;
 import org.spongepowered.api.data.manipulator.mutable.entity.BodyPartRotationalData;
 import org.spongepowered.api.data.manipulator.mutable.entity.BreathingData;
 import org.spongepowered.api.data.manipulator.mutable.entity.BreedableData;
@@ -57,7 +54,6 @@ import org.spongepowered.api.data.manipulator.mutable.entity.ExpOrbData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ExperienceHolderData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ExpirableData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ExplosiveRadiusData;
-import org.spongepowered.api.data.manipulator.mutable.entity.EyeLocationData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FallingBlockData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FlyingData;
 import org.spongepowered.api.data.manipulator.mutable.entity.FoodData;
@@ -72,14 +68,15 @@ import org.spongepowered.api.data.manipulator.mutable.entity.InvisibilityData;
 import org.spongepowered.api.data.manipulator.mutable.entity.JoinData;
 import org.spongepowered.api.data.manipulator.mutable.entity.KnockbackData;
 import org.spongepowered.api.data.manipulator.mutable.entity.LeashData;
+import org.spongepowered.api.data.manipulator.mutable.entity.MinecartBlockData;
 import org.spongepowered.api.data.manipulator.mutable.entity.OcelotData;
 import org.spongepowered.api.data.manipulator.mutable.entity.PassengerData;
 import org.spongepowered.api.data.manipulator.mutable.entity.PersistingData;
+import org.spongepowered.api.data.manipulator.mutable.entity.PigSaddleData;
 import org.spongepowered.api.data.manipulator.mutable.entity.PlayerCreatedData;
 import org.spongepowered.api.data.manipulator.mutable.entity.PlayingData;
 import org.spongepowered.api.data.manipulator.mutable.entity.RabbitData;
 import org.spongepowered.api.data.manipulator.mutable.entity.RespawnLocationData;
-import org.spongepowered.api.data.manipulator.mutable.entity.PigSaddleData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ScreamingData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ShatteringData;
 import org.spongepowered.api.data.manipulator.mutable.entity.ShearedData;
@@ -91,11 +88,9 @@ import org.spongepowered.api.data.manipulator.mutable.entity.SlimeData;
 import org.spongepowered.api.data.manipulator.mutable.entity.SneakingData;
 import org.spongepowered.api.data.manipulator.mutable.entity.StatisticData;
 import org.spongepowered.api.data.manipulator.mutable.entity.TameableData;
-import org.spongepowered.api.data.manipulator.mutable.entity.TargetLivingData;
 import org.spongepowered.api.data.manipulator.mutable.entity.VehicleData;
 import org.spongepowered.api.data.manipulator.mutable.entity.VelocityData;
 import org.spongepowered.api.data.manipulator.mutable.entity.VillagerZombieData;
-import org.spongepowered.api.data.manipulator.mutable.entity.WhitelistData;
 import org.spongepowered.api.data.type.Art;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.HorseColor;
@@ -104,6 +99,7 @@ import org.spongepowered.api.data.type.HorseVariant;
 import org.spongepowered.api.data.type.OcelotType;
 import org.spongepowered.api.data.type.RabbitType;
 import org.spongepowered.api.data.type.SkeletonType;
+import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.EnderCrystal;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.ExperienceOrb;
@@ -117,7 +113,7 @@ import org.spongepowered.api.entity.living.Agent;
 import org.spongepowered.api.entity.living.Aquatic;
 import org.spongepowered.api.entity.living.ArmorStand;
 import org.spongepowered.api.entity.living.Bat;
-import org.spongepowered.api.entity.living.Human;
+import org.spongepowered.api.entity.living.Humanoid;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.Villager;
 import org.spongepowered.api.entity.living.animal.Animal;
@@ -138,20 +134,19 @@ import org.spongepowered.api.entity.living.monster.MagmaCube;
 import org.spongepowered.api.entity.living.monster.Skeleton;
 import org.spongepowered.api.entity.living.monster.Slime;
 import org.spongepowered.api.entity.living.monster.Zombie;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.entity.player.User;
-import org.spongepowered.api.entity.player.gamemode.GameMode;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.entity.living.player.User;
+import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.projectile.Arrow;
 import org.spongepowered.api.entity.projectile.EyeOfEnder;
 import org.spongepowered.api.entity.projectile.Firework;
 import org.spongepowered.api.entity.projectile.Projectile;
+import org.spongepowered.api.entity.vehicle.minecart.Minecart;
 import org.spongepowered.api.item.FireworkEffect;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.merchant.TradeOffer;
-import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.statistic.Statistic;
 import org.spongepowered.api.statistic.achievement.Achievement;
-import org.spongepowered.api.util.ban.Ban;
 import org.spongepowered.api.world.weather.Weather;
 
 /**
@@ -191,18 +186,10 @@ public final class CatalogEntityData {
      * displayed. It is applicable for {@link Painting} entities.
      */
     public static final Class<ArtData> ART_DATA = ArtData.class;
-    /**
-     * The {@link AttributeData} for many entities signifying various
-     * {@link Attribute}s applied and manipulated.
-     */
-    public static final Class<AttributeData> ATTRIBUTE_DATA = AttributeData.class;
-    /**
-     * The {@link BanData} mainly for {@link User}s and their {@link Ban}s.
-     */
-    public static final Class<BanData> BAN_DATA = BanData.class;
+
     /**
      * Represents the mapped rotational data for all known body parts. Usually
-     * applicable to {@link Human}s and {@link ArmorStand}s.
+     * applicable to {@link Humanoid}s and {@link ArmorStand}s.
      */
     public static final Class<BodyPartRotationalData> BODY_PART_ROTATIONAL_DATA = BodyPartRotationalData.class;
     /**
@@ -274,11 +261,6 @@ public final class CatalogEntityData {
      */
     public static final Class<ExplosiveRadiusData> EXPLOSIVE_RADIUS_DATA = ExplosiveRadiusData.class;
     /**
-     * Represents an entity having the notion of a "head" and "eye location".
-     * Usually applies to all {@link Living} entities.
-     */
-    public static final Class<EyeLocationData> EYE_LOCATION_DATA = EyeLocationData.class;
-    /**
      * Represents a falling block that can deal damage upon landing.
      * Applies to {@link FallingBlock}s.
      */
@@ -287,7 +269,11 @@ public final class CatalogEntityData {
      * Represents the {@link FireworkEffect}s that a {@link Firework} will have
      * upon detonation.
      */
-    public static final Class<FireworkData> FIREWORK_DATA = FireworkData.class;
+    public static final Class<FireworkEffectData> FIREWORK_EFFECT_DATA = FireworkEffectData.class;
+    /**
+     * Represents the flight time of a {@link Firework}.
+     */
+    public static final Class<FireworkRocketData> FIREWORK_ROCKET_DATA = FireworkRocketData.class;
     /**
      * Represents when an entity is considering to be "flying". Applicable for
      * almost all types of {@link Entity}.
@@ -310,7 +296,7 @@ public final class CatalogEntityData {
     public static final Class<GameModeData> GAME_MODE_DATA = GameModeData.class;
     /**
      * Signifies that an entity can modify blocks in the world. Usually applies
-     * to {@link Enderman} and {@link Human}s.
+     * to {@link Enderman} and {@link Humanoid}s.
      */
     public static final Class<GriefingData> GRIEFING_DATA = GriefingData.class;
     /**
@@ -360,6 +346,10 @@ public final class CatalogEntityData {
      */
     public static final Class<TargetedLocationData> LOCATION_DATA = TargetedLocationData.class;
     /**
+     * Represents a {@link Minecart} with a {@link BlockState} shown inside.
+     */
+    public static final Class<MinecartBlockData> MINECART_BLOCK_DATA = MinecartBlockData.class;
+    /**
      * Represents the {@link OcelotType} of an {@link Ocelot}.
      */
     public static final Class<OcelotData> OCELOT_DATA = OcelotData.class;
@@ -368,11 +358,6 @@ public final class CatalogEntityData {
      * contains.
      */
     public static final Class<ExpOrbData> ORB_DATA = ExpOrbData.class;
-    /**
-     * Signifies that an entity is owned by a {@link GameProfile}. Usually
-     * applicable to {@link Living} entities.
-     */
-    public static final Class<OwnableData> OWNABLE_DATA = OwnableData.class;
     /**
      * Signifies that an entity is a "passenger" riding another {@link Entity}.
      * Usually applicable for all {@link Entity}.
@@ -448,7 +433,7 @@ public final class CatalogEntityData {
     public static final Class<SkeletonData> SKELETON_DATA = SkeletonData.class;
     /**
      * Signifies that the owner is currently "sleeping". This will usually
-     * apply to {@link Human}s and {@link Bat}s.
+     * apply to {@link Humanoid}s and {@link Bat}s.
      */
     public static final Class<SleepingData> SLEEPING_DATA = SleepingData.class;
     /**
@@ -473,11 +458,6 @@ public final class CatalogEntityData {
      */
     public static final Class<TameableData> TAMEABLE_DATA = TameableData.class;
     /**
-     * Represents the current targets of an owner that is "targeting" some
-     * {@link Living} entities. Usually applicable to almost all {@link Agent}s.
-     */
-    public static final Class<TargetLivingData> TARGET_LIVING_DATA = TargetLivingData.class;
-    /**
      * Signifies that an entity is currently being ridden by another
      * {@link Entity}.
      */
@@ -497,11 +477,6 @@ public final class CatalogEntityData {
      * {@link Wolf} entities.
      */
     public static final Class<WetData> WET_DATA = WetData.class;
-    /**
-     * Signifies that a {@link Player} or {@link User} is "whitelisted" on the
-     * server.
-     */
-    public static final Class<WhitelistData> WHITELIST_DATA = WhitelistData.class;
 
     private CatalogEntityData() {
     }

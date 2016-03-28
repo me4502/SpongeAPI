@@ -24,10 +24,13 @@
  */
 package org.spongepowered.api.scoreboard.displayslot;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.CatalogType;
+import org.spongepowered.api.scoreboard.Team;
 import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.util.ResettableBuilder;
 import org.spongepowered.api.util.annotation.CatalogedBy;
+
+import java.util.Optional;
 
 /**
  * Represents an area to display an objective.
@@ -36,10 +39,29 @@ import org.spongepowered.api.util.annotation.CatalogedBy;
 public interface DisplaySlot extends CatalogType {
 
     /**
-     * Gets the {@link org.spongepowered.api.scoreboard.Team} color that this objective will display for, if set.
+     * Gets the {@link Team} color that this objective will display for, if set.
      *
-     * @return The {@link org.spongepowered.api.scoreboard.Team} color that this objective will display for, if set
+     * @return The {@link Team} color that this objective will display for, if set
      */
     Optional<TextColor> getTeamColor();
 
+    interface Builder extends ResettableBuilder<DisplaySlot, Builder> {
+
+        /**
+         * Sets the {@link TextColor} of the display slot.
+         *
+         * @param color The color to set
+         * @return This builder
+         */
+        Builder sidebarTeamColor(TextColor color);
+
+        /**
+         * Builds an instance of a {@link DisplaySlot}.
+         *
+         * @return A new instance of an {@link DisplaySlot}
+         * @throws IllegalStateException if the {@link DisplaySlot} is not completed
+         */
+        DisplaySlot build() throws IllegalStateException;
+
+    }
 }

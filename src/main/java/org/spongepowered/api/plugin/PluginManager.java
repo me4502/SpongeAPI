@@ -24,10 +24,10 @@
  */
 package org.spongepowered.api.plugin;
 
-import com.google.common.base.Optional;
 import org.slf4j.Logger;
 
 import java.util.Collection;
+import java.util.Optional;
 
 /**
  * The manager that manages plugins. This manager can retrieve
@@ -51,14 +51,6 @@ public interface PluginManager {
      * @return The plugin, if available
      */
     Optional<PluginContainer> getPlugin(String id);
-
-    /**
-     * Gets the {@link Logger} for the {@link PluginContainer}.
-     *
-     * @param plugin The plugin
-     * @return The logger
-     */
-    Logger getLogger(PluginContainer plugin);
 
     /**
      * Gets a {@link Collection} of all {@link PluginContainer}s.

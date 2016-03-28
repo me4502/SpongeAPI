@@ -27,6 +27,8 @@ package org.spongepowered.api.world;
 import com.flowpowered.math.vector.Vector3d;
 import com.flowpowered.math.vector.Vector3i;
 import org.spongepowered.api.world.extent.Extent;
+import org.spongepowered.api.world.extent.worker.MutableBiomeAreaWorker;
+import org.spongepowered.api.world.extent.worker.MutableBlockVolumeWorker;
 
 /**
  * A chunk is a specific grid-aligned partition of a {@link Extent}.
@@ -37,24 +39,32 @@ import org.spongepowered.api.world.extent.Extent;
 public interface Chunk extends Extent {
 
     @Override
-    Location<Chunk> getLocation(Vector3i position);
+    default Location<Chunk> getLocation(Vector3i position) {
+        return new Location<>(this, position);
+    }
 
     @Override
-    Location<Chunk> getLocation(int x, int y, int z);
+    default Location<Chunk> getLocation(int x, int y, int z) {
+        return getLocation(new Vector3i(x, y, z));
+    }
 
     @Override
-    Location<Chunk> getLocation(Vector3d position);
+    default Location<Chunk> getLocation(Vector3d position) {
+        return new Location<>(this, position);
+    }
 
     @Override
-    Location<Chunk> getLocation(double x, double y, double z);
+    default Location<Chunk> getLocation(double x, double y, double z) {
+        return getLocation(new Vector3d(x, y, z));
+    }
 
     /**
      * Get the position of the chunk.
      *
-     * <p>The returned position is 3-dimensional with the Y-coordinate set to
-     * be the base (lowest) Y-position of the chunk. As 3-dimensional chunks
-     * do not yet exist in Minecraft, the returned position will always have
-     * a {@code y} set to 0.</p>
+     * <p>The returned position is 3-dimensional with the Y-coordinate set to be
+     * the base (lowest) Y-position of the chunk. As 3-dimensional chunks do not
+     * yet exist in Minecraft, the returned position will always have a
+     * {@code y} set to 0.</p>
      *
      * @return The position
      */
@@ -77,9 +87,8 @@ public interface Chunk extends Extent {
     /**
      * Loads this chunk, and generates if specified and required.
      *
-     * @param generate Whether or not to generate the chunk
-     *                 if it does not yet exist
-     *
+     * @param generate Whether or not to generate the chunk if it does not yet
+     * exist
      * @return If the chunk was successfully loaded
      */
     boolean loadChunk(boolean generate);
@@ -90,4 +99,47 @@ public interface Chunk extends Extent {
      * @return Whether or not the chunk unloaded
      */
     boolean unloadChunk();
+
+    /**
+     * Gets the number of ticks players have been present in this chunk, used
+     * for calculation of the regional difficulty factor. In vanilla, it is
+     * increased by the number of players in the chunk every tick, and is capped
+     * at 3,600,000 ticks (50 hours).
+     *
+     * @return The number of ticks
+     */
+    int getInhabittedTime();
+
+    /**
+     * Gets the regional difficulty factor for this chunk. In vanilla, it is
+     * dependent on the playtime of the world, inhabited time of the chunk, the
+     * phase of the moon, and the current difficulty setting. This number ranges
+     * from 0.75-1.5 on easy, 1.5-4.0 on normal, and 2.25-6.75 on hard.
+     *
+     * <p>This value is used for display only in vanilla.</p>
+     *
+     * @return The regional difficulty factor for this chunk
+     */
+    double getRegionalDifficultyFactor();
+
+    /**
+     * Gets the regional difficulty percentage for this chunk. It is calculated
+     * by taking the regional difficulty factor and using the following rules:
+     * If the factor is less than 2.0, the percentage is 0%. If the factor is
+     * greater than 4.0, the percentage is 100%. Otherwise, the percentage is
+     * the factor minus 2.0, divided by 2.0.
+     *
+     * <p>This is the value that is used in vanilla to find which effects are
+     * caused by the regional difficulty.</p>
+     *
+     * @return The regional difficulty percentage for this chunk
+     */
+    double getRegionalDifficultyPercentage();
+
+    @Override
+    MutableBiomeAreaWorker<? extends Chunk> getBiomeWorker();
+
+    @Override
+    MutableBlockVolumeWorker<? extends Chunk> getBlockWorker();
+
 }

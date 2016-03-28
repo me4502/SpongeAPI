@@ -34,7 +34,8 @@ import com.flowpowered.math.vector.Vector3i;
 import com.flowpowered.math.vector.Vector4d;
 import com.google.common.base.Preconditions;
 
-import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Optional;
 
 /**
  * Represents a transform. It is 3 dimensional and discrete.
@@ -52,16 +53,16 @@ public class DiscreteTransform3 {
      * Represents an identity transformation. Does nothing!
      */
     public static final DiscreteTransform3 IDENTITY = new DiscreteTransform3(Matrix4d.IDENTITY);
-    private final Matrix4d transform;
-    @Nullable
-    private Vector4d transformRow0 = null;
-    @Nullable
-    private Vector4d transformRow1 = null;
-    @Nullable
-    private Vector4d transformRow2 = null;
+    private final Matrix4d matrix;
+    private final Vector4d matrixRow0;
+    private final Vector4d matrixRow1;
+    private final Vector4d matrixRow2;
 
-    private DiscreteTransform3(Matrix4d transform) {
-        this.transform = transform;
+    private DiscreteTransform3(Matrix4d matrix) {
+        this.matrix = matrix;
+        this.matrixRow0 = matrix.getRow(0);
+        this.matrixRow1 = matrix.getRow(1);
+        this.matrixRow2 = matrix.getRow(2);
     }
 
     /**
@@ -71,7 +72,7 @@ public class DiscreteTransform3 {
      * @return The matrix for this transform
      */
     public Matrix4d getMatrix() {
-        return this.transform;
+        return this.matrix;
     }
 
     /**
@@ -94,9 +95,7 @@ public class DiscreteTransform3 {
      * @return The transformed vector
      */
     public Vector3i transform(int x, int y, int z) {
-        final Vector4d vector = this.transform.transform(x, y, z, 1);
-        return new Vector3i(vector.getX() + GenericMath.FLT_EPSILON, vector.getY() + GenericMath.FLT_EPSILON,
-            vector.getZ() + GenericMath.FLT_EPSILON);
+        return new Vector3i(transformX(x, y, z), transformY(x, y, z), transformZ(x, y, z));
     }
 
     /**
@@ -122,10 +121,7 @@ public class DiscreteTransform3 {
      * @return The transformed x coordinate
      */
     public int transformX(int x, int y, int z) {
-        if (this.transformRow0 == null) {
-            this.transformRow0 = this.transform.getRow(0);
-        }
-        return GenericMath.floor(this.transformRow0.dot(x, y, z, 1) + GenericMath.FLT_EPSILON);
+        return GenericMath.floor(this.matrixRow0.dot(x, y, z, 1) + GenericMath.FLT_EPSILON);
     }
 
     /**
@@ -151,10 +147,7 @@ public class DiscreteTransform3 {
      * @return The transformed y coordinate
      */
     public int transformY(int x, int y, int z) {
-        if (this.transformRow1 == null) {
-            this.transformRow1 = this.transform.getRow(1);
-        }
-        return GenericMath.floor(this.transformRow1.dot(x, y, z, 1) + GenericMath.FLT_EPSILON);
+        return GenericMath.floor(this.matrixRow1.dot(x, y, z, 1) + GenericMath.FLT_EPSILON);
     }
 
     /**
@@ -180,10 +173,7 @@ public class DiscreteTransform3 {
      * @return The transformed z coordinate
      */
     public int transformZ(int x, int y, int z) {
-        if (this.transformRow2 == null) {
-            this.transformRow2 = this.transform.getRow(2);
-        }
-        return GenericMath.floor(this.transformRow2.dot(x, y, z, 1) + GenericMath.FLT_EPSILON);
+        return GenericMath.floor(this.matrixRow2.dot(x, y, z, 1) + GenericMath.FLT_EPSILON);
     }
 
     /**
@@ -192,7 +182,31 @@ public class DiscreteTransform3 {
      * @return The inverse of this transform
      */
     public DiscreteTransform3 invert() {
-        return new DiscreteTransform3(this.transform.invert());
+        return new DiscreteTransform3(this.matrix.invert());
+    }
+
+    /**
+     * Returns a transform that is the composition of this transform and the given transform.
+     *
+     * The result will apply this transformation after the given one.
+     *
+     * @param that The transform to compose with
+     * @return The new composed transform
+     */
+    public DiscreteTransform3 compose(DiscreteTransform3 that) {
+        return new DiscreteTransform3(this.matrix.mul(that.matrix));
+    }
+
+    /**
+     * Returns a transform that is the composition of the given transform with this transform.
+     *
+     * The result will apply the given transformation after this one.
+     *
+     * @param that The transform to compose with
+     * @return The new composed transform
+     */
+    public DiscreteTransform3 andThen(DiscreteTransform3 that) {
+        return that.compose(this);
     }
 
     /**
@@ -216,7 +230,7 @@ public class DiscreteTransform3 {
      * @return The translated transform as a copy
      */
     public DiscreteTransform3 withTranslation(int x, int y, int z) {
-        return new DiscreteTransform3(this.transform.translate(x, y, z));
+        return new DiscreteTransform3(this.matrix.translate(x, y, z));
     }
 
     /**
@@ -256,7 +270,7 @@ public class DiscreteTransform3 {
         Preconditions.checkArgument(x != 0, "x == 0");
         Preconditions.checkArgument(y != 0, "y == 0");
         Preconditions.checkArgument(z != 0, "z == 0");
-        return new DiscreteTransform3(this.transform.scale(x, y, z, 1));
+        return new DiscreteTransform3(this.matrix.scale(x, y, z, 1));
     }
 
     /**
@@ -271,7 +285,7 @@ public class DiscreteTransform3 {
      * @return The rotated transform as a copy
      */
     public DiscreteTransform3 withRotation(int quarterTurns, Axis axis) {
-        return new DiscreteTransform3(this.transform.rotate(Quaterniond.fromAngleDegAxis(quarterTurns * 90, axis.toVector3d())));
+        return new DiscreteTransform3(this.matrix.rotate(Quaterniond.fromAngleDegAxis(quarterTurns * 90, axis.toVector3d())));
     }
 
     /**
@@ -294,7 +308,7 @@ public class DiscreteTransform3 {
             pointDouble = pointDouble.add(0.5, 0.5, 0.5);
         }
         return new DiscreteTransform3(
-            this.transform.translate(pointDouble.negate()).rotate(Quaterniond.fromAngleDegAxis(quarterTurns * 90, axis.toVector3d()))
+            this.matrix.translate(pointDouble.negate()).rotate(Quaterniond.fromAngleDegAxis(quarterTurns * 90, axis.toVector3d()))
                 .translate(pointDouble));
     }
 
@@ -332,7 +346,7 @@ public class DiscreteTransform3 {
             pointDouble = pointDouble.add(0, 0, 0.5);
         }
         return new DiscreteTransform3(
-            this.transform.translate(pointDouble.negate()).rotate(Quaterniond.fromAngleDegAxis(halfTurns * 180, axis.toVector3d()))
+            this.matrix.translate(pointDouble.negate()).rotate(Quaterniond.fromAngleDegAxis(halfTurns * 180, axis.toVector3d()))
                 .translate(pointDouble));
     }
 
@@ -345,6 +359,21 @@ public class DiscreteTransform3 {
      */
     public DiscreteTransform3 withTransformation(DiscreteTransform3 transform) {
         return new DiscreteTransform3(transform.getMatrix().mul(getMatrix()));
+    }
+
+    /**
+     * Returns a new transform from the given transformation matrix, if the resulting transform
+     * would be discrete.
+     *
+     * @param matrix The matrix to use for the transform
+     * @return The new transform, or {@link Optional#empty()}
+     */
+    public static Optional<DiscreteTransform3> of(Matrix4d matrix) {
+        if (Arrays.stream(matrix.toArray())
+                .anyMatch(value -> Math.rint(value) != value)) {
+            return Optional.empty();
+        }
+        return Optional.of(new DiscreteTransform3(matrix));
     }
 
     /**

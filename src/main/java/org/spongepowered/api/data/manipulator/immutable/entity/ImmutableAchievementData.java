@@ -42,6 +42,6 @@ public interface ImmutableAchievementData extends ImmutableDataManipulator<Immut
      *
      * @return The immutable set value of achievements
      */
-    ImmutableSetValue<Achievement> achiements();
+    ImmutableSetValue<Achievement> achievements();
 
 }

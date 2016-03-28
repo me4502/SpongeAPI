@@ -24,12 +24,13 @@
  */
 package org.spongepowered.api.service.permission;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.service.permission.context.Context;
+import org.spongepowered.api.service.context.Context;
+import org.spongepowered.api.service.context.Contextual;
 import org.spongepowered.api.util.Tristate;
-import org.spongepowered.api.util.command.CommandSource;
+import org.spongepowered.api.command.CommandSource;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -62,15 +63,7 @@ import java.util.Set;
  *
  * @see PermissionService
  */
-public interface Subject {
-
-    /**
-     * Returns the identifier associated with this subject. May not be
-     * human-readable, but always refers to a single subject
-     *
-     * @return The unique identifier for this subject
-     */
-    String getIdentifier();
+public interface Subject extends Contextual {
 
     /**
      * If this subject represents an actual user currently connected, this
@@ -110,7 +103,7 @@ public interface Subject {
     /**
      * Test whether the subject is permitted to perform an action given as the
      * given permission string.
-
+     *
      * @param contexts The set of contexts that represents the subject's current environment
      * @param permission The permission string
      * @return True if permission is granted
@@ -119,12 +112,15 @@ public interface Subject {
 
     /**
      * Test whether the subject is permitted to perform an action given as the
-     * given permission string.
+     * given permission string. This must return the same value as
+     * {@link #hasPermission(Set, String)} using {@link #getActiveContexts()}.
      *
      * @param permission The permission string
      * @return True if permission is granted
      */
-    boolean hasPermission(String permission);
+    default boolean hasPermission(String permission) {
+        return hasPermission(getActiveContexts(), permission);
+    }
 
     /**
      * Returns the calculated value set for a given permission.
@@ -137,12 +133,15 @@ public interface Subject {
 
     /**
      * Check if this subject is a child of the given parent in the subject's
-     * current context, traversing inheritance.
+     * current context, traversing inheritance. This must return the same value as
+     * {@link #hasPermission(Set, String)} using {@link #getActiveContexts()}.
      *
      * @param parent The parent to check for inheritance
      * @return Whether this is a child of the given parent
      */
-    boolean isChildOf(Subject parent);
+    default boolean isChildOf(Subject parent) {
+        return isChildOf(getActiveContexts(), parent);
+    }
 
     /**
      * Check if this subject is a child of the given parent in the given context
@@ -157,11 +156,14 @@ public interface Subject {
     /**
      * Return all parents that this group has in its current context
      * combination. This must include inherited values if the permissions
-     * service supports inheritance.
+     * service supports inheritance. This must return the same value as
+     * {@link #hasPermission(Set, String)} using {@link #getActiveContexts()}.
      *
      * @return An immutable list of parents
      */
-    List<Subject> getParents();
+    default List<Subject> getParents() {
+        return getParents(getActiveContexts());
+    }
 
     /**
      * Return all parents that this group has. This must include inherited
@@ -171,13 +173,4 @@ public interface Subject {
      * @return An immutable list of parents
      */
     List<Subject> getParents(Set<Context> contexts);
-
-    /**
-     * Calculate active contexts, using the {@link org.spongepowered.api.service.permission.context.ContextCalculator}s
-     * from {@link PermissionService#registerContextCalculator(org.spongepowered.api.service.permission.context.ContextCalculator)}.
-     * The result of these calculations may be cached.
-     *
-     * @return An immutable set of active contexts
-     */
-    Set<Context> getActiveContexts();
 }

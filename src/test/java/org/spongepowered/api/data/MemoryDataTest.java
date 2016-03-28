@@ -25,23 +25,31 @@
 package org.spongepowered.api.data;
 
 import static org.junit.Assert.assertTrue;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static org.spongepowered.api.data.DataQuery.of;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.spongepowered.api.service.persistence.DataBuilder;
-import org.spongepowered.api.service.persistence.SerializationService;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.spongepowered.api.Sponge;
+import org.spongepowered.api.data.persistence.DataBuilder;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(Sponge.class)
 public class MemoryDataTest {
 
     @Test
@@ -73,6 +81,36 @@ public class MemoryDataTest {
         container.set(testQuery, "foo");
         Optional<Integer> optional = container.getInt(testQuery);
         assertTrue(!optional.isPresent());
+    }
+
+    @Test
+    public void testToString() {
+        DataContainer container = new MemoryDataContainer();
+        DataQuery testQuery = of("foo", "bar", "baz");
+        List<Integer> intList = ImmutableList.of(1, 2, 3, 4);
+        container.set(testQuery, intList);
+        assertTrue(container.getIntegerList(testQuery).isPresent());
+        assertTrue(container.getIntegerList(testQuery).get().equals(intList));
+
+        List<Double> doubleList = ImmutableList.of(1.0D, 2.0D, 3.0D, 4.0D);
+        container.set(testQuery, doubleList);
+        assertTrue(container.getDoubleList(testQuery).isPresent());
+        assertTrue(container.getDoubleList(testQuery).get().equals(doubleList));
+
+        List<Short> shortList = ImmutableList.of((short) 1, (short) 2, (short) 3, (short) 4);
+        container.set(testQuery, shortList);
+        assertTrue(container.getShortList(testQuery).isPresent());
+        assertTrue(container.getShortList(testQuery).get().equals(shortList));
+
+        List<Byte> byteList = ImmutableList.of((byte) 1, (byte) 2, (byte) 3, (byte) 4);
+        container.set(testQuery, byteList);
+        List<SimpleData> list = Lists.newArrayList();
+        for (int i = 0; i < 1000; i++) {
+            String number = Integer.toString(i);
+            list.add(new SimpleData(i, 0.1 * i, "i", Lists.asList(number, new String[] {" foo", "bar"})));
+        }
+        container.set(of("SimpleData"), list);
+        String containerString = container.toString();
     }
 
     @Test
@@ -170,7 +208,7 @@ public class MemoryDataTest {
             DataContainer internal = new MemoryDataContainer();
             internal.set(of("foo", "bar"), "foo.bar" + i);
             int[] ints = new int[] {0, 1, 2, 3, i};
-            internal.set(of("ints"), ints);
+            internal.set(of("ints"), Arrays.asList(ints));
             list.add(internal);
         }
         container.set(query, list);
@@ -210,16 +248,17 @@ public class MemoryDataTest {
     @Test
     public void testGetSerializable() {
         // Need to mock the service Sadly, this takes the most amount of time
-        SerializationService service = Mockito.mock(SerializationService.class);
+        DataManager service = Mockito.mock(DataManager.class);
         DataBuilder<SimpleData> builder = new SimpleDataBuilder();
+        mockStatic(Sponge.class);
+        when(Sponge.getDataManager()).thenReturn(service);
         Mockito.stub(service.getBuilder(SimpleData.class)).toReturn(Optional.of(builder));
 
         List<String> myList = ImmutableList.of("foo", "bar", "baz");
 
         SimpleData temp = new SimpleData(1, 2.0, "foo", myList);
         DataContainer container = temp.toContainer();
-
-        Optional<SimpleData> fromContainer = container.getSerializable(of(), SimpleData.class, service);
+        Optional<SimpleData> fromContainer = container.getSerializable(of(), SimpleData.class);
         assertTrue(fromContainer.isPresent());
         assertTrue(Objects.equal(fromContainer.get(), temp));
         assertTrue(container.contains(of("myStringList")));
@@ -229,8 +268,10 @@ public class MemoryDataTest {
 
     @Test
     public void testGetSerializableList() {
-        SerializationService service = Mockito.mock(SerializationService.class);
+        DataManager service = Mockito.mock(DataManager.class);
         DataBuilder<SimpleData> builder = new SimpleDataBuilder();
+        mockStatic(Sponge.class);
+        when(Sponge.getDataManager()).thenReturn(service);
         Mockito.stub(service.getBuilder(SimpleData.class)).toReturn(Optional.of(builder));
 
         List<SimpleData> list = Lists.newArrayList();
@@ -241,7 +282,7 @@ public class MemoryDataTest {
         DataContainer container = new MemoryDataContainer();
         container.set(of("foo", "bar"), list);
         assertTrue(container.contains(of("foo", "bar")));
-        Optional<List<SimpleData>> fromContainer = container.getSerializableList(of("foo", "bar"), SimpleData.class, service);
+        Optional<List<SimpleData>> fromContainer = container.getSerializableList(of("foo", "bar"), SimpleData.class);
         assertTrue(fromContainer.isPresent());
         List<SimpleData> memoryList = fromContainer.get();
         assertTrue(Objects.equal(memoryList, list));
@@ -292,9 +333,6 @@ public class MemoryDataTest {
         Map<DataQuery, Object> shallowValues = view.getValues(false);
         assertTrue(shallowValues.entrySet().equals(shallowMap.entrySet()));
 
-        // Since we also support getting deep values, this has the uncommon side effect
-        // of actually having every possible DataQuery created for every possible value
-        // from the top level root node.
         final Map<DataQuery, Object> deepMap = Maps.newLinkedHashMap();
         deepMap.put(of("bar"), 1);
         deepMap.put(of("foo", "bar", "foo"), "foo");
@@ -324,7 +362,7 @@ public class MemoryDataTest {
         DataView view = new MemoryDataContainer();
         view.set(of("Foo"), myMap);
 
-        Map<?, ?> retrievedMap = (Map<?, ?>) view.getMap(of("Foo")).get();
+        Map<?, ?> retrievedMap = view.getMap(of("Foo")).get();
         assertTrue(myMap.keySet().equals(retrievedMap.keySet()));
         assertTrue(myMap.entrySet().equals(retrievedMap.entrySet()));
     }
@@ -339,6 +377,36 @@ public class MemoryDataTest {
         final DataView internal = container.getView(of("Foo")).get().copy();
         final DataContainer internalCopy = new MemoryDataContainer().set(of("bar"), "foo.bar");
         assertTrue(internal.equals(internalCopy));
+    }
+
+    @Test
+    public void testTest() {
+
+        DataContainer containertest = new MemoryDataContainer();
+        DataContainer containertest2 = new MemoryDataContainer();
+        containertest.set(DataQuery.of("test1", "test2", "test3"), containertest2);
+    }
+
+    @Test
+    public void testDeepSerialization() {
+        List<List> values = Lists.newArrayList();
+        List<List> sub = Lists.newArrayList();
+        values.add(sub);
+
+        SimpleData data1 = new SimpleData(1, 2.0, "3", Arrays.asList("foo", "bar", "baz"));
+        SimpleData data2 = new SimpleData(2, 3.0, "4", Arrays.asList("bar", "baz", "foo"));
+        SimpleData data3 = new SimpleData(3, 4.0, "5", Arrays.asList("baz", "foo", "bar"));
+
+        sub.add(ImmutableList.of(data1));
+        sub.add(ImmutableList.of(data2));
+
+        DataContainer main = new MemoryDataContainer();
+
+        main.set(DataQuery.of("ROOT"), data3);
+        main.set(DataQuery.of("SINGLE"), ImmutableList.of(data2));
+        main.set(DataQuery.of("SUB"), values);
+
+        Map<?, ?> map = main.getMap(of()).get();
     }
 
 }

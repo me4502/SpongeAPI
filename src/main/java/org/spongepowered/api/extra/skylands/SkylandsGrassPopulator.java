@@ -31,20 +31,18 @@ import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.BlockType;
 import org.spongepowered.api.block.BlockTypes;
 import org.spongepowered.api.data.key.Keys;
-import org.spongepowered.api.data.manipulator.immutable.block.ImmutablePlantData;
-import org.spongepowered.api.data.manipulator.immutable.block.ImmutableShrubData;
 import org.spongepowered.api.data.type.PlantType;
 import org.spongepowered.api.data.type.PlantTypes;
 import org.spongepowered.api.data.type.ShrubTypes;
 import org.spongepowered.api.world.World;
 import org.spongepowered.api.world.extent.ImmutableBiomeArea;
 import org.spongepowered.api.world.extent.MutableBlockVolume;
-import org.spongepowered.api.world.gen.GeneratorPopulator;
+import org.spongepowered.api.world.gen.GenerationPopulator;
 
 /**
  * Places tall grass with groups of flowers.
  */
-public class SkylandsGrassPopulator implements GeneratorPopulator {
+public class SkylandsGrassPopulator implements GenerationPopulator {
 
     private static final double GRASS_ODDS = 0.3;
     private static final double DOUBLE_GRASS_ODDS = 0.9;
@@ -176,9 +174,9 @@ public class SkylandsGrassPopulator implements GeneratorPopulator {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private static class Flower {
 
-        @SuppressWarnings("ConstantConditions")
         private static final BlockState DEFAULT_FLOWER = BlockTypes.RED_FLOWER.getDefaultState();
         private final BlockState block;
         private final boolean doubleHeight;

@@ -24,10 +24,11 @@
  */
 package org.spongepowered.api.data.value.mutable;
 
-import com.google.common.base.Function;
 import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
+
+import java.util.function.Function;
 
 /**
  * Represents a type of {@link BaseValue} that is mutable. Simply put, the
@@ -49,9 +50,6 @@ public interface Value<E> extends BaseValue<E> {
      * Attempts to transform the underlying value based on the provided
      * {@link Function} such that the result of {@link Function#apply(Object)}
      * will replace the underlying value.
-     *
-     * <p>It should be noted that the underlying value could potentially be
-     * {@code null}. </p>
      *
      * @param function The function to apply on the existing value
      * @return The owning {@link ValueContainer}

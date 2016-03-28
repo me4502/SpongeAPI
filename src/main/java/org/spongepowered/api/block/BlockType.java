@@ -24,12 +24,16 @@
  */
 package org.spongepowered.api.block;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.CatalogType;
+import org.spongepowered.api.block.trait.BlockTrait;
 import org.spongepowered.api.data.DataHolder;
-import org.spongepowered.api.item.ItemBlock;
+import org.spongepowered.api.data.property.PropertyHolder;
+import org.spongepowered.api.item.ItemType;
 import org.spongepowered.api.text.translation.Translatable;
 import org.spongepowered.api.util.annotation.CatalogedBy;
+
+import java.util.Collection;
+import java.util.Optional;
 
 /**
  * Describes a base type of block.
@@ -39,7 +43,7 @@ import org.spongepowered.api.util.annotation.CatalogedBy;
  * via {@link DataHolder}.</p>
  */
 @CatalogedBy(BlockTypes.class)
-public interface BlockType extends CatalogType, Translatable {
+public interface BlockType extends CatalogType, Translatable, PropertyHolder {
 
     /**
      * Return the internal ID for the block.
@@ -61,6 +65,12 @@ public interface BlockType extends CatalogType, Translatable {
     BlockState getDefaultState();
 
     /**
+     * Return the {@link ItemType} that represents this block.
+     * @return The item type or {@link Optional#empty()} otherwise
+     */
+    Optional<ItemType> getItem();
+
+    /**
      * Gets if this BlockType is set to receive random block ticks.
      *
      * <p>Random block ticks are most commonly used for growth of plants.</p>
@@ -79,62 +89,20 @@ public interface BlockType extends CatalogType, Translatable {
     void setTickRandomly(boolean tickRandomly);
 
     /**
-     * Gets if the block type is representing a liquid.
+     * Gets an immutable {@link Collection} of all applicable
+     * {@link BlockTrait}s for this {@link BlockType}.
      *
-     * @return Is liquid
+     * @return An immutable collection of all applicable block traits
      */
-    boolean isLiquid();
+    Collection<BlockTrait<?>> getTraits();
 
     /**
-     * Gets if a block type is a full and solid block.
+     * Attempts to retrieve the {@link BlockTrait} instance associated with
+     * this {@link BlockState}s {@link BlockType} by string id. If there is no
+     * {@link BlockTrait} available, {@link Optional#empty()} is returned.
      *
-     * @return Is solid block
+     * @param blockTrait The block trait id
+     * @return The block trait, if available
      */
-    boolean isSolidCube();
-
-    /**
-     * Gets if a block type is a gas, like air.
-     *
-     * @return Is gas
-     */
-    boolean isGaseous();
-
-    /**
-     * Gets if a block type can be replaced by other block types when placed.
-     *
-     * @return If the block type can be replaced
-     */
-    boolean isReplaceable();
-
-    /**
-     * Gets if this block is affected by gravity (if it will fall when
-     * unsupported).
-     *
-     * @return Is affected by gravity
-     */
-    boolean isAffectedByGravity();
-
-    /**
-     * Gets if a block should be counted for statistics gathering.
-     *
-     * @return Is counted for statistics
-     */
-    boolean areStatisticsEnabled();
-
-    /**
-     * Gets the amount of light emitted by this block type. The returned value
-     * is normalized to have a range of 0 to 1 (1 being the maximum light
-     * value), although it is not clamped to this range.
-     *
-     * @return The amount of light
-     */
-    float getEmittedLight();
-
-    /**
-     * Gets the equivalent {@link ItemBlock} for this BlockType.
-     *
-     * @return The equivalent {@link ItemBlock}, if available
-     */
-    Optional<ItemBlock> getHeldItem();
-
+    Optional<BlockTrait<?>> getTrait(String blockTrait);
 }

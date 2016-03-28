@@ -24,12 +24,13 @@
  */
 package org.spongepowered.api.item.inventory.type;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.property.SlotPos;
-import org.spongepowered.api.item.inventory.transaction.InventoryOperationResult;
+import org.spongepowered.api.item.inventory.transaction.InventoryTransactionResult;
+
+import java.util.Optional;
 
 /**
  * Base interface for inventories with slots obtainable via SlotPos queries.
@@ -38,60 +39,60 @@ public interface Inventory2D extends OrderedInventory {
 
     /**
      * Get and remove the stack at the supplied position in this Inventory.
-     * 
+     *
      * @see Inventory#poll()
      * @param pos Slot position to query
-     * @return matching stacks, as per the semantics of {@link Inventory#poll()}  
+     * @return matching stacks, as per the semantics of {@link Inventory#poll()}
      */
     Optional<ItemStack> poll(SlotPos pos);
 
     /**
      * Get and remove the stack at the supplied position in this Inventory.
-     * 
+     *
      * @see Inventory#poll()
      * @param pos Slot position to query
      * @param limit item limit
-     * @return matching stacks, as per the semantics of {@link Inventory#poll()}  
+     * @return matching stacks, as per the semantics of {@link Inventory#poll()}
      */
     Optional<ItemStack> poll(SlotPos pos, int limit);
 
     /**
      * Get without removing the stack at the supplied position in this
      * Inventory.
-     * 
+     *
      * @see Inventory#peek()
      * @param pos Slot position to query
-     * @return matching stacks, as per the semantics of {@link Inventory#peek()}  
+     * @return matching stacks, as per the semantics of {@link Inventory#peek()}
      */
     Optional<ItemStack> peek(SlotPos pos);
 
     /**
      * Get without removing the stack at the supplied position in this
      * Inventory.
-     * 
+     *
      * @see Inventory#peek()
      * @param pos Slot position to query
      * @param limit item limit
-     * @return matching stacks, as per the semantics of {@link Inventory#peek()}  
+     * @return matching stacks, as per the semantics of {@link Inventory#peek()}
      */
     Optional<ItemStack> peek(SlotPos pos, int limit);
 
     /**
-     * Set the item in the specified slot. 
-     * 
+     * Set the item in the specified slot.
+     *
      * @see Inventory#set(ItemStack)
      * @param pos Slot position to set
      * @param stack Stack to insert
-     * @return matching stacks, as per the semantics of {@link Inventory#set}  
+     * @return matching stacks, as per the semantics of {@link Inventory#set}
      */
-    InventoryOperationResult set(SlotPos pos, ItemStack stack);
+    InventoryTransactionResult set(SlotPos pos, ItemStack stack);
 
     /**
      * Get the {@link Slot} at the specified position.
-     * 
+     *
      * @param pos Slot position to retrieve
-     * @return slot at the specified position, or {@link Optional#absent()} if
-     *      no matching slot  
+     * @return slot at the specified position, or {@link Optional#empty()} if
+     *      no matching slot
      */
     Optional<Slot> getSlot(SlotPos pos);
 

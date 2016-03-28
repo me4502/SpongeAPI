@@ -24,7 +24,9 @@
  */
 package org.spongepowered.api.entity.living.monster;
 
+import org.spongepowered.api.data.key.Keys;
 import org.spongepowered.api.data.manipulator.mutable.entity.SlimeData;
+import org.spongepowered.api.data.value.mutable.MutableBoundedValue;
 
 /**
  * Represents a Slime.
@@ -36,6 +38,12 @@ public interface Slime extends Monster {
      *
      * @return A copy of the current slime data
      */
-    SlimeData getSlimeData();
+    default SlimeData getSlimeData() {
+        return get(SlimeData.class).get();
+    }
+
+    default MutableBoundedValue<Integer> slimeSize() {
+        return getValue(Keys.SLIME_SIZE).get();
+    }
 
 }

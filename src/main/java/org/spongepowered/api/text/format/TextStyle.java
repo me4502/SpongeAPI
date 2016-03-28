@@ -27,11 +27,13 @@ package org.spongepowered.api.text.format;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.text.TextElement;
 import org.spongepowered.api.util.OptBool;
 import org.spongepowered.api.util.annotation.CatalogedBy;
+
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -56,7 +58,8 @@ import javax.annotation.Nullable;
  *
  * @see TextStyles
  */
-public class TextStyle {
+@CatalogedBy(TextStyles.class)
+public class TextStyle implements TextElement {
 
     /**
      * Whether text where this style is applied is bolded.
@@ -127,20 +130,6 @@ public class TextStyle {
         this.underline = underline;
         this.obfuscated = obfuscated;
         this.strikethrough = strikethrough;
-    }
-
-    /**
-     * Constructs an empty {@link TextStyle}.
-     */
-    TextStyle() {
-        this(
-                OptBool.ABSENT,
-                OptBool.ABSENT,
-                OptBool.ABSENT,
-                OptBool.ABSENT,
-                OptBool.ABSENT
-        );
-
     }
 
     /**
@@ -252,7 +241,7 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied is bolded.
      *
-     * @return The value for the bold property, or {@link Optional#absent()}
+     * @return The value for the bold property, or {@link Optional#empty()}
      */
     public Optional<Boolean> isBold() {
         return this.bold;
@@ -261,7 +250,7 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied is italicized.
      *
-     * @return The value for the italic property, or {@link Optional#absent()}
+     * @return The value for the italic property, or {@link Optional#empty()}
      */
     public Optional<Boolean> isItalic() {
         return this.italic;
@@ -270,8 +259,7 @@ public class TextStyle {
     /**
      * Checks for whether text where this style is applied has an underline.
      *
-     * @return The value for the underline property, or
-     *         {@link Optional#absent()}
+     * @return The value for the underline property, or {@link Optional#empty()}
      */
     public Optional<Boolean> hasUnderline() {
         return this.underline;
@@ -281,7 +269,7 @@ public class TextStyle {
      * Checks for whether text where this style is applied has a strikethrough.
      *
      * @return The value for the strikethrough property, or
-     *         {@link Optional#absent()}
+     *         {@link Optional#empty()}
      */
     public Optional<Boolean> hasStrikethrough() {
         return this.strikethrough;
@@ -291,7 +279,7 @@ public class TextStyle {
      * Checks for whether text where this style is obfuscated.
      *
      * @return The value for the obfuscated property, or
-     *         {@link Optional#absent()}
+     *         {@link Optional#empty()}
      */
     public Optional<Boolean> isObfuscated() {
         return this.obfuscated;
@@ -422,6 +410,11 @@ public class TextStyle {
     }
 
     @Override
+    public void applyTo(Text.Builder builder) {
+        builder.style(this);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -445,20 +438,14 @@ public class TextStyle {
 
     @Override
     public String toString() {
-        if (this.bold.isPresent() || this.italic.isPresent() || this.underline.isPresent() || this.strikethrough.isPresent() || this.obfuscated
-                .isPresent()) {
-            return Objects.toStringHelper(this)
-                    .add("bold", this.bold)
-                    .add("italic", this.italic)
-                    .add("underline", this.underline)
-                    .add("strikethrough", this.strikethrough)
-                    .add("obfuscated", this.obfuscated)
-                    .toString();
-        } else {
-            return Objects.toStringHelper(this)
-                    .addValue("NONE")
-                    .toString();
-        }
+        return Objects.toStringHelper(TextStyle.class)
+                .omitNullValues()
+                .add("bold", this.bold.orElse(null))
+                .add("italic", this.italic.orElse(null))
+                .add("underline", this.underline.orElse(null))
+                .add("strikethrough", this.strikethrough.orElse(null))
+                .add("obfuscated", this.obfuscated.orElse(null))
+                .toString();
     }
 
     /**
@@ -477,7 +464,7 @@ public class TextStyle {
      * Utility method to negate a property if it is not null.
      *
      * @param prop The property to negate
-     * @return The negated property, or {@link Optional#absent()}
+     * @return The negated property, or {@link Optional#empty()}
      */
     private static Optional<Boolean> propNegate(Optional<Boolean> prop) {
         if (prop.isPresent()) {
@@ -508,14 +495,13 @@ public class TextStyle {
 
     /**
      * Represents a {@link TextStyle} that is not a composite, for example
-     * {@link TextStyles#BOLD}. It is a base text style in Minecraft with a name
-     * and a legacy formatting code.
+     * {@link TextStyles#BOLD}. It is a base text style in Minecraft with a
+     * name.
      *
      * @see TextStyle
      * @see Base
      */
-    @CatalogedBy(TextStyles.class)
-    public abstract static class Base extends TextStyle implements BaseFormatting, CatalogType {
+    public abstract static class Base extends TextStyle implements CatalogType {
 
         /**
          * Constructs a new {@link Base}.

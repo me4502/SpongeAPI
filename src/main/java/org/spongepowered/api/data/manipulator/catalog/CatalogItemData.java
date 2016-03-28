@@ -24,15 +24,14 @@
  */
 package org.spongepowered.api.data.manipulator.catalog;
 
-import org.spongepowered.api.attribute.AttributeModifier;
 import org.spongepowered.api.block.BlockState;
 import org.spongepowered.api.block.tileentity.EnchantmentTable;
 import org.spongepowered.api.data.manipulator.DataManipulator;
-import org.spongepowered.api.data.manipulator.mutable.AttributeData;
 import org.spongepowered.api.data.manipulator.mutable.ColoredData;
 import org.spongepowered.api.data.manipulator.mutable.DisplayNameData;
 import org.spongepowered.api.data.manipulator.mutable.DyeableData;
-import org.spongepowered.api.data.manipulator.mutable.FireworkData;
+import org.spongepowered.api.data.manipulator.mutable.FireworkEffectData;
+import org.spongepowered.api.data.manipulator.mutable.FireworkRocketData;
 import org.spongepowered.api.data.manipulator.mutable.PotionEffectData;
 import org.spongepowered.api.data.manipulator.mutable.TargetedLocationData;
 import org.spongepowered.api.data.manipulator.mutable.item.BlockItemData;
@@ -56,16 +55,15 @@ import org.spongepowered.api.data.type.CookedFish;
 import org.spongepowered.api.data.type.DyeColor;
 import org.spongepowered.api.data.type.Fish;
 import org.spongepowered.api.data.type.GoldenApple;
+import org.spongepowered.api.effect.potion.PotionEffect;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.item.Enchantment;
 import org.spongepowered.api.item.FireworkEffect;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.potion.PotionEffect;
 import org.spongepowered.api.text.Text;
-
-import java.awt.Color;
+import org.spongepowered.api.util.Color;
 
 /**
  * An enumeration of known {@link DataManipulator}s applicable to
@@ -73,11 +71,6 @@ import java.awt.Color;
  */
 public final class CatalogItemData {
 
-    /**
-     * Signifies that an item contains {@link AttributeModifier}s. The modifiers
-     * may affect any entity that is "holding" the owning item.
-     */
-    public static final Class<AttributeData> ATTRIBUTE_DATA = AttributeData.class;
     /**
      * Represents the {@link BlockState} that the item is representing.
      */
@@ -125,9 +118,14 @@ public final class CatalogItemData {
      */
     public static final Class<EnchantmentData> ENCHANTMENT_DATA = EnchantmentData.class;
     /**
-     * Represents the {@link FireworkEffect}s of a firework.
+     * Represents the {@link FireworkEffect}s of {@link ItemTypes#FIREWORKS}
+     * or a {@link ItemTypes#FIREWORK_CHARGE}.
      */
-    public static final Class<FireworkData> FIREWORK_DATA = FireworkData.class;
+    public static final Class<FireworkEffectData> FIREWORK_EFFECT_DATA = FireworkEffectData.class;
+    /**
+     * Represents the flight time of {@link ItemTypes#FIREWORKS}.
+     */
+    public static final Class<FireworkRocketData> FIREWORK_ROCKET_DATA = FireworkRocketData.class;
     /**
      * Represents the {@link Fish} type of a {@link ItemTypes#FISH}.
      */

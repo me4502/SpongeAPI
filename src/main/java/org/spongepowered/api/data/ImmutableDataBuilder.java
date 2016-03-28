@@ -24,9 +24,11 @@
  */
 package org.spongepowered.api.data;
 
+import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.manipulator.DataManipulator;
 import org.spongepowered.api.data.manipulator.ImmutableDataManipulator;
-import org.spongepowered.api.service.persistence.DataBuilder;
+import org.spongepowered.api.data.persistence.DataBuilder;
+import org.spongepowered.api.data.value.BaseValue;
 
 /**
  * A builder, much like a normal {@link DataBuilder} except that it builds
@@ -44,19 +46,27 @@ public interface ImmutableDataBuilder<H extends ImmutableDataHolder<H>, E extend
      * is created.
      *
      * @param manipulator The manipulator to add
-     * @param <M> The maipulator type
      * @return This builder, for chaining
      */
-    <M extends DataManipulator<M, ?>> E add(M manipulator);
+    E add(DataManipulator<?, ?> manipulator);
 
     /**
      * Adds the given {@link ImmutableDataManipulator} to the builder.
      *
      * @param manipulator The manipulator to add
-     * @param <I> The type of manipulator
      * @return This builder, for chaining
      */
-    <I extends ImmutableDataManipulator<I, ?>> E add(I manipulator);
+    E add(ImmutableDataManipulator<?, ?> manipulator);
+
+    /**
+     * Adds the given {@link Key} with the given {@link V} value.
+     *
+     * @param key The key to assign the value with
+     * @param value The value to assign with the key
+     * @param <V> The type of the value
+     * @return This builder, for chaining
+     */
+    <V> E add(Key<? extends BaseValue<V>> key, V value);
 
     /**
      * Copies all known {@link DataManipulator}s from the given
@@ -66,16 +76,8 @@ public interface ImmutableDataBuilder<H extends ImmutableDataHolder<H>, E extend
      * @param holder The {@link ImmutableDataHolder} to copy from
      * @return This builder for chaining
      */
+    @Override
     E from(H holder);
-
-    /**
-     * Resets this builder to a "default" state such that there is no
-     * remaining {@link DataManipulator}s to set. This is to be the presumed
-     * "default" state.
-     *
-     * @return This builder, for chaining
-     */
-    E reset();
 
     /**
      * Attempts to build a new {@link ImmutableDataHolder}.
@@ -84,4 +86,6 @@ public interface ImmutableDataBuilder<H extends ImmutableDataHolder<H>, E extend
      */
     H build();
 
+    @Override
+    E reset();
 }

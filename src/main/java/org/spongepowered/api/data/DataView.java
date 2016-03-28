@@ -24,14 +24,17 @@
  */
 package org.spongepowered.api.data;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.data.key.Key;
-import org.spongepowered.api.data.value.BaseValue;
-import org.spongepowered.api.service.persistence.DataBuilder;
-import org.spongepowered.api.service.persistence.SerializationService;
+import static com.google.common.base.Preconditions.checkNotNull;
 
+import org.spongepowered.api.CatalogType;
+import org.spongepowered.api.data.key.Key;
+import org.spongepowered.api.data.persistence.DataBuilder;
+import org.spongepowered.api.data.value.BaseValue;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -123,6 +126,49 @@ public interface DataView {
      * @return True if the path exists
      */
     boolean contains(DataQuery path);
+
+    /**
+     * Returns whether this {@link DataView} contains an entry for all
+     * provided {@link DataQuery} objects.
+     *
+     * @param path The path relative to this data view
+     * @param paths The additional paths to check
+     * @return True if all paths exist
+     */
+    boolean contains(DataQuery path, DataQuery... paths);
+
+    /**
+     * Returns whether this {@link DataView} contains the given {@link Key}'s
+     * defaulted {@link DataQuery}.
+     *
+     * @param key The key to get the data path relative to this data view
+     * @return True if the path exists
+     */
+    default boolean contains(Key<?> key) {
+        return contains(checkNotNull(key, "Key cannot be null!").getQuery());
+    }
+
+    /**
+     * Returns whether this {@link DataView} contains the given {@link Key}es
+     * defaulted {@link DataQuery}.
+     *
+     * @param key The key to get the data path relative to this data view
+     * @param keys The additional keys to check
+     * @return True if the path exists
+     */
+    default boolean contains(Key<?> key, Key<?>... keys) {
+        checkNotNull(key, "Key cannot be null!");
+        checkNotNull(keys, "Keys cannot be null!");
+        if (keys.length == 0) {
+            return contains(key.getQuery());
+        } else {
+            List<DataQuery> queries = new ArrayList<>();
+            for (Key<?> arrayKey : keys) {
+                queries.add(checkNotNull(arrayKey, "Cannot have a null key!").getQuery());
+            }
+            return contains(key.getQuery(), queries.toArray(new DataQuery[queries.size()]));
+        }
+    }
 
     /**
      * Gets an object from the desired path. If the path is not defined,
@@ -421,19 +467,17 @@ public interface DataView {
      * <p>If a {@link DataSerializable} exists, but is not the proper class
      * type, or there is no data at the path given, an absent is returned.</p>
      *
-     * <p>It is important that the {@link SerializationService} provided is
+     * <p>It is important that the {@link DataManager} provided is
      * the same one that has registered many of the
      * {@link DataBuilder}s to ensure the {@link DataSerializable}
      * requested can be returned.</p>
      *
+     * @param <T> The type of {@link DataSerializable} object
      * @param path The path of the value to get
      * @param clazz The class of the {@link DataSerializable}
-     * @param service The serialization service to use for retrieving data
-     *     serializable builders
-     * @param <T> The type of {@link DataSerializable} object
      * @return The deserialized object, if available
      */
-    <T extends DataSerializable> Optional<T> getSerializable(DataQuery path, Class<T> clazz, SerializationService service);
+    <T extends DataSerializable> Optional<T> getSerializable(DataQuery path, Class<T> clazz);
 
     /**
      * Gets the {@link List} of {@link DataSerializable} by path, if available.
@@ -443,19 +487,45 @@ public interface DataView {
      * considered {@link DataSerializable} or are not of the proper type of
      * {@link DataSerializable}, an absent is returned.</p>
      *
-     * <p>It is important that the {@link SerializationService} provided is
+     * <p>It is important that the {@link DataManager} provided is
      * the same one that has registered many of the
      * {@link DataBuilder}s to ensure the {@link DataSerializable}
      * requested can be returned.</p>
      *
+     * @param <T> The type of {@link DataSerializable} object
      * @param path The path of the list value to get
      * @param clazz The class of the {@link DataSerializable}
-     * @param service The serialization service to use for retrieving data
-     *     serializable builders
-     * @param <T> The type of {@link DataSerializable} object
      * @return The deserialized objects in a list, if available
      */
-    <T extends DataSerializable> Optional<List<T>> getSerializableList(DataQuery path, Class<T> clazz, SerializationService service);
+    <T extends DataSerializable> Optional<List<T>> getSerializableList(DataQuery path, Class<T> clazz);
+
+    /**
+     * Gets the {@link CatalogType} object by path, if available.
+     *
+     * <p>If a {@link CatalogType} exists, but is not named properly, not
+     * existing in a registry, or simply an invalid value will return
+     * an empty value.</p>
+     *
+     * @param path The path of the value to get
+     * @param catalogType The class of the dummy type
+     * @param <T> The type of dummy
+     * @return The dummy type, if available
+     */
+    <T extends CatalogType> Optional<T> getCatalogType(DataQuery path, Class<T> catalogType);
+
+    /**
+     * Gets the {@link List} of {@link CatalogType}s by path, if available.
+     *
+     * <p>If a {@link List} exists, but contents of the list are not
+     * considered {@link CatalogType}s or are not of the proper type
+     * of {@link CatalogType}, an absent is returned.</p>
+     *
+     * @param path The path of the list value to get
+     * @param catalogType The class of the dummy type
+     * @param <T> The type of dummy type
+     * @return The list of dummy types, if available
+     */
+    <T extends CatalogType> Optional<List<T>> getCatalogTypeList(DataQuery path, Class<T> catalogType);
 
     /**
      * Copies this {@link DataView} and all of it's contents into a new

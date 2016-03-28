@@ -29,6 +29,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.spongepowered.api.data.Property;
 import org.spongepowered.api.data.manipulator.DataManipulator;
+import org.spongepowered.api.item.ItemType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -42,7 +43,7 @@ import javax.annotation.Nullable;
 public final class ItemStackComparators {
 
     /**
-     * Compares ItemStacks based on {@link org.spongepowered.api.item.ItemType}.
+     * Compares ItemStacks based on {@link ItemType}.
      * This comparator will not return the same results as
      * ItemStack.equals(ItemStack) for ItemStacks with extra attached data,
      * different damage values, or different sizes.
@@ -59,7 +60,7 @@ public final class ItemStackComparators {
     public static final Comparator<ItemStack> SIZE = new Size();
 
     /**
-     * Compares ItemStacks based on {@link org.spongepowered.api.item.ItemType}
+     * Compares ItemStacks based on {@link ItemType}
      * and {@link ItemStack} size. This comparator will not return the same
      * results as ItemStack.equals(ItemStack) for ItemStacks with extra attached
      * data or different damage values.
@@ -127,8 +128,8 @@ public final class ItemStackComparators {
             if (o2 == null) {
                 return -1;
             }
-            List<Property<?, ?>> properties = Lists.newArrayList(o2.getProperties());
-            for (Property<?, ?> property : o1.getProperties()) {
+            List<Property<?, ?>> properties = Lists.newArrayList(o2.getApplicableProperties());
+            for (Property<?, ?> property : o1.getApplicableProperties()) {
                 if (properties.contains(property)) {
                     properties.remove(property);
                 } else {

@@ -27,13 +27,12 @@ package org.spongepowered.api.effect;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.effect.particle.ParticleEffect;
 import org.spongepowered.api.effect.sound.SoundType;
-import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.title.Title;
 
 /**
  * A Viewer is something that sees effects.
- * The Viewer class contains methods for spawning particles and playing sound effects.
+ * The Viewer class contains methods for spawning particles and playing sound
+ * effects.
  */
 public interface Viewer {
 
@@ -76,7 +75,8 @@ public interface Viewer {
      * @param sound The sound to play
      * @param position The position to play the sound
      * @param volume The volume to play the sound at, usually between 0 and 2
-     * @param pitch The modulation of the sound to play at, usually between 0 and 2
+     * @param pitch The modulation of the sound to play at, usually between 0
+     *        and 2
      */
     void playSound(SoundType sound, Vector3d position, double volume, double pitch);
 
@@ -87,38 +87,12 @@ public interface Viewer {
      * @param sound The sound to play
      * @param position The position to play the sound
      * @param volume The volume to play the sound at, usually between 0 and 2
-     * @param pitch The modulation of the sound to play at, usually between 0 and 2
-     * @param minVolume The minimum volume to play the sound at, usually between 0 and 2
+     * @param pitch The modulation of the sound to play at, usually between 0
+     *        and 2
+     * @param minVolume The minimum volume to play the sound at, usually between
+     *        0 and 2
      */
     void playSound(SoundType sound, Vector3d position, double volume, double pitch, double minVolume);
-
-    /**
-     * Sends the plain text message(s) with the specified {@link ChatType} on
-     * the client.
-     * <p>
-     * Use {@link #sendMessage(ChatType, Text...)} for a formatted message.
-     * </p>
-     *
-     * @param type The chat type to send the messages to
-     * @param message The message(s) to send
-     */
-    void sendMessage(ChatType type, String... message);
-
-    /**
-     * Sends the message(s) with the specified {@link ChatType} on the client.
-     *
-     * @param type The chat type to send the messages to
-     * @param messages The message(s) to send
-     */
-    void sendMessage(ChatType type, Text... messages);
-
-    /**
-     * Sends the message(s) with the specified {@link ChatType} on the client.
-     *
-     * @param type The chat type to send the messages to
-     * @param messages The message(s) to send
-     */
-    void sendMessage(ChatType type, Iterable<Text> messages);
 
     /**
      * Sends a {@link Title} to this player.
@@ -131,11 +105,15 @@ public interface Viewer {
      * Removes the currently displayed {@link Title} from the player and resets
      * all settings back to default values.
      */
-    void resetTitle();
+    default void resetTitle() {
+        sendTitle(Title.RESET);
+    }
 
     /**
      * Removes the currently displayed {@link Title} from the player's screen.
      */
-    void clearTitle();
+    default void clearTitle() {
+        sendTitle(Title.CLEAR);
+    }
 
 }

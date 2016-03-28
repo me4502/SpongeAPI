@@ -24,9 +24,8 @@
  */
 package org.spongepowered.api.service.sql;
 
-import com.google.common.base.Optional;
-
 import java.sql.SQLException;
+import java.util.Optional;
 
 import javax.annotation.concurrent.ThreadSafe;
 import javax.sql.DataSource;
@@ -48,7 +47,7 @@ public interface SqlService {
      *
      * @param jdbcConnection The jdbc url or connection alias
      * @return A data source providing connections to the given URL.
-     * @throws java.sql.SQLException if a connection to the given database could not be established
+     * @throws SQLException if a connection to the given database could not be established
      */
     DataSource getDataSource(String jdbcConnection) throws SQLException;
 
@@ -57,7 +56,7 @@ public interface SqlService {
      *
      * @param alias The alias to check
      * @return The connection url as a String if it exists,
-     *          or {@link Optional#absent()}
+     *          or {@link Optional#empty()}
      */
     Optional<String> getConnectionUrlFromAlias(String alias);
 }

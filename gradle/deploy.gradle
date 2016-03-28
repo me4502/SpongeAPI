@@ -1,17 +1,22 @@
+// Shared deployment configuration for the Sponge projects
+
 apply plugin: 'maven'
 
+// Environment variables for the build set by the build server
 ext {
-    buildNumber = System.getenv().BUILD_NUMBER != null ? System.getenv().BUILD_NUMBER : '0'
-    ciSystem = System.getenv().ciSystem != null ? System.getenv().ciSystem : 'unknown'
-    commit = System.getenv().commit != null ? System.getenv().commit : 'unknown'
+    buildNumber = System.env.BUILD_NUMBER ?: '0'
+    ciSystem = System.env.CI_SYSTEM
+    commit = System.env.GIT_COMMIT
+    branch = System.env.GIT_BRANCH
 }
 
+// Support uploading with FTP
 configurations {
     deployerJars // Deployment dependency
 }
 
 dependencies {
-    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.8'
+    deployerJars 'org.apache.maven.wagon:wagon-ftp:2.10'
 }
 
 uploadArchives {
@@ -19,39 +24,40 @@ uploadArchives {
         mavenDeployer {
             configuration = configurations.deployerJars
 
-            if (project.hasProperty('chRepo')) {
-                repository(url: project.chRepo) {
-                    authentication(userName: project.chUsername, password: project.chPassword)
+            // This is set by the build server when deploying to the repo
+            if (project.hasProperty('spongeRepo')) {
+                repository(url: project.spongeRepo) {
+                    if (project.hasProperty('spongeUsername') && project.hasProperty('spongePassword')) {
+                        authentication(userName: project.spongeUsername, password: project.spongePassword)
+                    }
                 }
             }
 
             pom {
-                groupId = project.group
                 artifactId = project.archivesBaseName
-                version = project.version
 
                 project {
-                    name project.archivesBaseName
-                    description project.description
-                    packaging 'jar'
-                    url project.url
+                    name = project.archivesBaseName
+                    description = project.description
+                    packaging = 'jar'
+                    url = project.url
 
                     scm {
-                        url "https://github.com/$project.organization/$project.name"
-                        connection "scm:git:https://github.com/$project.organization/${project.name}.git"
-                        developerConnection "scm:git:git@github.com:$project.organization/${project.name}.git"
+                        url = "https://github.com/$project.organization/$project.name"
+                        connection = "scm:git:https://github.com/$project.organization/${project.name}.git"
+                        developerConnection = "scm:git:git@github.com:$project.organization/${project.name}.git"
                     }
 
                     issueManagement {
-                        system 'youtrack'
-                        url 'https://issues.spongepowered.org'
+                        system = 'youtrack'
+                        url = 'https://issues.spongepowered.org'
                     }
 
                     licenses {
                         license {
-                            name 'MIT License'
-                            url 'http://opensource.org/licenses/MIT'
-                            distribution 'repo'
+                            name = 'MIT License'
+                            url = 'http://opensource.org/licenses/MIT'
+                            distribution = 'repo'
                         }
                     }
                 }

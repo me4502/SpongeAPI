@@ -26,9 +26,10 @@ package org.spongepowered.api.data;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-import com.google.common.base.Optional;
 import org.spongepowered.api.data.key.Key;
 import org.spongepowered.api.data.value.BaseValue;
+
+import java.util.Optional;
 
 /**
  * The default implementation of {@link DataContainer} that can be instantiated
@@ -39,7 +40,7 @@ public class MemoryDataContainer extends MemoryDataView implements DataContainer
 
     @Override
     public Optional<DataView> getParent() {
-        return Optional.absent();
+        return Optional.empty();
     }
 
     @Override
@@ -61,4 +62,5 @@ public class MemoryDataContainer extends MemoryDataView implements DataContainer
     public DataContainer remove(DataQuery path) {
         return (DataContainer) super.remove(path);
     }
+
 }

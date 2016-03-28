@@ -24,67 +24,50 @@
  */
 package org.spongepowered.api;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.attribute.AttributeBuilder;
-import org.spongepowered.api.attribute.AttributeCalculator;
-import org.spongepowered.api.attribute.AttributeModifierBuilder;
 import org.spongepowered.api.block.BlockType;
-import org.spongepowered.api.data.ImmutableDataRegistry;
-import org.spongepowered.api.data.manipulator.DataManipulatorRegistry;
 import org.spongepowered.api.data.type.Career;
-import org.spongepowered.api.data.type.Profession;
-import org.spongepowered.api.data.value.ValueBuilder;
-import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.effect.particle.ParticleEffectBuilder;
-import org.spongepowered.api.effect.particle.ParticleType;
+import org.spongepowered.api.data.value.ValueFactory;
 import org.spongepowered.api.entity.EntityType;
-import org.spongepowered.api.entity.Transform;
-import org.spongepowered.api.item.FireworkEffectBuilder;
+import org.spongepowered.api.entity.ai.task.AITaskType;
+import org.spongepowered.api.entity.ai.task.AbstractAITask;
+import org.spongepowered.api.entity.living.Agent;
 import org.spongepowered.api.item.ItemType;
-import org.spongepowered.api.item.inventory.ItemStackBuilder;
-import org.spongepowered.api.item.merchant.TradeOfferBuilder;
+import org.spongepowered.api.item.merchant.VillagerRegistry;
+import org.spongepowered.api.item.merchant.TradeOfferGenerator;
 import org.spongepowered.api.item.recipe.RecipeRegistry;
 import org.spongepowered.api.map.MapView;
 import org.spongepowered.api.map.MapViewRegistry;
-import org.spongepowered.api.potion.PotionEffectBuilder;
+import org.spongepowered.api.network.status.Favicon;
+import org.spongepowered.api.plugin.PluginContainer;
+import org.spongepowered.api.registry.CatalogRegistryModule;
+import org.spongepowered.api.registry.RegistryModule;
 import org.spongepowered.api.resourcepack.ResourcePack;
-import org.spongepowered.api.scoreboard.ScoreboardBuilder;
-import org.spongepowered.api.scoreboard.TeamBuilder;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlot;
-import org.spongepowered.api.scoreboard.objective.ObjectiveBuilder;
 import org.spongepowered.api.statistic.BlockStatistic;
 import org.spongepowered.api.statistic.EntityStatistic;
 import org.spongepowered.api.statistic.ItemStatistic;
 import org.spongepowered.api.statistic.Statistic;
-import org.spongepowered.api.statistic.StatisticBuilder;
 import org.spongepowered.api.statistic.StatisticGroup;
 import org.spongepowered.api.statistic.TeamStatistic;
-import org.spongepowered.api.statistic.achievement.Achievement;
-import org.spongepowered.api.statistic.achievement.AchievementBuilder;
-import org.spongepowered.api.status.Favicon;
 import org.spongepowered.api.text.format.TextColor;
+import org.spongepowered.api.text.selector.SelectorFactory;
+import org.spongepowered.api.text.serializer.TextSerializerFactory;
+import org.spongepowered.api.text.serializer.TextSerializers;
 import org.spongepowered.api.text.translation.Translation;
+import org.spongepowered.api.util.ResettableBuilder;
 import org.spongepowered.api.util.rotation.Rotation;
-import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.explosion.Explosion;
-import org.spongepowered.api.world.explosion.ExplosionBuilder;
-import org.spongepowered.api.world.WorldBuilder;
-import org.spongepowered.api.world.WorldCreationSettings;
-import org.spongepowered.api.world.extent.Extent;
 import org.spongepowered.api.world.extent.ExtentBufferFactory;
-import org.spongepowered.api.world.gen.GeneratorPopulator;
-import org.spongepowered.api.world.gen.Populator;
-import org.spongepowered.api.world.gen.PopulatorFactory;
-import org.spongepowered.api.world.gen.WorldGeneratorModifier;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Collection;
-import java.util.UUID;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 /**
  * Provides an easy way to retrieve types from a {@link Game}.
@@ -109,9 +92,10 @@ public interface GameRegistry {
      * game version changes.</p>
      *
      * @param typeClass The class of the type of {@link CatalogType}
-     * @param id The string id of the catalog type
-     * @param <T> The type of catalog type
-     * @return The found catalog type, if available
+     * @param id The case insensitive string id of the dummy type
+     * @param <T> The type of dummy type
+     * @return The found dummy type, if available
+     * @see CatalogType
      */
     <T extends CatalogType> Optional<T> getType(Class<T> typeClass, String id);
 
@@ -125,180 +109,69 @@ public interface GameRegistry {
      *
      * @param typeClass The class of {@link CatalogType}
      * @param <T> The type of {@link CatalogType}
-     * @return A collection of all known types of the requested catalog type
+     * @return A collection of all known types of the requested dummy type
      */
     <T extends CatalogType> Collection<T> getAllOf(Class<T> typeClass);
 
     /**
+     * Registers the {@link CatalogRegistryModule} for dummy registration and handling.
+     * By default, the only supported modules that can be registered are dependent that
+     * plugins are not attempting to register new modules for API provided {@link CatalogType}s.
+     *
+     * @param catalogClass The dummy class itself
+     * @param registryModule The registry module
+     * @param <T> The type of dummy
+     * @throws IllegalArgumentException If there is a module already registered
+     * @throws UnsupportedOperationException If the
+     */
+    <T extends CatalogType> GameRegistry registerModule(Class<T> catalogClass, CatalogRegistryModule<T> registryModule)
+            throws IllegalArgumentException, UnsupportedOperationException;
+
+    /**
+     * Registers the desired {@link RegistryModule}.
+     *
+     * @param module The module to register
+     * @return This registry, for chaining
+     */
+    GameRegistry registerModule(RegistryModule module) throws IllegalArgumentException, UnsupportedOperationException;
+
+    /**
+     * Registers a {@link Supplier} for creating the desired {@link ResettableBuilder}.
+     *
+     * @param builderClass The builder class
+     * @param supplier The supplier
+     * @param <T> The type of builder/supplier
+     * @return This registry, for chaining
+     */
+    <T> GameRegistry registerBuilderSupplier(Class<T> builderClass, Supplier<? extends T> supplier);
+
+    /**
      * Gets a builder of the desired class type, examples may include:
-     * {@link org.spongepowered.api.attribute.AttributeBuilder},
-     * {@link org.spongepowered.api.item.FireworkEffectBuilder}, etc.
+     * {@link org.spongepowered.api.item.inventory.ItemStack.Builder}, etc.
      *
      * @param builderClass The class of the builder
      * @param <T> The type of builder
      * @return The builder, if available
+     * @throws IllegalArgumentException If there is no supplier for the given builder class
      */
-    <T> Optional<T> createBuilderOfType(Class<T> builderClass);
+    <T extends ResettableBuilder<?, ? super T>> T createBuilder(Class<T> builderClass) throws IllegalArgumentException;
 
     /**
-     * Get an item stack builder.
+     * Registers a new {@link CatalogType} instance if registration for that
+     * type is supported.
      *
-     * @return The item stack builder
-     */
-    ItemStackBuilder createItemBuilder();
-
-    /**
-     * Get a trade offer builder.
+     * <p>Note that this is intended only for registering new instances of
+     * already existing CatalogTypes, not for registering entirely new
+     * CatalogType classes.</p>
      *
-     * @return The trade offer builder
+     * @param type The CatalogType class
+     * @param obj The dummy type instance
+     * @throws IllegalArgumentException If there is an id conflict with the
+     *         given type and an existing type
+     * @throws UnsupportedOperationException If registration for the given type
+     *         is not supported
      */
-    TradeOfferBuilder createTradeOfferBuilder();
-
-    /**
-     * Gets a new {@link FireworkEffectBuilder}.
-     *
-     * @return A new firework effect builder
-     */
-    FireworkEffectBuilder createFireworkEffectBuilder();
-
-    /**
-     * Get a potion effect builder.
-     *
-     * @return The potion effect builder
-     */
-    PotionEffectBuilder createPotionEffectBuilder();
-
-    /**
-     * Get an objective builder.
-     *
-     * @return The objective builder
-     */
-    ObjectiveBuilder createObjectiveBuilder();
-
-    /**
-     * Get a team builder.
-     *
-     * @return The team builder
-     */
-    TeamBuilder createTeamBuilder();
-
-    /**
-     * Gets a scoreboard builder.
-     *
-     * @return The scoreboard builder
-     */
-    ScoreboardBuilder createScoreboardBuilder();
-
-    /**
-     * Creates a new {@link StatisticBuilder} which may be used to create custom
-     * {@link Statistic}s.
-     *
-     * @return The newly created simple statistic builder
-     */
-    StatisticBuilder createStatisticBuilder();
-
-    /**
-     * Creates a new
-     * {@link org.spongepowered.api.statistic.StatisticBuilder.EntityStatisticBuilder}
-     * which may be used to create custom {@link EntityStatistic}s.
-     *
-     * @return The newly created entity statistic builder
-     */
-    StatisticBuilder.EntityStatisticBuilder createEntityStatisticBuilder();
-
-    /**
-     * Creates a new
-     * {@link org.spongepowered.api.statistic.StatisticBuilder.BlockStatisticBuilder}
-     * which may be used to create custom {@link BlockStatistic}s.
-     *
-     * @return The newly created block statistic builder
-     */
-    StatisticBuilder.BlockStatisticBuilder createBlockStatisticBuilder();
-
-    /**
-     * Creates a new
-     * {@link org.spongepowered.api.statistic.StatisticBuilder.ItemStatisticBuilder}
-     * which may be used to create custom {@link ItemStatistic}s.
-     *
-     * @return The newly created item statistic builder
-     */
-    StatisticBuilder.ItemStatisticBuilder createItemStatisticBuilder();
-
-    /**
-     * Creates a new
-     * {@link org.spongepowered.api.statistic.StatisticBuilder.TeamStatisticBuilder}
-     * which may be used to create custom {@link TeamStatistic}s.
-     *
-     * @return The newly created team statistic builder
-     */
-    StatisticBuilder.TeamStatisticBuilder createTeamStatisticBuilder();
-
-    /**
-     * Creates a new {@link AchievementBuilder} which may be used to create
-     * custom {@link Achievement}s.
-     *
-     * @return The newly created achievement builder
-     */
-    AchievementBuilder createAchievementBuilder();
-
-    /**
-     * Gets a new {@link AttributeModifierBuilder}.
-     *
-     * @return A new AttributeModifierBuilder
-     */
-    AttributeModifierBuilder createAttributeModifierBuilder();
-
-    /**
-     * Gets the {@link AttributeCalculator}.
-     *
-     * @return The {@link AttributeCalculator}
-     */
-    AttributeCalculator getAttributeCalculator();
-
-    /**
-     * Gets a new {@link AttributeBuilder}.
-     *
-     * @return A new AttributeBuilder
-     */
-    AttributeBuilder createAttributeBuilder();
-
-    /**
-     * Gets a new {@link WorldBuilder} for creating {@link World}s or
-     * {@link WorldCreationSettings}s.
-     *
-     * @return A new builder
-     */
-    WorldBuilder createWorldBuilder();
-
-    /**
-     * Gets a new {@link ExplosionBuilder} for creating {@link Explosion}s.
-     *
-     * @return A new builder
-     */
-    ExplosionBuilder createExplosionBuilder();
-
-    /**
-     * Gets a new {@link ValueBuilder} for creating {@link Value}s.
-     *
-     * @return A new builder
-     */
-    ValueBuilder createValueBuilder();
-
-    /**
-     * Gets a new particle builder for the {@link ParticleType}.
-     *
-     * @param particle The particle type
-     * @return The particle effect builder
-     */
-    ParticleEffectBuilder createParticleEffectBuilder(ParticleType particle);
-
-    /**
-     * Gets all available villager {@link Career}s for the given profession.
-     *
-     * @param profession The villager profession to collection careers from
-     * @return A collection of all villager careers associated with the profession
-     */
-    Collection<Career> getCareers(Profession profession);
+    <T extends CatalogType> void register(Class<T> type, T obj) throws IllegalArgumentException, UnsupportedOperationException;
 
     /**
      * Gets a {@link Collection} of the default GameRules.
@@ -310,48 +183,48 @@ public interface GameRegistry {
     /**
      * Gets the {@link Statistic} for the given {@link StatisticGroup} and
      * {@link EntityType}. If the statistic group is not a valid
-     * {@link EntityStatistic} group then {@link Optional#absent()} will be
+     * {@link EntityStatistic} group then {@link Optional#empty()} will be
      * returned.
      *
      * @param statisticGroup The type of statistic to return
      * @param entityType The entity type for the statistic to return
-     * @return The entity statistic or Optional.absent() if not found
+     * @return The entity statistic or Optional.empty() if not found
      */
     Optional<EntityStatistic> getEntityStatistic(StatisticGroup statisticGroup, EntityType entityType);
 
     /**
      * Gets the {@link Statistic} for the given {@link StatisticGroup} and
      * {@link ItemType}. If the statistic group is not a valid
-     * {@link ItemStatistic} group then {@link Optional#absent()} will be
+     * {@link ItemStatistic} group then {@link Optional#empty()} will be
      * returned.
      *
      * @param statisticGroup The type of statistic to return
      * @param itemType The item type for the statistic to return
-     * @return The item statistic or Optional.absent() if not found
+     * @return The item statistic or Optional.empty() if not found
      */
     Optional<ItemStatistic> getItemStatistic(StatisticGroup statisticGroup, ItemType itemType);
 
     /**
      * Gets the {@link Statistic} for the given {@link StatisticGroup} and
      * {@link BlockType}. If the statistic group is not a valid
-     * {@link BlockStatistic} group then {@link Optional#absent()} will be
+     * {@link BlockStatistic} group then {@link Optional#empty()} will be
      * returned.
      *
      * @param statisticGroup The type of statistic to return
      * @param blockType The block type for the statistic to return
-     * @return The block statistic or Optional.absent() if not found
+     * @return The block statistic or Optional.empty() if not found
      */
     Optional<BlockStatistic> getBlockStatistic(StatisticGroup statisticGroup, BlockType blockType);
 
     /**
      * Gets the {@link Statistic} for the given {@link StatisticGroup} and
      * team's {@link TextColor}. If the {@link StatisticGroup} is not a valid
-     * {@link TeamStatistic} group then {@link Optional#absent()} will be
+     * {@link TeamStatistic} group then {@link Optional#empty()} will be
      * returned.
      *
      * @param statisticGroup The type of statistic to return
      * @param teamColor The team's color for the statistic to return
-     * @return The team statistic or Optional.absent() if not found
+     * @return The team statistic or Optional.empty() if not found
      */
     Optional<TeamStatistic> getTeamStatistic(StatisticGroup statisticGroup, TextColor teamColor);
 
@@ -365,28 +238,12 @@ public interface GameRegistry {
     Collection<Statistic> getStatistics(StatisticGroup statisticGroup);
 
     /**
-     * Registers a custom statistic.
-     *
-     * @param stat The custom statistic
-     */
-    void registerStatistic(Statistic stat);
-
-    /**
      * Gets the {@link Rotation} with the provided degrees.
      *
      * @param degrees The degrees of the rotation
-     * @return The {@link Rotation} with the given degrees or Optional.absent() if not found
+     * @return The {@link Rotation} with the given degrees or Optional.empty() if not found
      */
     Optional<Rotation> getRotationFromDegree(int degrees);
-
-    /**
-     * Creates a new {@link GameProfile} using the specified unique identifier and name.
-     *
-     * @param uuid The unique identifier for the profile
-     * @param name The name for the profile
-     * @return The created profile
-     */
-    GameProfile createGameProfile(UUID uuid, String name);
 
     /**
      * Loads a {@link Favicon} from the specified encoded string. The format of
@@ -399,14 +256,14 @@ public interface GameRegistry {
     Favicon loadFavicon(String raw) throws IOException;
 
     /**
-     * Loads a favicon from a specified {@link File}.
+     * Loads a favicon from a specified {@link Path}.
      *
-     * @param file The favicon file
+     * @param path The path to the favicon
      * @return The loaded favicon from the file
      * @throws IOException If the favicon couldn't be loaded
      * @throws FileNotFoundException If the file doesn't exist
      */
-    Favicon loadFavicon(File file) throws IOException;
+    Favicon loadFavicon(Path path) throws IOException;
 
     /**
      * Loads a favicon from a specified {@link URL}.
@@ -436,13 +293,6 @@ public interface GameRegistry {
     Favicon loadFavicon(BufferedImage image) throws IOException;
 
     /**
-     * Retrieves the GameDictionary (item dictionary) for this GameRegistry.
-     *
-     * @return The item dictionary
-     */
-    GameDictionary getGameDictionary();
-
-    /**
      * Retrieves the RecipeRegistry for this GameRegistry.
      *
      * @return The recipe registry
@@ -450,76 +300,33 @@ public interface GameRegistry {
     RecipeRegistry getRecipeRegistry();
 
     /**
-     * Retrieves the {@link DataManipulatorRegistry} for this {@link GameRegistry}.
-     *
-     * @return The manipulator registry
-     */
-    DataManipulatorRegistry getManipulatorRegistry();
-
-    /**
-     * Retrieves the {@link ImmutableDataRegistry} for this {@link GameRegistry}.
-     *
-     * @return The immutable data registry
-     */
-    ImmutableDataRegistry getImmutableDataRegistry();
-
-    /**
      * Gets a {@link ResourcePack} that's already been created by its ID.
      *
      * @param id The ID of the pack
-     * @return The ResourcePack with the specified ID, or Optional.absent() if
+     * @return The ResourcePack with the specified ID, or Optional.empty() if
      *         none could be found
      */
-    Optional<ResourcePack> getById(String id);
+    Optional<ResourcePack> getResourcePackById(String id);
 
     /**
      * Gets a {@link DisplaySlot} which displays only for teams
      * with the provided color.
      *
      * @param color The color for the display slot
-     * @return The {@link DisplaySlot} with the provided color, or Optional.absent() if not found
+     * @return The {@link DisplaySlot} with the provided color, or Optional.empty() if not found
      */
     Optional<DisplaySlot> getDisplaySlotForColor(TextColor color);
 
     /**
-     * Registers a {@link WorldGeneratorModifier}, so that the server is able to
-     * use it for modifying the world generator of a new world.
+     * Registers a new {@link AbstractAITask} with an {@link Agent} as the owner. The complete id
+     * will be in the format of <code>{@link PluginContainer#getId()}:id</code>.
      *
-     * @param modifier The modifier to register
+     * @param plugin The plugin who owns it
+     * @param id The id that represents the task type
+     * @param aiClass The class of the task
+     * @return The type
      */
-    void registerWorldGeneratorModifier(WorldGeneratorModifier modifier);
-
-    /**
-     * Gets the {@link PopulatorFactory} for creating {@link Populator}s and
-     * {@link GeneratorPopulator}s.
-     * 
-     * @return The populator factory
-     */
-    PopulatorFactory getPopulatorFactory();
-
-    /**
-     * Returns a new invalid identity transform.
-     * The extent needs to be set using
-     * {@link Transform#setExtent(Extent)} to validate it.
-     *
-     * @return A new invalid identity transform
-     * @see #createTransform(Extent)
-     */
-    <E extends Extent> Transform<E> createTransform();
-
-    /**
-     * Returns a new identity transform for the given extent.
-     * This transform has no translation, rotation or scale
-     * (position and rotation are (0, 0, 0) and scale is (1, 1, 1)).
-     * Use chained setter calls to configure it. Example:
-     * <pre>{@code createTransform(extent)
-     * .setPosition(position)
-     * .setRotation(rotation)}</pre>
-     *
-     * @param extent The extent which contains the transform
-     * @return A new identity transform
-     */
-    <E extends Extent> Transform<E> createTransform(E extent);
+    AITaskType registerAITaskType(Object plugin, String id, String name, Class<? extends AbstractAITask<? extends Agent>> aiClass);
 
     /**
      * Gets the {@link ExtentBufferFactory} for creating buffers
@@ -530,10 +337,52 @@ public interface GameRegistry {
     ExtentBufferFactory getExtentBufferFactory();
 
     /**
+     * Gets the {@link ValueFactory} for creating values.
+     *
+     * @return The value factory
+     */
+    ValueFactory getValueFactory();
+
+    /**
+     * Gets the {@link VillagerRegistry} for the register mappings
+     * of {@link Career}s to {@link TradeOfferGenerator}s based on
+     * a level.
+     *
+     * @return The villager registry instance
+     */
+    VillagerRegistry getVillagerRegistry();
+
+    /**
+     * Gets the internal {@link TextSerializerFactory}.
+     *
+     * @return The text serializer factory
+     * @deprecated Use {@link TextSerializers} instead
+     */
+    @Deprecated
+    TextSerializerFactory getTextSerializerFactory();
+
+    /**
+     * Gets the internal {@link SelectorFactory}.
+     *
+     * @return The selector factory
+     * @deprecated Use the appropriate class in the selector package instead
+     */
+    @Deprecated
+    SelectorFactory getSelectorFactory();
+
+    /**
+     * Gets a locale for the specified locale code, e.g. {@code en_US}.
+     *
+     * @param locale The locale to lookup (e.g. {@code en_US}.
+     * @return The locale
+     */
+    Locale getLocale(String locale);
+
+    /**
      * Gets the {@link Translation} with the provided ID.
      *
      * @param id The ID of the translation
-     * @return The {@link Translation} with the given ID or Optional.absent() if not found
+     * @return The {@link Translation} with the given ID or Optional.empty() if not found
      */
     Optional<Translation> getTranslationById(String id);
 

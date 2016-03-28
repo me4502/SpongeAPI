@@ -25,7 +25,6 @@
 package org.spongepowered.api.text.action;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.item.inventory.ItemStack;
@@ -33,6 +32,7 @@ import org.spongepowered.api.statistic.achievement.Achievement;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Identifiable;
 
+import java.util.Optional;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
@@ -51,6 +51,11 @@ public abstract class HoverAction<R> extends TextAction<R> {
      */
     HoverAction(R result) {
         super(result);
+    }
+
+    @Override
+    public void applyTo(Text.Builder builder) {
+        builder.onHover(this);
     }
 
     /**
@@ -119,8 +124,8 @@ public abstract class HoverAction<R> extends TextAction<R> {
         }
 
         /**
-         * Represents a reference to an entity, used in the underlying JSON of the
-         * show entity action.
+         * Represents a reference to an entity, used in the underlying JSON of
+         * the show entity action.
          */
         public static final class Ref implements Identifiable {
 
@@ -136,7 +141,7 @@ public abstract class HoverAction<R> extends TextAction<R> {
              * @param type The type of the entity
              */
             public Ref(UUID uuid, String name, @Nullable EntityType type) {
-                this(uuid, name, Optional.fromNullable(type));
+                this(uuid, name, Optional.ofNullable(type));
             }
 
             /**
@@ -146,7 +151,7 @@ public abstract class HoverAction<R> extends TextAction<R> {
              * @param name The name of the entity
              */
             public Ref(UUID uuid, String name) {
-                this(uuid, name, Optional.<EntityType>absent());
+                this(uuid, name, Optional.<EntityType>empty());
             }
 
             /**
@@ -194,7 +199,7 @@ public abstract class HoverAction<R> extends TextAction<R> {
             /**
              * Retrieves the type that this {@link Ref} refers to, if it exists.
              *
-             * @return The type, or {@link Optional#absent()}
+             * @return The type, or {@link Optional#empty()}
              */
             public Optional<EntityType> getType() {
                 return this.type;
@@ -211,7 +216,7 @@ public abstract class HoverAction<R> extends TextAction<R> {
                 }
 
                 Ref that = (Ref) obj;
-                return  this.uuid.equals(that.uuid)
+                return this.uuid.equals(that.uuid)
                         && this.name.equals(that.name)
                         && this.type.equals(that.type);
             }
@@ -220,7 +225,6 @@ public abstract class HoverAction<R> extends TextAction<R> {
             public int hashCode() {
                 return Objects.hashCode(this.uuid, this.name, this.type);
             }
-
 
             @Override
             public String toString() {

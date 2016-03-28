@@ -25,28 +25,30 @@
 package org.spongepowered.api;
 
 import com.flowpowered.math.vector.Vector3d;
-import com.google.common.base.Optional;
 import org.spongepowered.api.entity.Entity;
-import org.spongepowered.api.entity.player.Player;
-import org.spongepowered.api.network.ChannelRegistrar;
-import org.spongepowered.api.service.world.ChunkLoadService;
+import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.text.channel.MessageChannel;
+import org.spongepowered.api.profile.GameProfileManager;
+import org.spongepowered.api.resourcepack.ResourcePack;
+import org.spongepowered.api.scoreboard.Scoreboard;
+import org.spongepowered.api.world.ChunkTicketManager;
 import org.spongepowered.api.text.Text;
-import org.spongepowered.api.text.sink.MessageSink;
-import org.spongepowered.api.util.command.source.ConsoleSource;
+import org.spongepowered.api.command.source.ConsoleSource;
 import org.spongepowered.api.world.World;
-import org.spongepowered.api.world.WorldBuilder;
 import org.spongepowered.api.world.WorldCreationSettings;
 import org.spongepowered.api.world.storage.ChunkLayout;
 import org.spongepowered.api.world.storage.WorldProperties;
 
 import java.net.InetSocketAddress;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Represents a typical Minecraft Server.
  */
-public interface Server extends ChannelRegistrar {
+public interface Server {
 
     /**
      * Gets the {@link Player}s currently online.
@@ -66,7 +68,7 @@ public interface Server extends ChannelRegistrar {
      * Gets a {@link Player} by their unique id
      *
      * @param uniqueId The UUID to get the player from
-     * @return {@link Player} or Optional.absent() if not found
+     * @return {@link Player} or Optional.empty() if not found
      */
     Optional<Player> getPlayer(UUID uniqueId);
 
@@ -79,7 +81,7 @@ public interface Server extends ChannelRegistrar {
      * Notch of today may not be the Notch of yesterday.</b></p>
      *
      * @param name The name to get the player from
-     * @return {@link Player} or Optional.absent() if not found
+     * @return {@link Player} or Optional.empty() if not found
      */
     Optional<Player> getPlayer(String name);
 
@@ -120,6 +122,20 @@ public interface Server extends ChannelRegistrar {
      * @return The world, if found
      */
     Optional<World> getWorld(String worldName);
+
+    /**
+     * Gets the properties of default world.
+     *
+     * @return The world properties
+     */
+    Optional<WorldProperties> getDefaultWorld();
+
+    /**
+     * Gets the default {@link World} name that the server creates and loads.
+     *
+     * @return The name
+     */
+    String getDefaultWorldName();
 
     /**
      * Loads a {@link World} from the default storage container. If a world with
@@ -189,7 +205,7 @@ public interface Server extends ChannelRegistrar {
     /**
      * Creates a new world from the given {@link WorldCreationSettings}. For the
      * creation of the WorldCreationSettings please see
-     * {@link WorldBuilder}.
+     * {@link WorldCreationSettings.Builder}.
      *
      * <p>If the world already exists then the existing {@link WorldProperties}
      * are returned else a new world is created and the new WorldProperties
@@ -204,7 +220,46 @@ public interface Server extends ChannelRegistrar {
      * @param settings The settings for creation
      * @return The new or existing world properties, if creation was successful
      */
-    Optional<WorldProperties> createWorld(WorldCreationSettings settings);
+    Optional<WorldProperties> createWorldProperties(WorldCreationSettings settings);
+
+    /**
+     * Creates a world copy asynchronously using the new name given and returns
+     * the new world properties if the copy was possible.
+     *
+     * <p>If the world is already loaded then the following will occur:</p>
+     *
+     * <ul>
+     * <li>World is saved.</li>
+     * <li>World saving is disabled.</li>
+     * <li>World is copied. </li>
+     * <li>World saving is enabled.</li>
+     * </ul>
+     *
+     * @param worldProperties The world properties to copy
+     * @param copyName The name for copied world
+     * @return An {@link Optional} containing the properties of the new world
+     *         instance, if the copy was successful
+     */
+    CompletableFuture<Optional<WorldProperties>> copyWorld(WorldProperties worldProperties, String copyName);
+
+    /**
+     * Renames an unloaded world.
+     *
+     * @param worldProperties The world properties to rename
+     * @param newName The name that should be used as a replacement for the
+     *        current world name
+     * @return An {@link Optional} containing the new {@link WorldProperties}
+     *         if the rename was successful
+     */
+    Optional<WorldProperties> renameWorld(WorldProperties worldProperties, String newName);
+
+    /**
+     * Deletes the provided world's files asynchronously from the disk.
+     *
+     * @param worldProperties The world properties to delete
+     * @return True if the deletion was successful.
+     */
+    CompletableFuture<Boolean> deleteWorld(WorldProperties worldProperties);
 
     /**
      * Persists the given {@link WorldProperties} to the world storage for it,
@@ -214,6 +269,21 @@ public interface Server extends ChannelRegistrar {
      * @return True if the save was successful
      */
     boolean saveWorldProperties(WorldProperties properties);
+
+    /**
+     * Gets the 'server' scoreboard. In Vanilla, this is the scoreboard of
+     * dimension 0 (the overworld).
+     *
+     * <p>The sever scoreboard is used with the Vanilla /scoreboard command,
+     * automatic score updating through criteria, and other things.</p>
+     *
+     * <p>The server scoreboard may not be available if dimension 0
+     * is not yet loaded. In Vanilla, this will only occur when the
+     * server is first starting, as dimension 0 is normally always loaded.</p>
+     *
+     * @return the server scoreboard, if available.
+     */
+    Optional<Scoreboard> getServerScoreboard();
 
     /**
      * Returns information about the chunk layout used by this server
@@ -235,18 +305,24 @@ public interface Server extends ChannelRegistrar {
     int getRunningTimeTicks();
 
     /**
-     * Get the sink that messages to be broadcast across the whole server
-     * should be sent to.
+     * Gets the message channel that server-wide messages are sent through.
      *
-     * @return The server-wide broadcast sink
+     * @return The server-wide broadcast channel
      */
-    MessageSink getBroadcastSink();
+    MessageChannel getBroadcastChannel();
+
+    /**
+     * Sets the channel that server-wide messages should be sent through.
+     *
+     * @param channel The broadcast channel
+     */
+    void setBroadcastChannel(MessageChannel channel);
 
     /**
      * Gets the bound {@link InetSocketAddress} from where this server is accepting
      * connections.
      *
-     * @return The address or Optional.absent() if not found
+     * @return The address or Optional.empty() if not found
      */
     Optional<InetSocketAddress> getBoundAddress();
 
@@ -301,9 +377,37 @@ public interface Server extends ChannelRegistrar {
     ConsoleSource getConsole();
 
     /**
-     * Gets the ChunkLoadService used for requesting tickets to force load chunks.
+     * Gets the ChunkTicketManager used for requesting tickets to force load chunks.
      *
      * @return This server's chunk load service
      */
-    ChunkLoadService getChunkLoadService();
+    ChunkTicketManager getChunkTicketManager();
+
+    /**
+     * Gets the {@link GameProfileManager} for resolving game profiles.
+     *
+     * @return This server's game profile manager
+     */
+    GameProfileManager getGameProfileManager();
+
+    /**
+     * Gets the current ticks per second. A tick represents one cycle of the
+     * game loop.
+     *
+     * <p>Note: The server aims to limit itself at 20 ticks per second. Lower
+     * ticks per second may elude to the server taking more time to process
+     * information per tick. Examples of overburdening the server per tick
+     * include spawning 10,000 cows in a small area.</p>
+     *
+     * @return The current ticks per second
+     */
+    double getTicksPerSecond();
+
+    /**
+     * Gets the default resource pack. The default resource pack is sent to
+     * players when they join the server.
+     *
+     * @return The default resource pack
+     */
+    Optional<ResourcePack> getDefaultResourcePack();
 }

@@ -24,7 +24,7 @@
  */
 package org.spongepowered.api.network;
 
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 
 /**
  * Represents a connection of a client to the server.
@@ -39,28 +39,10 @@ public interface PlayerConnection extends RemoteConnection {
     Player getPlayer();
 
     /**
-     * Gets the connection ping. This is constantly calculated by the server.
+     * Gets the connection latency. This is constantly calculated by the server.
      *
-     * @return The ping
+     * @return The latency
      */
-    int getPing();
+    int getLatency();
 
-    /**
-     * Sends a custom payload over the player connection backed by a
-     * {@link ChannelBuf}.
-     *
-     * @param plugin The instance of the plugin
-     * @param channel The channel to send to
-     * @param dataStream The data
-     */
-    void sendCustomPayload(Object plugin, String channel, ChannelBuf dataStream);
-
-    /**
-     * Sends a custom payload to the player connection.
-     *
-     * @param plugin The instance of the plugin
-     * @param channel The channel to send to
-     * @param data The data
-     */
-    void sendCustomPayload(Object plugin, String channel, byte[] data);
 }

@@ -47,11 +47,13 @@ public interface ExtentBufferFactory {
      * @param zSize The size of the buffer on z
      * @return A new biome buffer
      */
-    MutableBiomeArea createBiomeBuffer(int xSize, int zSize);
+    default MutableBiomeArea createBiomeBuffer(int xSize, int zSize) {
+        return createBiomeBuffer(new Vector2i(xSize, zSize));
+    }
 
     /**
-     * Returns a new biome buffer of the desired size.
-     * This buffer is thread safe.
+     * Returns a new biome buffer of the desired size. This buffer is thread
+     * safe.
      *
      * @param size The size of the buffer on x and z (y in the vector)
      * @return A new biome buffer
@@ -59,14 +61,16 @@ public interface ExtentBufferFactory {
     MutableBiomeArea createThreadSafeBiomeBuffer(Vector2i size);
 
     /**
-     * Returns a new biome buffer of the desired size.
-     * This buffer is thread safe.
+     * Returns a new biome buffer of the desired size. This buffer is thread
+     * safe.
      *
      * @param xSize The size of the buffer on x
      * @param zSize The size of the buffer on z
      * @return A new biome buffer
      */
-    MutableBiomeArea createThreadSafeBiomeBuffer(int xSize, int zSize);
+    default MutableBiomeArea createThreadSafeBiomeBuffer(int xSize, int zSize) {
+        return createThreadSafeBiomeBuffer(new Vector2i(xSize, zSize));
+    }
 
     /**
      * Returns a new block buffer of the desired size.
@@ -84,11 +88,13 @@ public interface ExtentBufferFactory {
      * @param zSize The size of the buffer on z
      * @return A new block buffer
      */
-    MutableBlockVolume createBlockBuffer(int xSize, int ySize, int zSize);
+    default MutableBlockVolume createBlockBuffer(int xSize, int ySize, int zSize) {
+        return createBlockBuffer(new Vector3i(xSize, ySize, zSize));
+    }
 
     /**
-     * Returns a new block buffer of the desired size.
-     * This buffer is thread safe.
+     * Returns a new block buffer of the desired size. This buffer is thread
+     * safe.
      *
      * @param size The size of the buffer on x, y and z
      * @return A new block buffer
@@ -96,14 +102,16 @@ public interface ExtentBufferFactory {
     MutableBlockVolume createThreadSafeBlockBuffer(Vector3i size);
 
     /**
-     * Returns a new block buffer of the desired size.
-     * This buffer is thread safe.
+     * Returns a new block buffer of the desired size. This buffer is thread
+     * safe.
      *
      * @param xSize The size of the buffer on x
      * @param ySize The size of the buffer on y
      * @param zSize The size of the buffer on z
      * @return A new block buffer
      */
-    MutableBlockVolume createThreadSafeBlockBuffer(int xSize, int ySize, int zSize);
+    default MutableBlockVolume createThreadSafeBlockBuffer(int xSize, int ySize, int zSize) {
+        return createThreadSafeBlockBuffer(new Vector3i(xSize, ySize, zSize));
+    }
 
 }

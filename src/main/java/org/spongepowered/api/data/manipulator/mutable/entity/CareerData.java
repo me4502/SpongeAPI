@@ -27,19 +27,11 @@ package org.spongepowered.api.data.manipulator.mutable.entity;
 import org.spongepowered.api.data.manipulator.immutable.entity.ImmutableCareerData;
 import org.spongepowered.api.data.manipulator.mutable.VariantData;
 import org.spongepowered.api.data.type.Career;
-import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.entity.living.Villager;
 
 /**
  * Represents the {@link Career} for a {@link Villager}.
  */
 public interface CareerData extends VariantData<Career, CareerData, ImmutableCareerData> {
-
-    /**
-     * Gets the {@link Value} for the {@link Career}.
-     *
-     * @return The value for the career
-     */
-    Value<Career> career();
 
 }

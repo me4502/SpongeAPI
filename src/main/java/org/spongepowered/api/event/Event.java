@@ -24,20 +24,24 @@
  */
 package org.spongepowered.api.event;
 
-import org.spongepowered.api.util.annotation.ImplementedBy;
-import org.spongepowered.api.util.event.callback.CallbackList;
+import org.spongepowered.api.event.cause.Cause;
+import org.spongepowered.api.event.impl.AbstractEvent;
+import org.spongepowered.api.eventgencore.annotation.AbsoluteSortPosition;
+import org.spongepowered.api.eventgencore.annotation.ImplementedBy;
 
 /**
- * An event that occurs in Sponge.
+ * An event called within Sponge.
+ *
+ * <p>This is a marker interface, which must be implemented
+ * by any event used with the Sponge event bus.</p>
  */
-@ImplementedBy(AbstractEvent.class)
+@ImplementedBy(value = AbstractEvent.class, priority = Integer.MIN_VALUE)
 public interface Event {
-
     /**
-     * Get a list of callbacks.
+     * Get the cause for the event.
      *
-     * @return A list of callbacks
+     * @return The last cause
      */
-    CallbackList getCallbacks();
-
+    @AbsoluteSortPosition(0)
+    Cause getCause();
 }

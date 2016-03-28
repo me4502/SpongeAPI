@@ -24,17 +24,14 @@
  */
 package org.spongepowered.api.data.manipulator;
 
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
-import org.spongepowered.api.data.DataContainer;
-import org.spongepowered.api.data.DataHolder;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.data.key.Key;
-import org.spongepowered.api.data.merge.MergeFunction;
 import org.spongepowered.api.data.value.BaseValue;
 import org.spongepowered.api.data.value.ValueContainer;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
 import org.spongepowered.api.data.value.mutable.Value;
+
+import java.util.Optional;
 
 /**
  * An {@code ImmutableDataManipulator} is an immutable {@link ValueContainer}
@@ -63,7 +60,10 @@ public interface ImmutableDataManipulator<I extends ImmutableDataManipulator<I, 
      * @param <E> The type of value
      * @return The new immutable data manipulator, if compatible
      */
-    <E> Optional<I> with(Key<? extends BaseValue<E>> key, E value);
+    default <E> Optional<I> with(Key<? extends BaseValue<E>> key, E value) {
+        M data = asMutable();
+        return data.supports(key) ? Optional.of(asMutable().set(key, value).asImmutable()) : Optional.empty();
+    }
 
     /**
      * Creates a new {@link ImmutableDataManipulator} with the provided
@@ -75,10 +75,16 @@ public interface ImmutableDataManipulator<I extends ImmutableDataManipulator<I, 
      * @param value The value to set
      * @return The new immutable data manipulator, if compatible
      */
-    Optional<I> with(BaseValue<?> value);
+    @SuppressWarnings("unchecked")
+    default Optional<I> with(BaseValue<?> value) {
+        return with((Key<? extends BaseValue<Object>>) value.getKey(), value.get());
+    }
 
+    @SuppressWarnings("unchecked")
     @Override
-    I copy();
+    default I copy() {
+        return (I) this;
+    }
 
     /**
      * Gets a {@link DataManipulator} copy of this

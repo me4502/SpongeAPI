@@ -12,7 +12,7 @@ dist
 lib
 out
 run
-target
+/target
 *.com
 *.class
 *.dll
@@ -71,3 +71,4 @@ nb-configuration.xml
 *.iml
 *.ipr
 *.iws
+*.launch
