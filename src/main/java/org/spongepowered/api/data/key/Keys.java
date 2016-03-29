@@ -44,6 +44,7 @@ import org.spongepowered.api.entity.EntitySnapshot;
 import org.spongepowered.api.entity.EntityType;
 import org.spongepowered.api.entity.living.Living;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.map.MapView;
 import org.spongepowered.api.util.RespawnLocation;
 import org.spongepowered.api.entity.living.player.gamemode.GameMode;
 import org.spongepowered.api.entity.vehicle.minecart.CommandBlockMinecart;
@@ -103,6 +104,12 @@ public final class Keys {
      * @see AttachedData#attached()
      */
     public static final Key<Value<Boolean>> ATTACHED = KeyFactory.fake("ATTACHED");
+
+    /**
+     * Represents the {@link Key} for the backing {@link MapView} attached to
+     * compatible {@link org.spongepowered.api.data.DataHolder}s.
+     */
+    public static final Key<Value<MapView>> ATTACHED_MAP_VIEW = KeyFactory.fake("ATTACHED_MAP_VIEW");
 
     public static final Key<MutableBoundedValue<Double>> ATTACK_DAMAGE = KeyFactory.fake("ATTACK_DAMAGE");
 

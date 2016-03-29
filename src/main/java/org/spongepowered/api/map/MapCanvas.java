@@ -79,7 +79,8 @@ public interface MapCanvas {
     void setPixelSimilar(int x, int y, Color color);
 
     /**
-     * Returns the {@link MapColor} at the specified pixel.
+     * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
+     * {@link org.spongepowered.api.map.color.MapPalette#AIR}
      *
      * The coordinates start with 0,0 as the top left corner moving right and
      * down.
@@ -87,8 +88,8 @@ public interface MapCanvas {
      * @param x The x coordinate of the pixel to get
      * @param y The y coordinate of the pixel to get
      * @return The color of the pixel at the specified coordinates
-     * @throws IndexOutOfBoundsException If the coordinates are greater than
-     *         the width and height of the map's canvas
+     * @throws IndexOutOfBoundsException If the coordinates are greater than or equal to
+     * the width and height of the map's canvas
      */
     MapColor getPixel(int x, int y);
 
