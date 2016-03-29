@@ -25,9 +25,10 @@
 package org.spongepowered.api.map.color;
 
 import com.google.common.base.Optional;
+import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.util.Color;
 
-public interface MapColor {
+public interface MapColor extends DataSerializable {
 
     /**
      * Returns the corresponding {@link Color} for this {@link MapColor}.

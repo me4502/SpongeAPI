@@ -28,6 +28,7 @@ import com.google.common.collect.ImmutableCollection;
 import org.spongepowered.api.map.color.MapPalette;
 import org.spongepowered.api.map.color.MapColor;
 import org.spongepowered.api.map.color.MapShade;
+import org.spongepowered.api.util.Color;
 
 /**
  * Represents the required implementation for the static methods in
@@ -62,14 +63,25 @@ public interface MapPaletteFactory {
     MapColor getByIndex(int colorIndex);
 
     /**
-     * Takes a palette color and a shade to create a new {@link MapColor} with the
-     * shaded color value. If the value has already been created it will load a
-     * cached entry. This is not based on the color itself but rather the unshaded
-     * version of the color provided, this helps ensure consistency.
+     * Gets a new {@link MapColor} with the specified shaded value from the
+     * <b>base color</b> of the color provided.
+     *
+     * <p>If the value has already been created it will load a cached entry.
+     * This is not based on the color itself but rather the unshaded version of
+     * the color provided, this helps ensure consistency.</p>
      *
      * @param base The base color, not required to be an actual base color
      * @param shade The shade to apply
      * @return The shaded color
      */
     MapColor getShade(MapColor base, MapShade shade);
+
+    /**
+     * Returns a {@link MapColor} that is closest matching to the given
+     * {@link org.spongepowered.api.util.Color}.
+     *
+     * @param color The color to match
+     * @return The closest {@link MapColor} to the provided color
+     */
+    MapColor of(Color color);
 }

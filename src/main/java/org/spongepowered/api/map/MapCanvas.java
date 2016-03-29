@@ -25,6 +25,7 @@
 package org.spongepowered.api.map;
 
 import com.flowpowered.math.vector.Vector2i;
+import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.map.color.MapColor;
 import org.spongepowered.api.map.font.MapFont;
 import org.spongepowered.api.text.Text;
@@ -35,7 +36,7 @@ import java.awt.Image;
 /**
  * A representation of the canvas (pixel surface) of a map.
  */
-public interface MapCanvas {
+public interface MapCanvas extends DataSerializable {
 
     /**
      * Returns the width and height of the map's canvas.

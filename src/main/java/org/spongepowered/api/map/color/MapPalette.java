@@ -26,6 +26,7 @@ package org.spongepowered.api.map.color;
 
 import com.google.common.collect.ImmutableCollection;
 import org.spongepowered.api.map.util.MapPaletteFactory;
+import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 
 /**
@@ -108,6 +109,17 @@ public final class MapPalette {
      */
     public static MapColor getByIndex(int colorIndex) {
         return factory.getByIndex(colorIndex);
+    }
+
+    /**
+     * Returns a {@link MapColor} that is closest matching to the given
+     * {@link org.spongepowered.api.util.Color}.
+     *
+     * @param color The color to match
+     * @return The closest {@link MapColor} to the provided color
+     */
+    public static MapColor of(Color color) {
+        return factory.of(color);
     }
 
     /**
