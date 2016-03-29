@@ -106,6 +106,20 @@ public interface MapView extends Identifiable {
     MapCursorHandle addCursor(MapCursor type, Vector2i position);
 
     /**
+     * Gets the current scaling ratio of the map.
+     *
+     * @return The scaling ratio for the map
+     */
+    MapScale getScale();
+
+    /**
+     * Sets the current scaling ratio of the map.
+     *
+     * @param scale The new scaling ratio for the map
+     */
+    void setScale(MapScale scale);
+
+    /**
      * Sends a forced update of the map to a player. This will send only the
      * region of the canvas between min x,y and max x,y to the player. Allowing
      * custom trickle loading, or forced immediate updating of the map.
