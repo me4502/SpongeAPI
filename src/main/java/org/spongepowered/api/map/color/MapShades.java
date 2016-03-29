@@ -42,19 +42,19 @@ public final class MapShades {
      * Represents a multiplication by 180 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
-    public static final MapShade MULTIPLY_180 = DummyObjectProvider.createFor(MapShade.class, "MULTIPLY_180");
+    public static final MapShade DARKER = DummyObjectProvider.createFor(MapShade.class, "DARKER");
 
     /**
      * Represents a multiplication by 220 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
-    public static final MapShade MULTIPLY_220 = DummyObjectProvider.createFor(MapShade.class, "MULTIPLY_220");
+    public static final MapShade DARK = DummyObjectProvider.createFor(MapShade.class, "DARK");
 
     /**
      * Represents a multiplication by 135 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
-    public static final MapShade MULTIPLY_135 = DummyObjectProvider.createFor(MapShade.class, "MULTIPLY_135");
+    public static final MapShade DARKEST = DummyObjectProvider.createFor(MapShade.class, "DARKEST");
 
     // SORTFIELDS:OFF
 
