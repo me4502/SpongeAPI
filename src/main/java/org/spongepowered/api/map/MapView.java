@@ -26,7 +26,7 @@ package org.spongepowered.api.map;
 
 import com.flowpowered.math.vector.Vector2i;
 import com.google.common.collect.ImmutableList;
-import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.map.cursor.MapCursor;
 import org.spongepowered.api.map.cursor.MapCursorHandle;
 import org.spongepowered.api.map.cursor.MapCursors;
@@ -113,6 +113,7 @@ public interface MapView extends Identifiable {
      * @param player The player to send the update to
      * @param min The upper left corner of the region to send
      * @param max The bottom right corner of the region to send
+     * @throws IndexOutOfBoundsException If the update region is not within the boundaries of the map
      */
     void sendUpdate(Player player, Vector2i min, Vector2i max);
 
@@ -124,6 +125,7 @@ public interface MapView extends Identifiable {
      * @param players The players to send the updates to
      * @param min The upper left corner of the region to send
      * @param max The bottom right corner of the region to send
+     * @throws IndexOutOfBoundsException If the update region is not within the boundaries of the map
      */
     void sendUpdate(Collection<Player> players, Vector2i min, Vector2i max);
 

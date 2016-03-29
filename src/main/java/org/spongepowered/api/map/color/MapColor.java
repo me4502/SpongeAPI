@@ -25,19 +25,16 @@
 package org.spongepowered.api.map.color;
 
 import com.google.common.base.Optional;
+import org.spongepowered.api.util.Color;
 
 public interface MapColor {
 
     /**
-     * Returns the color value of this object, can be converted to an
-     * instance of {@link java.awt.Color} by plugins easily.
+     * Returns the corresponding {@link Color} for this {@link MapColor}.
      *
-     * <p>Standard RGB packing, (red<<16) | (green << 8) | blue, where each of
-     * the channels is masked off to fit in a byte before packing.</p>
-     *
-     * @return The RGB value of this color
+     * @return The RGB color of this map color
      */
-    int getRGB();
+    Color getColor();
 
     /**
      * Returns the value of the entry in a map palette, this isn't the base
