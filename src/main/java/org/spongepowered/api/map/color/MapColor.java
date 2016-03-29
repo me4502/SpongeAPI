@@ -37,15 +37,6 @@ public interface MapColor {
     Color getColor();
 
     /**
-     * Returns the value of the entry in a map palette, this isn't the base
-     * color index which needs to be modified before being set, this represents
-     * the actual value that can be set in a map.
-     *
-     * @return The map color index
-     */
-    int getPaletteIndex();
-
-    /**
      * Creates a shaded representation of this color's <b>base color</b> using
      * {@link MapPalette#getShade(MapColor, MapShade)} which will create a new
      * instance if needed or return a cached instance for previously created

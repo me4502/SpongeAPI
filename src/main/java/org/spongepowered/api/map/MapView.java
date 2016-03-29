@@ -41,33 +41,6 @@ import java.util.List;
 public interface MapView extends Identifiable {
 
     /**
-     * Sets the {@link MapCursor} used for players on the map when
-     * {@link #isUsingVanillaCursors()} is true. By default this is a
-     * {@link MapCursors#WHITE_POINTER}.
-     *
-     * @param cursor The new cursor for player positions
-     */
-    void setPlayerCursor(MapCursor cursor);
-
-    /**
-     * Sets the {@link MapCursor} used for item frame locations on the map when
-     * {@link #isUsingVanillaCursors()} is true. By default this is a
-     * {@link MapCursors#GREEN_POINTER}.
-     *
-     * @param cursor The new cursor for item frame positions
-     */
-    void setItemFrameCursor(MapCursor cursor);
-
-    /**
-     * Sets the {@link MapCursor} used for player locations on the edge
-     * when players go out of bounds when  {@link #isUsingVanillaCursors()} is
-     * true. By default this is a {@link MapCursors#WHITE_CIRCLE}.
-     *
-     * @param cursor The new cursor for edge positions
-     */
-    void setEdgeCursor(MapCursor cursor);
-
-    /**
      * Returns if vanilla's default handling of cursors with item frames and
      * players should be used, if disabled all vanilla cursors are removed and
      * plugins must manually update cursor positions.
@@ -93,6 +66,33 @@ public interface MapView extends Identifiable {
      * @return All the cursor handles
      */
     Collection<MapCursorHandle> getAllCursors();
+
+    /**
+     * Sets the {@link MapCursor} used for players on the map when
+     * {@link #isUsingVanillaCursors()} is true. By default this is a
+     * {@link MapCursors#WHITE_POINTER}.
+     *
+     * @param cursor The new cursor for player positions
+     */
+    void setPlayerCursor(MapCursor cursor);
+
+    /**
+     * Sets the {@link MapCursor} used for item frame locations on the map when
+     * {@link #isUsingVanillaCursors()} is true. By default this is a
+     * {@link MapCursors#GREEN_POINTER}.
+     *
+     * @param cursor The new cursor for item frame positions
+     */
+    void setItemFrameCursor(MapCursor cursor);
+
+    /**
+     * Sets the {@link MapCursor} used for player locations on the edge
+     * when players go out of bounds when  {@link #isUsingVanillaCursors()} is
+     * true. By default this is a {@link MapCursors#WHITE_CIRCLE}.
+     *
+     * @param cursor The new cursor for edge positions
+     */
+    void setEdgeCursor(MapCursor cursor);
 
     /**
      * Adds a new cursor to the map of the specified type, the position is pixel
@@ -175,11 +175,19 @@ public interface MapView extends Identifiable {
     void addRenderer(MapRenderer renderer);
 
     /**
+     * Adds a renderer to this map as the base layer.
+     *
+     * @param renderer The renderer to add
+     */
+    void addRendererBase(MapRenderer renderer);
+
+    /**
      * Inserts a renderer in the map at the specific index, shifting existing
      * renderers around it.
      *
      * @param index The index to insert the renderer at
      * @param renderer The renderer to insert
+     * @throws IndexOutOfBoundsException If the provided index is out of bounds
      */
     void insertRenderer(int index, MapRenderer renderer);
 
@@ -208,19 +216,13 @@ public interface MapView extends Identifiable {
 
     /**
      * Returns a {@link List} of all the {@link MapRenderer}s stored on this
-     * map. The ordering is the layering of rendering with 0 being the bottom
+     * map.
+     *
+     * <p>The ordering is the layering of rendering with 0 being the bottom
      * most layer rendered first, and the {@link List#size()}-1 entry being the
-     * latest rendered layer.
+     * latest rendered layer.</p>
      *
      * @return An unmodifiable ordered list of all renderers
      */
     ImmutableList<MapRenderer> getAllRenderers();
-
-    /**
-     * Returns an {@link ImmutableList} of all the {@link Player}s viewing this
-     * map currently.
-     *
-     * @return The list of players viewing the map
-     */
-    ImmutableList<Player> getViewers();
 }
