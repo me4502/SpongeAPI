@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.map;
 
+import com.flowpowered.math.vector.Vector2i;
 import org.spongepowered.api.map.color.MapColor;
 import org.spongepowered.api.map.font.MapFont;
 import org.spongepowered.api.text.Text;
@@ -37,18 +38,28 @@ import java.awt.Image;
 public interface MapCanvas {
 
     /**
-     * Returns the width of the map's canvas.
+     * Returns the width and height of the map's canvas.
      *
-     * @return The map canvas's width
+     * <p>The x value is the width and the y value is the height.</p>
+     *
+     * @return The map canvas's size
      */
-    int getWidth();
+    Vector2i getSize();
 
     /**
-     * Returns the height of the map's canvas.
+     * Sets the specified pixel to the exact {@link MapColor} given.
      *
-     * @return The map canvas's height
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
+     * @param position The coordinates of the pixel to set
+     * @param color The color to set the pixel to
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
      */
-    int getHeight();
+    default void setPixelExact(Vector2i position, MapColor color) {
+        setPixelExact(position.getX(), position.getY(), color);
+    }
 
     /**
      * Sets the specified pixel to the exact {@link MapColor} given.
@@ -70,6 +81,21 @@ public interface MapCanvas {
      * <p>The coordinates start with 0,0 as the top left corner moving right
      * and down.</p>
      *
+     * @param position The coordinates of the pixel to set
+     * @param color The color to be matched before setting the pixel to the closest {@link MapColor}
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
+     */
+    default void setPixelSimilar(Vector2i position, Color color) {
+        setPixelSimilar(position.getX(), position.getY(), color);
+    }
+
+    /**
+     * Sets the specified pixel to the {@link MapColor} that is most similar to the {@link Color} provided.
+     *
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
      * @param x The x coordinate of the pixel
      * @param y The y coordinate of the pixel
      * @param color The color to be matched before setting the pixel to the closest {@link MapColor}
@@ -77,6 +103,22 @@ public interface MapCanvas {
      *         the width and height of the map's canvas
      */
     void setPixelSimilar(int x, int y, Color color);
+
+    /**
+     * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
+     * {@link org.spongepowered.api.map.color.MapPalette#AIR}
+     *
+     * The coordinates start with 0,0 as the top left corner moving right and
+     * down.
+     *
+     * @param position The coordinates of the pixel to get
+     * @return The color of the pixel at the specified coordinates
+     * @throws IndexOutOfBoundsException If the coordinates are greater than or equal to
+     * the width and height of the map's canvas
+     */
+    default MapColor getPixel(Vector2i position) {
+        return getPixel(position.getX(), position.getY());
+    }
 
     /**
      * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
@@ -112,8 +154,9 @@ public interface MapCanvas {
     void drawImage(int x, int y, Image image);
 
     /**
-     * Draws text to the map, handling colors but not formatting. Clips text
-     * that goes out of bounds at the character before it's out of bounds.
+     * Draws text to the map, handling colors but not formatting.
+     *
+     * <p>Clips text that goes out of bounds at the character before it's out of bounds.</p>
      *
      * @param x The top left x coordinate of the drawn text
      * @param y The top left y coordinate of the drawn text

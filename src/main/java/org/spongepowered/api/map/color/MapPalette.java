@@ -124,7 +124,7 @@ public final class MapPalette {
         return factory.getShade(base, shade);
     }
 
-    private static final MapPaletteFactory factory = DummyObjectProvider.createFor(MapPaletteFactory.class, "factory");
+    private static final MapPaletteFactory factory = null;
 
     private MapPalette() {
     }
