@@ -49,6 +49,16 @@ public interface MapViewRegistry {
     MapView createStoredMap(Vector2i centerPos);
 
     /**
+     * Returns a new {@link MapView} that is stored on the disk like a standard
+     * map.
+     *
+     * @param centerX The world relative x center coordinate to use for the map
+     * @param centerY The world relative y center coordinate to use for the map
+     * @return The map view
+     */
+    MapView createStoredMap(int centerX, int centerY);
+
+    /**
      * Returns an unmodifiable collection of all the {@link MapView}s available
      * the {@link MapView}s themselves are modifiable and are not copies.
      *
@@ -60,10 +70,10 @@ public interface MapViewRegistry {
      * Returns a {@link MapView} by it's {@link UUID} this allows easy storage
      * of {@link MapView}s for plugins.
      *
-     * @param mapUUID The UUID of the map view
+     * @param uniqueId The UUID of the map view
      * @return The {@link MapView} if found or {@link Optional#empty()} if missing
      */
-    Optional<MapView> get(UUID mapUUID);
+    Optional<MapView> get(UUID uniqueId);
 
     /**
      * Removes a stored {@link MapView}, this will also delete the file from the
