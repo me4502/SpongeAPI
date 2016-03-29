@@ -27,6 +27,7 @@ package org.spongepowered.api.map;
 import org.spongepowered.api.map.color.MapColor;
 import org.spongepowered.api.map.font.MapFont;
 import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.Color;
 
 import java.awt.Image;
 
@@ -50,7 +51,7 @@ public interface MapCanvas {
     int getHeight();
 
     /**
-     * Sets the specified pixel.
+     * Sets the specified pixel to the exact {@link MapColor} given.
      *
      * <p>The coordinates start with 0,0 as the top left corner moving right
      * and down.</p>
@@ -61,7 +62,21 @@ public interface MapCanvas {
      * @throws IndexOutOfBoundsException If the coordinates are greater than
      *         the width and height of the map's canvas
      */
-    void setPixel(int x, int y, MapColor color);
+    void setPixelExact(int x, int y, MapColor color);
+
+    /**
+     * Sets the specified pixel to the {@link MapColor} that is most similar to the {@link Color} provided.
+     *
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
+     * @param x The x coordinate of the pixel
+     * @param y The y coordinate of the pixel
+     * @param color The color to be matched before setting the pixel to the closest {@link MapColor}
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
+     */
+    void setPixelSimilar(int x, int y, Color color);
 
     /**
      * Returns the {@link MapColor} at the specified pixel.
