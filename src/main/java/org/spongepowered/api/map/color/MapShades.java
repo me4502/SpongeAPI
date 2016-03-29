@@ -24,34 +24,40 @@
  */
 package org.spongepowered.api.map.color;
 
+import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
+
 /**
  * An enumeration of all the possible {@link MapShade}s.
  */
 public final class MapShades {
 
-    private MapShades() {
-    }
+    // SORTFIELDS:ON
 
     /**
      * Represents the default mapping, no modification to the color.
      */
-    public static final MapShade BASE = null;
+    public static final MapShade BASE = DummyObjectProvider.createFor(MapShade.class, "BASE");
 
     /**
      * Represents a multiplication by 180 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
-    public static final MapShade MULTIPLY_180 = null;
+    public static final MapShade MULTIPLY_180 = DummyObjectProvider.createFor(MapShade.class, "MULTIPLY_180");
 
     /**
      * Represents a multiplication by 220 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
-    public static final MapShade MULTIPLY_220 = null;
+    public static final MapShade MULTIPLY_220 = DummyObjectProvider.createFor(MapShade.class, "MULTIPLY_220");
 
     /**
      * Represents a multiplication by 135 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
-    public static final MapShade MULTIPLY_135 = null;
+    public static final MapShade MULTIPLY_135 = DummyObjectProvider.createFor(MapShade.class, "MULTIPLY_135");
+
+    // SORTFIELDS:OFF
+
+    private MapShades() {
+    }
 }

@@ -56,6 +56,7 @@ public interface MapCursorHandle {
      * pixels.
      *
      * @param center The new center position
+     * @throws IndexOutOfBoundsException If the center position provided is not within the map
      */
     void update(Vector2i center);
 

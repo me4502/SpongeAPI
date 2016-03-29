@@ -24,12 +24,12 @@
  */
 package org.spongepowered.api.map.font;
 
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableMap;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Represents a font on a map that can be used for drawing characters.
@@ -58,7 +58,7 @@ public final class MapFont {
      * @return The sprite version of the character
      */
     public Optional<CharacterSprite> getChar(char ch) {
-        return Optional.fromNullable(characters.get(ch));
+        return Optional.ofNullable(characters.get(ch));
     }
 
     /**
