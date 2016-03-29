@@ -101,17 +101,6 @@ public final class MapPalette {
     }
 
     /**
-     * Returns a {@link MapColor} from all the colors (including shades) based
-     * on the palette index. This allows easy lookup of colors from a raw map.
-     *
-     * @param colorIndex The index of the color in the map palette
-     * @return The object represented by that color
-     */
-    public static MapColor getByIndex(int colorIndex) {
-        return factory.getByIndex(colorIndex);
-    }
-
-    /**
      * Returns a {@link MapColor} that is closest matching to the given
      * {@link org.spongepowered.api.util.Color}.
      *
