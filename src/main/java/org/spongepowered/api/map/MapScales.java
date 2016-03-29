@@ -29,7 +29,7 @@ import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 /**
  * An enumeration of all the possible vanilla {@link MapScales}s.
  */
-public class MapScales {
+public final class MapScales {
 
     //SORTFIELDS:ON
 
