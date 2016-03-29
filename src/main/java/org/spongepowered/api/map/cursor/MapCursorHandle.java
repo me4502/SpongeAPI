@@ -61,6 +61,16 @@ public interface MapCursorHandle {
     void update(Vector2i center);
 
     /**
+     * Updates the position of the cursor on the map. Relative to the map's
+     * pixels.
+     *
+     * @param centerX The new center x position
+     * @param centerY The new center y position
+     * @throws IndexOutOfBoundsException If the center position provided is not within the map
+     */
+    void update(int centerX, int centerY);
+
+    /**
      * Removes this cursor from the map.
      *
      * @return True if the removal was successful, false otherwise

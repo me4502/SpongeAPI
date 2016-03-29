@@ -35,6 +35,8 @@ import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
  */
 public final class MapPalette {
 
+    private static final MapPaletteFactory factory = null;
+
     // SORTFIELDS:ON
 
     public static final MapColor AIR = DummyObjectProvider.createFor(MapColor.class, "AIR");
@@ -123,8 +125,6 @@ public final class MapPalette {
     public static MapColor getShade(MapColor base, MapShade shade) {
         return factory.getShade(base, shade);
     }
-
-    private static final MapPaletteFactory factory = null;
 
     private MapPalette() {
     }
