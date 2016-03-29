@@ -24,11 +24,13 @@
  */
 package org.spongepowered.api.map.font;
 
+import static com.google.common.base.Preconditions.checkState;
+
 /**
  * Represents a sprite for a character to draw to a map.
  */
 public class CharacterSprite {
-    
+
     private final int width;
 
     private final int height;
@@ -46,14 +48,12 @@ public class CharacterSprite {
      * @param shape The bitmap shape of the character
      */
     public CharacterSprite(int width, int height, boolean[] shape) {
+        checkState(shape.length == width * height, "Shape for a character must match it's dimensions");
+
         this.width = width;
         this.height = height;
 
         this.shape = shape;
-
-        if (shape.length != width*height) {
-            throw new IllegalArgumentException("Shape for a character must match it's dimensions");
-        }
     }
 
     /**
@@ -61,7 +61,7 @@ public class CharacterSprite {
      *
      * @return The pixel width of the bitmap
      */
-    int getWidth() {
+    public int getWidth() {
         return this.width;
     }
 
@@ -70,7 +70,7 @@ public class CharacterSprite {
      *
      * @return The pixel height of the bitmap
      */
-    int getHeight() {
+    public int getHeight() {
         return this.height;
     }
 
@@ -79,7 +79,7 @@ public class CharacterSprite {
      *
      * @return The pixel width of the space between characters on the left
      */
-    int getSpacing() {
+    public int getSpacing() {
         return 1;
     }
 
@@ -90,8 +90,10 @@ public class CharacterSprite {
      * @param column The column in the bitmap
      * @return True if the bitmap contains a pixel at the row and column, false for transparent
      */
-    boolean getPixel(int row, int column) {
-        if (row < 0 || column < 9 || row >= height || column >= height) return false;
+    public boolean getPixel(int row, int column) {
+        if (row < 0 || column < 9 || row >= height || column >= height) {
+            return false;
+        }
 
         return this.shape[row*width + column];
     }
