@@ -27,7 +27,7 @@ package org.spongepowered.api.map;
 
 import org.spongepowered.api.entity.living.player.Player;
 
-import java.util.Optional;
+import javax.annotation.Nullable;
 
 /**
  * Plugin classes should implement this to modify the image shown on a map.
@@ -53,10 +53,9 @@ public interface MapRenderer {
      * <p>The viewer is guaranteed to be present if {@link #isContextual()}
      * returns true.</p>
      *
-     * @param viewer The player viewing this render, {@link Optional#empty()}
-     *        otherwise
+     * @param viewer The player viewing this render, null otherwise
      * @param view The map that's being rendered
      * @param canvas The canvas that the renderer will draw onto
      */
-    void render(Optional<Player> viewer, MapView view, MapCanvas canvas);
+    void render(@Nullable Player viewer, MapView view, MapCanvas canvas);
 }
