@@ -71,9 +71,11 @@ public final class MapFont {
      *         character not provided in the character sprites
      */
     public int getWidth(String text) {
-        checkNotNull(text);
+        checkNotNull(text, "text");
 
-        if (text.length() == 0) return 0;
+        if (text.length() == 0) {
+            return 0;
+        }
 
         int width = 0;
         // Avoids copying the inner character array by indexing
@@ -101,7 +103,7 @@ public final class MapFont {
      * @return The maximum number of pixels in height this text will take up
      */
     public int getHeight(String text) {
-        checkNotNull(text);
+        checkNotNull(text, "text");
 
         if (text.length() == 0) {
             return 0;
