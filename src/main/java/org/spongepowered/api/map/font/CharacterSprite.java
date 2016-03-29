@@ -28,6 +28,7 @@ package org.spongepowered.api.map.font;
  * Represents a sprite for a character to draw to a map.
  */
 public class CharacterSprite {
+    
     private final int width;
 
     private final int height;
