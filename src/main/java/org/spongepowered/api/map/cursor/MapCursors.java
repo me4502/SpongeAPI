@@ -24,7 +24,7 @@
  */
 package org.spongepowered.api.map.cursor;
 
-import org.spongepowered.api.map.cursor.MapCursor;
+import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 
 /**
  * An enumeration of all the possible vanilla {@link MapCursor}s. The rendering
@@ -34,50 +34,53 @@ import org.spongepowered.api.map.cursor.MapCursor;
  */
 public final class MapCursors {
 
-    private MapCursors() {
-    }
+    //SORTFIELDS:ON
 
     /**
      * The white player pointer, in vanilla this is used to indicate other
      * players currently holding the same map and their directions.
      */
-    public static final MapCursor WHITE_POINTER = null;
+    public static final MapCursor WHITE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "WHITE_POINTER");
 
     /**
      * The green version of the pointer, in vanilla this is used to indicate
      * the positions and directions of ItemFrames containing the same map
      * the player is holding.
      */
-    public static final MapCursor GREEN_POINTER = null;
+    public static final MapCursor GREEN_POINTER = DummyObjectProvider.createFor(MapCursor.class, "GREEN_POINTER");
 
     /**
      * Not used by vanilla but looks exactly like the white and green pointers
      * except it's red in color.
      */
-    public static final MapCursor RED_POINTER = null;
+    public static final MapCursor RED_POINTER = DummyObjectProvider.createFor(MapCursor.class, "RED_POINTER");
 
     /**
      * Not used by vanilla but looks exactly like the white and green pointers
      * except it's blue in color.
      */
-    public static final MapCursor BLUE_POINTER = null;
+    public static final MapCursor BLUE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "BLUE_POINTER");
 
     /**
      * Not used by vanilla, looks like a white colored square X, centered on
      * the position of the cursor.
      */
-    public static final MapCursor WHITE_X = null;
+    public static final MapCursor WHITE_X = DummyObjectProvider.createFor(MapCursor.class, "WHITE_X");
 
     /**
      * Note used by vanilla, looks like a red wedge, centered on the middle of
      * the wedge not the tip.
      */
-    public static final MapCursor RED_WEDGE = null;
+    public static final MapCursor RED_WEDGE = DummyObjectProvider.createFor(MapCursor.class, "RED_WEDGE");
 
     /**
      * A white circle with the circle centered on cursor position. In vanilla
      * this is used for out of bound position indication.
      */
-    public static final MapCursor WHITE_CIRCLE = null;
+    public static final MapCursor WHITE_CIRCLE = DummyObjectProvider.createFor(MapCursor.class, "WHITE_CIRCLE");
 
+    //SORTFIELDS:OFF
+
+    private MapCursors() {
+    }
 }

@@ -25,10 +25,10 @@
 package org.spongepowered.api.map;
 
 import com.flowpowered.math.vector.Vector2i;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableCollection;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -61,7 +61,7 @@ public interface MapViewRegistry {
      * of {@link MapView}s for plugins.
      *
      * @param mapUUID The UUID of the map view
-     * @return The {@link MapView} if found or {@link Optional#absent()} if missing
+     * @return The {@link MapView} if found or {@link Optional#empty()} if missing
      */
     Optional<MapView> get(UUID mapUUID);
 

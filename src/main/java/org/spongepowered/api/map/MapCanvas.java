@@ -24,13 +24,11 @@
  */
 package org.spongepowered.api.map;
 
-import com.google.common.base.Function;
 import org.spongepowered.api.map.color.MapColor;
 import org.spongepowered.api.map.font.MapFont;
 import org.spongepowered.api.text.Text;
 
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 
 /**
  * A representation of the canvas (pixel surface) of a map.

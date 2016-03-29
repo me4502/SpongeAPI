@@ -24,8 +24,10 @@
  */
 package org.spongepowered.api.map;
 
-import com.google.common.base.Optional;
-import org.spongepowered.api.entity.player.Player;
+
+import org.spongepowered.api.entity.living.player.Player;
+
+import java.util.Optional;
 
 /**
  * Plugin classes should implement this to modify the image shown on a map.
@@ -51,7 +53,7 @@ public interface MapRenderer {
      * <p>The viewer is guaranteed to be present if {@link #isContextual()}
      * returns true.</p>
      *
-     * @param viewer The player viewing this render, {@link Optional#absent()}
+     * @param viewer The player viewing this render, {@link Optional#empty()}
      *        otherwise
      * @param view The map that's being rendered
      * @param canvas The canvas that the renderer will draw onto
