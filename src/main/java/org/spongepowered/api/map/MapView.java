@@ -26,6 +26,7 @@ package org.spongepowered.api.map;
 
 import com.flowpowered.math.vector.Vector2i;
 import com.google.common.collect.ImmutableList;
+import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.map.cursor.MapCursor;
 import org.spongepowered.api.map.cursor.MapCursorHandle;
@@ -38,7 +39,7 @@ import java.util.List;
 /**
  * A representation of a specific map and all of it's properties.
  */
-public interface MapView extends Identifiable {
+public interface MapView extends Identifiable, DataSerializable {
 
     /**
      * Returns if vanilla's default handling of cursors with item frames and
