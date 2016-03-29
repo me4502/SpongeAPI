@@ -42,22 +42,22 @@ import java.util.List;
 public interface MapView extends Identifiable, DataSerializable {
 
     /**
-     * Returns if vanilla's default handling of cursors with item frames and
+     * Returns if vanilla Minecraft's default handling of cursors with item frames and
      * players should be used, if disabled all vanilla cursors are removed and
      * plugins must manually update cursor positions.
      *
-     * @return True when using vanilla handling, false otherwise
+     * @return True when using vanilla Minecraft handling, false otherwise
      */
-    boolean isUsingVanillaCursors();
+    boolean usesDefaultCursors();
 
     /**
-     * Sets if vanilla's default handling should be used, see {@link #isUsingVanillaCursors()}
+     * Sets if vanilla's default handling should be used, see {@link #usesDefaultCursors()}
      * for a description of what the default handling does. When this is set to true, plugin
-     * cursors are still functional, they just coexist with vanilla's default cursors too.
+     * cursors are still functional, they just coexist with vanilla Minecraft's default cursors too.
      *
-     * @param usingVanillaCursors True to enable vanilla cursors, false to disable
+     * @param usesDefaultCursors True to enable vanilla Minecraft default cursors, false to disable
      */
-    void setUsingVanillaCursors(boolean usingVanillaCursors);
+    void setUsesDefaultCursors(boolean usesDefaultCursors);
 
     /**
      * Returns all the currently active cursors as {@link MapCursorHandle}s,
@@ -70,7 +70,7 @@ public interface MapView extends Identifiable, DataSerializable {
 
     /**
      * Sets the {@link MapCursor} used for players on the map when
-     * {@link #isUsingVanillaCursors()} is true. By default this is a
+     * {@link #usesDefaultCursors()} is true. By default this is a
      * {@link MapCursors#WHITE_POINTER}.
      *
      * @param cursor The new cursor for player positions
@@ -79,7 +79,7 @@ public interface MapView extends Identifiable, DataSerializable {
 
     /**
      * Sets the {@link MapCursor} used for item frame locations on the map when
-     * {@link #isUsingVanillaCursors()} is true. By default this is a
+     * {@link #usesDefaultCursors()} is true. By default this is a
      * {@link MapCursors#GREEN_POINTER}.
      *
      * @param cursor The new cursor for item frame positions
@@ -88,7 +88,7 @@ public interface MapView extends Identifiable, DataSerializable {
 
     /**
      * Sets the {@link MapCursor} used for player locations on the edge
-     * when players go out of bounds when  {@link #isUsingVanillaCursors()} is
+     * when players go out of bounds when  {@link #usesDefaultCursors()} is
      * true. By default this is a {@link MapCursors#WHITE_CIRCLE}.
      *
      * @param cursor The new cursor for edge positions
@@ -151,7 +151,7 @@ public interface MapView extends Identifiable, DataSerializable {
      *
      * @return True if vanilla behavior is being used, false otherwise
      */
-    boolean isDoingAutomaticUpdates();
+    boolean doesAutomaticUpdates();
 
     /**
      * Sets if vanilla behavior for map updates (slowing updating a few rows
@@ -171,16 +171,16 @@ public interface MapView extends Identifiable, DataSerializable {
      *
      * @return True if vanilla rendering is used as a base, false otherwise
      */
-    boolean isUsingVanillaRendering();
+    boolean usesDefaultRenderer();
 
     /**
      * Sets if vanilla's map rendering should be added to the {@link MapCanvas} before
      * plugin {@link MapRenderer}s are run to allow overlaying.
      *
-     * @param usesVanillaRendering True to enable vanilla rendering as a base, false
+     * @param usesDefaultRenderer True to enable vanilla rendering as a base, false
      *        otherwise
      */
-    void setUsingVanillaRendering(boolean usesVanillaRendering);
+    void setUsesDefaultRenderer(boolean usesDefaultRenderer);
 
     /**
      * Adds a renderer to this map as the top layer.

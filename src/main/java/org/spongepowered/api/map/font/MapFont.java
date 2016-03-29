@@ -26,6 +26,7 @@ package org.spongepowered.api.map.font;
 
 import com.google.common.collect.ImmutableMap;
 
+import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Map;
@@ -82,10 +83,7 @@ public final class MapFont {
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
             CharacterSprite value = characters.get(ch);
-            if (value == null) {
-                throw new IllegalArgumentException("Character '" + ch +
-                        "' was not provided as a CharacterSprite.");
-            }
+            checkArgument(value != null, "Character '" + ch + "' was not provided as a CharacterSprite.");
             width += value.getWidth();
 
             // Only add spacing from the left after first character.
@@ -115,10 +113,7 @@ public final class MapFont {
             // Skip whitespace
             if (!Character.isWhitespace(ch)) {
                 CharacterSprite sprite = characters.get(ch);
-                if (sprite == null) {
-                    throw new IllegalArgumentException("Charcter '" + ch +
-                            "' was not provided as a CharacterSprite.");
-                }
+                checkArgument(sprite != null, "Character '" + ch + "' was not provided as a CharacterSprite.");
                 if (sprite.getHeight() > maxHeight) {
                     maxHeight = sprite.getHeight();
                 }
