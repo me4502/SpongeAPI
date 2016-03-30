@@ -51,6 +51,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
      * to be disabled or have their initialization overridden by cancelling {@link CreateMapView}.</p>
      */
     interface CreateMapView extends InitializeMapEvent {
+
         /**
          * Gets if a new {@link MapView} will be created on the disk.
          *
@@ -69,6 +70,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
          * @param createMapView True to let default map creation logic run
          */
         void setUsingDefaultBehavior(boolean createMapView);
+
     }
 
     /**
@@ -80,6 +82,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
      * event and using the new {@link MapView} elsewhere</p>
      */
     interface ReplaceMapItem extends InitializeMapEvent {
+
         /**
          * Gets the {@link ItemStack} of the map being initialized.
          *
@@ -92,5 +95,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
          * @return The map being initialized
          */
         Transaction<ItemStackSnapshot> getInitializedStack();
+
     }
+
 }

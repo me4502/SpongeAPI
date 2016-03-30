@@ -78,4 +78,5 @@ public interface MapCursorHandle {
      * @return True if the removal was successful, false otherwise
      */
     boolean remove();
+
 }

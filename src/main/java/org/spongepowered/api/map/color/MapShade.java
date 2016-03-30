@@ -40,4 +40,5 @@ public interface MapShade extends CatalogType {
      * @return The multiplication factor
      */
     int getMultiplication();
+
 }

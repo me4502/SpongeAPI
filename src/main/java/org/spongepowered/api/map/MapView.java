@@ -240,4 +240,5 @@ public interface MapView extends Identifiable, DataSerializable {
      * @return An unmodifiable ordered list of all renderers
      */
     ImmutableList<MapRenderer> getAllRenderers();
+
 }

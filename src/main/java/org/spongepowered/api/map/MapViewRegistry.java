@@ -85,4 +85,5 @@ public interface MapViewRegistry {
      * @return True if the operation was successful, false otherwise
      */
     boolean remove(MapView view);
+
 }

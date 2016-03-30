@@ -84,4 +84,5 @@ public interface MapPaletteFactory {
      * @return The closest {@link MapColor} to the provided color
      */
     MapColor of(Color color);
+
 }

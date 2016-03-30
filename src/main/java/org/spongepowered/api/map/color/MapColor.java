@@ -62,4 +62,5 @@ public interface MapColor extends DataSerializable {
      * @return The name of this color, {@link Optional#absent()} otherwise
      */
     Optional<String> getName();
+
 }

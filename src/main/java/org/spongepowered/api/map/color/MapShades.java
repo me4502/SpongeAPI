@@ -60,4 +60,5 @@ public final class MapShades {
 
     private MapShades() {
     }
+
 }

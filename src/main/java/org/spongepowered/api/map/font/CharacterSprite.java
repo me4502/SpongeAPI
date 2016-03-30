@@ -97,4 +97,5 @@ public class CharacterSprite {
 
         return this.shape[row * this.width + column];
     }
+
 }

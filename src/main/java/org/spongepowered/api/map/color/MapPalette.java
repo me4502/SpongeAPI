@@ -164,4 +164,5 @@ public final class MapPalette {
 
     private MapPalette() {
     }
+
 }

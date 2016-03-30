@@ -25,6 +25,8 @@
 package org.spongepowered.api.map.font;
 
 import com.google.common.collect.ImmutableMap;
+import org.spongepowered.api.CatalogType;
+import org.spongepowered.api.util.annotation.CatalogedBy;
 
 import java.util.Map;
 import java.util.Optional;
@@ -121,4 +123,5 @@ public final class MapFont {
         }
         return maxHeight;
     }
+
 }

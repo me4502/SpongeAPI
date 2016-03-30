@@ -83,4 +83,5 @@ public final class MapCursors {
 
     private MapCursors() {
     }
+
 }

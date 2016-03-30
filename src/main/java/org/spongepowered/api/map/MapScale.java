@@ -39,4 +39,5 @@ public interface MapScale extends CatalogType {
      * @return The number of blocks per pixel
      */
     int getBlocksPerPixel();
+
 }

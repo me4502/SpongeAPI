@@ -58,4 +58,5 @@ public interface MapRenderer {
      * @param canvas The canvas that the renderer will draw onto
      */
     void render(@Nullable Player viewer, MapView view, MapCanvas canvas);
+
 }
