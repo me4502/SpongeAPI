@@ -148,11 +148,37 @@ public interface MapCanvas extends DataSerializable {
     /**
      * Draws an image to the map, clipping it if it goes out of bounds.
      *
+     * @param position The top left coordinate on the map
+     * @param image The image to draw
+     */
+    default void drawImage(Vector2i position, Image image) {
+        drawImage(position.getX(), position.getY(), image);
+    }
+
+    /**
+     * Draws an image to the map, clipping it if it goes out of bounds.
+     *
      * @param x The top left x coordinate on the map
      * @param y The top left y coordinate on the map
      * @param image The image to draw
      */
     void drawImage(int x, int y, Image image);
+
+    /**
+     * Draws text to the map, handling colors but not formatting.
+     *
+     * <p>Clips text that goes out of bounds at the character before it's out of bounds.</p>
+     *
+     * @param position The top left coordinate of the drawn text
+     * @param text The text to draw
+     * @param font The font to use when drawing the text
+     *
+     * @throws IllegalArgumentException If the font is missing a character used
+     *         by the Text provided
+     */
+    default void drawText(Vector2i position, Text text, MapFont font) {
+        drawText(position.getX(), position.getY(), text, font);
+    }
 
     /**
      * Draws text to the map, handling colors but not formatting.

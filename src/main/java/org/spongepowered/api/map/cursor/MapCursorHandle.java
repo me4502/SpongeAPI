@@ -58,7 +58,9 @@ public interface MapCursorHandle {
      * @param center The new center position
      * @throws IndexOutOfBoundsException If the center position provided is not within the map
      */
-    void update(Vector2i center);
+    default void update(Vector2i center) {
+        update(center.getX(), center.getY());
+    }
 
     /**
      * Updates the position of the cursor on the map. Relative to the map's

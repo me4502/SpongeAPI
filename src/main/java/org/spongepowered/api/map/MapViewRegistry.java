@@ -46,7 +46,9 @@ public interface MapViewRegistry {
      *        for the map
      * @return The map view
      */
-    MapView createStoredMap(Vector2i centerPos);
+    default MapView createStoredMap(Vector2i centerPos) {
+        return createStoredMap(centerPos.getX(), centerPos.getY());
+    }
 
     /**
      * Returns a new {@link MapView} that is stored on the disk like a standard
