@@ -1,3 +1,27 @@
+/*
+ * This file is part of SpongeAPI, licensed under the MIT License (MIT).
+ *
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
+ * Copyright (c) contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.spongepowered.api.event;
 
 import com.flowpowered.math.vector.Vector3d;
@@ -165,7 +189,6 @@ import org.spongepowered.api.item.inventory.Inventory;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.item.inventory.Slot;
 import org.spongepowered.api.item.inventory.transaction.SlotTransaction;
-import org.spongepowered.api.map.MapView;
 import org.spongepowered.api.network.RemoteConnection;
 import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.network.status.StatusClient;
@@ -3790,13 +3813,11 @@ public class SpongeEventFactory {
      * {@link org.spongepowered.api.event.map.InitializeMapEvent}.
      * 
      * @param cause The cause
-     * @param initializedStack The initialized stack
      * @return A new initialize map event
      */
-    public static InitializeMapEvent createInitializeMapEvent(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
+    public static InitializeMapEvent createInitializeMapEvent(Cause cause) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
-        values.put("initializedStack", initializedStack);
         return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.class, values);
     }
 
@@ -3806,15 +3827,13 @@ public class SpongeEventFactory {
      * {@link org.spongepowered.api.event.map.InitializeMapEvent.CreateMapView}.
      * 
      * @param cause The cause
-     * @param initializedStack The initialized stack
-     * @param defaultBehavior The default behavior
+     * @param usingDefaultBehavior The using default behavior
      * @return A new create map view initialize map event
      */
-    public static InitializeMapEvent.CreateMapView createInitializeMapEventCreateMapView(Cause cause, Transaction<ItemStackSnapshot> initializedStack, boolean defaultBehavior) {
+    public static InitializeMapEvent.CreateMapView createInitializeMapEventCreateMapView(Cause cause, boolean usingDefaultBehavior) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
-        values.put("initializedStack", initializedStack);
-        values.put("defaultBehavior", defaultBehavior);
+        values.put("usingDefaultBehavior", usingDefaultBehavior);
         return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.CreateMapView.class, values);
     }
 
@@ -3825,14 +3844,12 @@ public class SpongeEventFactory {
      * 
      * @param cause The cause
      * @param initializedStack The initialized stack
-     * @param mapView The map view
      * @return A new replace map item initialize map event
      */
-    public static InitializeMapEvent.ReplaceMapItem createInitializeMapEventReplaceMapItem(Cause cause, Transaction<ItemStackSnapshot> initializedStack, Transaction<MapView> mapView) {
+    public static InitializeMapEvent.ReplaceMapItem createInitializeMapEventReplaceMapItem(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
         values.put("initializedStack", initializedStack);
-        values.put("mapView", mapView);
         return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.ReplaceMapItem.class, values);
     }
 
