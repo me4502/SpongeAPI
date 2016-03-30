@@ -37,10 +37,10 @@ public final class MapCursors {
     //SORTFIELDS:ON
 
     /**
-     * The white player pointer, in vanilla this is used to indicate other
-     * players currently holding the same map and their directions.
+     * Not used by vanilla but looks exactly like the white and green pointers
+     * except it's blue in color.
      */
-    public static final MapCursor WHITE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "WHITE_POINTER");
+    public static final MapCursor BLUE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "BLUE_POINTER");
 
     /**
      * The green version of the pointer, in vanilla this is used to indicate
@@ -56,18 +56,6 @@ public final class MapCursors {
     public static final MapCursor RED_POINTER = DummyObjectProvider.createFor(MapCursor.class, "RED_POINTER");
 
     /**
-     * Not used by vanilla but looks exactly like the white and green pointers
-     * except it's blue in color.
-     */
-    public static final MapCursor BLUE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "BLUE_POINTER");
-
-    /**
-     * Not used by vanilla, looks like a white colored square X, centered on
-     * the position of the cursor.
-     */
-    public static final MapCursor WHITE_X = DummyObjectProvider.createFor(MapCursor.class, "WHITE_X");
-
-    /**
      * Note used by vanilla, looks like a red wedge, centered on the middle of
      * the wedge not the tip.
      */
@@ -78,6 +66,18 @@ public final class MapCursors {
      * this is used for out of bound position indication.
      */
     public static final MapCursor WHITE_CIRCLE = DummyObjectProvider.createFor(MapCursor.class, "WHITE_CIRCLE");
+
+    /**
+     * The white player pointer, in vanilla this is used to indicate other
+     * players currently holding the same map and their directions.
+     */
+    public static final MapCursor WHITE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "WHITE_POINTER");
+
+    /**
+     * Not used by vanilla, looks like a white colored square X, centered on
+     * the position of the cursor.
+     */
+    public static final MapCursor WHITE_X = DummyObjectProvider.createFor(MapCursor.class, "WHITE_X");
 
     //SORTFIELDS:OFF
 

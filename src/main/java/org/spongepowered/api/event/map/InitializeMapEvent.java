@@ -52,10 +52,10 @@ public interface InitializeMapEvent extends Event, Cancellable {
     Transaction<ItemStackSnapshot> getInitializedStack();
 
     /**
-     * Called before {@link ReplaceMapItem}, by setting a non-null {@link MapView}
+     * Called before {@link ReplaceMapItem}, by setting {@link #setDoesCreateMapView}
      * in this event, plugins can override the creation of a new map on the disk
-     * and provide customized maps at initialization time. Using a null object for
-     * the {@link MapView} will result in creation of a new map.
+     * and provide customized maps at initialization time. Plugins should use {@link ReplaceMapItem}
+     * to set their own {@link MapView} if overriding vanilla map creation logic.
      *
      * <p>Cancelling this event will prevent any {@link MapView} from being created
      * and will stop {@link ReplaceMapItem} from being fired. This allows for maps
@@ -67,16 +67,19 @@ public interface InitializeMapEvent extends Event, Cancellable {
          *
          * @return If a new map will be created on the disk
          */
-        boolean isCreatingMap();
+        boolean doesCreateMapView();
 
         /**
-         * Sets an alternative {@link MapView} to use for this initialization.
-         * If the {@link MapView} is null, then the event reverts back to creation
-         * of a new disk backed {@link MapView}.
+         * Sets if the map will be created with default Minecraft initialization logic
+         * which will create a new map data file stored on the disk with the world.
          *
-         * @param map The new {@link MapView} to use during the initialization
+         * <p>If a plugin wishes to provide a different map view, the plugin should
+         * provide false to this method, then modify the map view in the {@link ReplaceMapItem}
+         * event.</p>
+         *
+         * @param createMapView True to let default map creation logic run
          */
-        void setMapView(@Nullable MapView map);
+        void setDoesCreateMapView(boolean createMapView);
     }
 
     /**
@@ -93,6 +96,6 @@ public interface InitializeMapEvent extends Event, Cancellable {
          *
          * @return the {@link MapView} this map item will be attached to.
          */
-        MapView getMapView();
+        Transaction<MapView> getMapView();
     }
 }

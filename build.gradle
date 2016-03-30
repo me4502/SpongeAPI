@@ -97,6 +97,7 @@ genEventImpl {
             'src/main/java/org/spongepowered/api/event/entity/',
             'src/main/java/org/spongepowered/api/event/game/',
             'src/main/java/org/spongepowered/api/event/item/inventory/',
+            'src/main/java/org/spongepowered/api/event/map/',
             'src/main/java/org/spongepowered/api/event/message/',
             'src/main/java/org/spongepowered/api/event/network/',
             'src/main/java/org/spongepowered/api/event/server/',
@@ -189,6 +190,10 @@ sortClassFields {
     add 'main', 'org.spongepowered.api.item.FireworkShapes'
     add 'main', 'org.spongepowered.api.item.ItemTypes'
     add 'main', 'org.spongepowered.api.item.inventory.equipment.EquipmentTypes'
+    add 'main', 'org.spongepowered.api.map.MapScales'
+    add 'main', 'org.spongepowered.api.map.color.MapPalette'
+    add 'main', 'org.spongepowered.api.map.color.MapShades'
+    add 'main', 'org.spongepowered.api.map.cursor.MapCursors'
     add 'main', 'org.spongepowered.api.scoreboard.Visibilities'
     add 'main', 'org.spongepowered.api.scoreboard.critieria.Criteria'
     add 'main', 'org.spongepowered.api.scoreboard.displayslot.DisplaySlots'

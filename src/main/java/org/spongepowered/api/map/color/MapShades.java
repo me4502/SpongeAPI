@@ -39,16 +39,16 @@ public final class MapShades {
     public static final MapShade BASE = DummyObjectProvider.createFor(MapShade.class, "BASE");
 
     /**
-     * Represents a multiplication by 180 to each RGB component, the remainder
-     * out of 255 is taken as the new component for each color channel.
-     */
-    public static final MapShade DARKER = DummyObjectProvider.createFor(MapShade.class, "DARKER");
-
-    /**
      * Represents a multiplication by 220 to each RGB component, the remainder
      * out of 255 is taken as the new component for each color channel.
      */
     public static final MapShade DARK = DummyObjectProvider.createFor(MapShade.class, "DARK");
+
+    /**
+     * Represents a multiplication by 180 to each RGB component, the remainder
+     * out of 255 is taken as the new component for each color channel.
+     */
+    public static final MapShade DARKER = DummyObjectProvider.createFor(MapShade.class, "DARKER");
 
     /**
      * Represents a multiplication by 135 to each RGB component, the remainder

@@ -40,42 +40,77 @@ public final class MapPalette {
 
     // SORTFIELDS:ON
 
-    public static final MapColor AIR = DummyObjectProvider.createFor(MapColor.class, "AIR");
-    public static final MapColor GRASS = DummyObjectProvider.createFor(MapColor.class, "GRASS");
-    public static final MapColor SAND = DummyObjectProvider.createFor(MapColor.class, "SAND");
-    public static final MapColor CLOTH = DummyObjectProvider.createFor(MapColor.class, "CLOTH");
-    public static final MapColor TNT = DummyObjectProvider.createFor(MapColor.class, "TNT");
-    public static final MapColor ICE = DummyObjectProvider.createFor(MapColor.class, "ICE");
-    public static final MapColor IRON = DummyObjectProvider.createFor(MapColor.class, "IRON");
-    public static final MapColor FOLIAGE = DummyObjectProvider.createFor(MapColor.class, "FOLIAGE");
-    public static final MapColor SNOW = DummyObjectProvider.createFor(MapColor.class, "SNOW");
-    public static final MapColor CLAY = DummyObjectProvider.createFor(MapColor.class, "CLAY");
-    public static final MapColor DIRT = DummyObjectProvider.createFor(MapColor.class, "DIRT");
-    public static final MapColor STONE = DummyObjectProvider.createFor(MapColor.class, "STONE");
-    public static final MapColor WATER = DummyObjectProvider.createFor(MapColor.class, "WATER");
-    public static final MapColor WOOD = DummyObjectProvider.createFor(MapColor.class, "WOOD");
-    public static final MapColor QUARTZ = DummyObjectProvider.createFor(MapColor.class, "QUARTZ");
     public static final MapColor ADOBE = DummyObjectProvider.createFor(MapColor.class, "ADOBE");
-    public static final MapColor MAGENTA = DummyObjectProvider.createFor(MapColor.class, "MAGENTA");
-    public static final MapColor LIGHT_BLUE = DummyObjectProvider.createFor(MapColor.class, "LIGHT_BLUE");
-    public static final MapColor YELLOW = DummyObjectProvider.createFor(MapColor.class, "YELLOW");
-    public static final MapColor LIME = DummyObjectProvider.createFor(MapColor.class, "LIME");
-    public static final MapColor PINK = DummyObjectProvider.createFor(MapColor.class, "PINK");
-    public static final MapColor GRAY = DummyObjectProvider.createFor(MapColor.class, "GRAY");
-    public static final MapColor SILVER = DummyObjectProvider.createFor(MapColor.class, "SILVER");
-    public static final MapColor CYAN = DummyObjectProvider.createFor(MapColor.class, "CYAN");
-    public static final MapColor PURPLE = DummyObjectProvider.createFor(MapColor.class, "PURPLE");
-    public static final MapColor BLUE = DummyObjectProvider.createFor(MapColor.class, "BLUE");
-    public static final MapColor BROWN = DummyObjectProvider.createFor(MapColor.class, "BROWN");
-    public static final MapColor GREEN = DummyObjectProvider.createFor(MapColor.class, "GREEN");
-    public static final MapColor RED = DummyObjectProvider.createFor(MapColor.class, "RED");
+
+    public static final MapColor AIR = DummyObjectProvider.createFor(MapColor.class, "AIR");
+
     public static final MapColor BLACK = DummyObjectProvider.createFor(MapColor.class, "BLACK");
-    public static final MapColor GOLD = DummyObjectProvider.createFor(MapColor.class, "GOLD");
+
+    public static final MapColor BLUE = DummyObjectProvider.createFor(MapColor.class, "BLUE");
+
+    public static final MapColor BROWN = DummyObjectProvider.createFor(MapColor.class, "BROWN");
+
+    public static final MapColor CLAY = DummyObjectProvider.createFor(MapColor.class, "CLAY");
+
+    public static final MapColor CLOTH = DummyObjectProvider.createFor(MapColor.class, "CLOTH");
+
+    public static final MapColor CYAN = DummyObjectProvider.createFor(MapColor.class, "CYAN");
+
     public static final MapColor DIAMOND = DummyObjectProvider.createFor(MapColor.class, "DIAMOND");
-    public static final MapColor LAPIS = DummyObjectProvider.createFor(MapColor.class, "LAPIS");
+
+    public static final MapColor DIRT = DummyObjectProvider.createFor(MapColor.class, "DIRT");
+
     public static final MapColor EMERALD = DummyObjectProvider.createFor(MapColor.class, "EMERALD");
-    public static final MapColor OBSIDIAN = DummyObjectProvider.createFor(MapColor.class, "OBSIDIAN");
+
+    public static final MapColor FOLIAGE = DummyObjectProvider.createFor(MapColor.class, "FOLIAGE");
+
+    public static final MapColor GOLD = DummyObjectProvider.createFor(MapColor.class, "GOLD");
+
+    public static final MapColor GRASS = DummyObjectProvider.createFor(MapColor.class, "GRASS");
+
+    public static final MapColor GRAY = DummyObjectProvider.createFor(MapColor.class, "GRAY");
+
+    public static final MapColor GREEN = DummyObjectProvider.createFor(MapColor.class, "GREEN");
+
+    public static final MapColor ICE = DummyObjectProvider.createFor(MapColor.class, "ICE");
+
+    public static final MapColor IRON = DummyObjectProvider.createFor(MapColor.class, "IRON");
+
+    public static final MapColor LAPIS = DummyObjectProvider.createFor(MapColor.class, "LAPIS");
+
+    public static final MapColor LIGHT_BLUE = DummyObjectProvider.createFor(MapColor.class, "LIGHT_BLUE");
+
+    public static final MapColor LIME = DummyObjectProvider.createFor(MapColor.class, "LIME");
+
+    public static final MapColor MAGENTA = DummyObjectProvider.createFor(MapColor.class, "MAGENTA");
+
     public static final MapColor NETHERRACK = DummyObjectProvider.createFor(MapColor.class, "NETHERRACK");
+
+    public static final MapColor OBSIDIAN = DummyObjectProvider.createFor(MapColor.class, "OBSIDIAN");
+
+    public static final MapColor PINK = DummyObjectProvider.createFor(MapColor.class, "PINK");
+
+    public static final MapColor PURPLE = DummyObjectProvider.createFor(MapColor.class, "PURPLE");
+
+    public static final MapColor QUARTZ = DummyObjectProvider.createFor(MapColor.class, "QUARTZ");
+
+    public static final MapColor RED = DummyObjectProvider.createFor(MapColor.class, "RED");
+
+    public static final MapColor SAND = DummyObjectProvider.createFor(MapColor.class, "SAND");
+
+    public static final MapColor SILVER = DummyObjectProvider.createFor(MapColor.class, "SILVER");
+
+    public static final MapColor SNOW = DummyObjectProvider.createFor(MapColor.class, "SNOW");
+
+    public static final MapColor STONE = DummyObjectProvider.createFor(MapColor.class, "STONE");
+
+    public static final MapColor TNT = DummyObjectProvider.createFor(MapColor.class, "TNT");
+
+    public static final MapColor WATER = DummyObjectProvider.createFor(MapColor.class, "WATER");
+
+    public static final MapColor WOOD = DummyObjectProvider.createFor(MapColor.class, "WOOD");
+
+    public static final MapColor YELLOW = DummyObjectProvider.createFor(MapColor.class, "YELLOW");
 
     // SORTFIELDS:OFF
 
