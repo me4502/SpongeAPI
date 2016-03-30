@@ -26,11 +26,11 @@ package org.spongepowered.api.map.font;
 
 import com.google.common.collect.ImmutableMap;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.util.Map;
 import java.util.Optional;
+
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Represents a font on a map that can be used for drawing characters.
@@ -59,7 +59,7 @@ public final class MapFont {
      * @return The sprite version of the character
      */
     public Optional<CharacterSprite> getChar(char ch) {
-        return Optional.ofNullable(characters.get(ch));
+        return Optional.ofNullable(this.characters.get(ch));
     }
 
     /**
@@ -82,7 +82,7 @@ public final class MapFont {
         // Avoids copying the inner character array by indexing
         for (int i = 0; i < text.length(); i++) {
             char ch = text.charAt(i);
-            CharacterSprite value = characters.get(ch);
+            CharacterSprite value = this.characters.get(ch);
             checkArgument(value != null, "Character '" + ch + "' was not provided as a CharacterSprite.");
             width += value.getWidth();
 
@@ -112,7 +112,7 @@ public final class MapFont {
             char ch = text.charAt(i);
             // Skip whitespace
             if (!Character.isWhitespace(ch)) {
-                CharacterSprite sprite = characters.get(ch);
+                CharacterSprite sprite = this.characters.get(ch);
                 checkArgument(sprite != null, "Character '" + ch + "' was not provided as a CharacterSprite.");
                 if (sprite.getHeight() > maxHeight) {
                     maxHeight = sprite.getHeight();

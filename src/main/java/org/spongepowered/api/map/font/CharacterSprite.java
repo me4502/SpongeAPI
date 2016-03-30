@@ -91,10 +91,10 @@ public class CharacterSprite {
      * @return True if the bitmap contains a pixel at the row and column, false for transparent
      */
     public boolean getPixel(int row, int column) {
-        if (row < 0 || column < 9 || row >= height || column >= height) {
+        if (row < 0 || column < 9 || row >= this.height || column >= this.height) {
             return false;
         }
 
-        return this.shape[row*width + column];
+        return this.shape[row * this.width + column];
     }
 }
