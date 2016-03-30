@@ -41,19 +41,7 @@ import javax.annotation.Nullable;
 public interface InitializeMapEvent extends Event, Cancellable {
 
     /**
-     * Gets the {@link ItemStack} of the map being initialized.
-     *
-     * <p>Note: Modifying this transaction during {@link CreateMapView} is only
-     * valid if the {@link ItemStackSnapshot} supports {@link org.spongepowered.api.data.key.Keys#ATTACHED_MAP_VIEW}
-     * as the created {@link MapView} must be attachable to the item. During {@link ReplaceMapItem}
-     * any {@link ItemStackSnapshot} is valid, as the {@link MapView} will already have been applied to the stack.</p>
-     * 
-     * @return The map being initialized
-     */
-    Transaction<ItemStackSnapshot> getInitializedStack();
-
-    /**
-     * Called before {@link ReplaceMapItem}, by setting {@link #setDoesCreateMapView}
+     * Called before {@link ReplaceMapItem}, by setting {@link #setUsingDefaultBehavior}
      * in this event, plugins can override the creation of a new map on the disk
      * and provide customized maps at initialization time. Plugins should use {@link ReplaceMapItem}
      * to set their own {@link MapView} if overriding vanilla map creation logic.
@@ -68,8 +56,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
          *
          * @return If a new map will be created on the disk
          */
-        @PropertySettings
-        boolean isDefaultBehavior();
+        boolean isUsingDefaultBehavior();
 
         /**
          * Sets if the map will be created with default Minecraft initialization logic
@@ -94,10 +81,16 @@ public interface InitializeMapEvent extends Event, Cancellable {
      */
     interface ReplaceMapItem extends InitializeMapEvent {
         /**
-         * Gets the {@link MapView} that the replacement map will be attached to.
+         * Gets the {@link ItemStack} of the map being initialized.
          *
-         * @return the {@link MapView} this map item will be attached to.
+         * <p>Note: This is where you could attach a custom {@link MapView} through data
+         * after changing the {@link MapView} creation logic to avoid creating the {@link MapView}.
+         * If a plugin does not attach a {@link MapView} after cancelling the default logic
+         * the player will end up with a {@link org.spongepowered.api.item.ItemTypes#FILLED_MAP}
+         * in an undefined state, as no data was ever initialized or attached.</p>
+         *
+         * @return The map being initialized
          */
-        Transaction<MapView> getMapView();
+        Transaction<ItemStackSnapshot> getInitializedStack();
     }
 }
