@@ -27,6 +27,7 @@ package org.spongepowered.api.event.map;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
+import org.spongepowered.api.eventgencore.annotation.PropertySettings;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.map.MapView;
@@ -67,7 +68,8 @@ public interface InitializeMapEvent extends Event, Cancellable {
          *
          * @return If a new map will be created on the disk
          */
-        boolean doesCreateMapView();
+        @PropertySettings
+        boolean isDefaultBehavior();
 
         /**
          * Sets if the map will be created with default Minecraft initialization logic
@@ -79,7 +81,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
          *
          * @param createMapView True to let default map creation logic run
          */
-        void setDoesCreateMapView(boolean createMapView);
+        void setUsingDefaultBehavior(boolean createMapView);
     }
 
     /**

@@ -3807,12 +3807,14 @@ public class SpongeEventFactory {
      * 
      * @param cause The cause
      * @param initializedStack The initialized stack
+     * @param defaultBehavior The default behavior
      * @return A new create map view initialize map event
      */
-    public static InitializeMapEvent.CreateMapView createInitializeMapEventCreateMapView(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
+    public static InitializeMapEvent.CreateMapView createInitializeMapEventCreateMapView(Cause cause, Transaction<ItemStackSnapshot> initializedStack, boolean defaultBehavior) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
         values.put("initializedStack", initializedStack);
+        values.put("defaultBehavior", defaultBehavior);
         return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.CreateMapView.class, values);
     }
 
