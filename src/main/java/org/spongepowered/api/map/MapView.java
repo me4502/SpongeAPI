@@ -220,9 +220,10 @@ public interface MapView extends Identifiable, DataSerializable {
      * renderers on this map
      *
      * @param index The index of the renderer to remove
-     * @return True if the removal was successful, false otherwise
+     * @return True The renderer removed
+     * @throws IndexOutOfBoundsException If the provided index is out of bounds
      */
-    boolean removeRenderer(int index);
+    MapRenderer removeRenderer(int index);
 
     /**
      * Removes all renderers from this map.
