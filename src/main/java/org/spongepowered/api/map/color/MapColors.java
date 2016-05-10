@@ -30,7 +30,7 @@ import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 
 /**
- * An enumeration of all the possible instances given {@link org.spongepowered.api.map.color.MapColor.Base}
+ * An enumeration of all the possible instances given {@link MapColor.Base}
  */
 public final class MapColors {
 
