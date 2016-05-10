@@ -142,7 +142,7 @@ public interface MapView extends Identifiable, DataSerializable {
      * @param max The bottom right corner of the region to send
      * @throws IndexOutOfBoundsException If the update region is not within the boundaries of the map
      */
-    void sendUpdate(Collection<Player> players, Vector2i min, Vector2i max);
+    void sendUpdate(Iterable<Player> players, Vector2i min, Vector2i max);
 
 
     /**

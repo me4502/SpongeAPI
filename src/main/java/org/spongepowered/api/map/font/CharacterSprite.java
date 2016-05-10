@@ -32,9 +32,7 @@ import static com.google.common.base.Preconditions.checkState;
 public class CharacterSprite {
 
     private final int width;
-
     private final int height;
-
     private final boolean[] shape;
 
     /**
