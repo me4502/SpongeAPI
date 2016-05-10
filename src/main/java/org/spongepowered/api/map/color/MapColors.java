@@ -122,15 +122,31 @@ public final class MapColors {
         return factory.getAll();
     }
 
+
     /**
      * Returns a {@link MapColor} that is closest matching to the given
-     * {@link Color}.
+     * {@link Color} using the provided {@link MapColorMatcher} to perform
+     * the match.
      *
      * @param color The color to match
+     * @param matcher The {@link MapColorMatcher} used to perform the match
      * @return The closest {@link MapColor} to the provided color
      */
     public static MapColor of(Color color) {
         return factory.of(color);
+    }
+
+    /**
+     * Returns a {@link MapColor} that is closest matching to the given
+     * {@link Color} using the provided {@link MapColorMatcher} to perform
+     * the match.
+     *
+     * @param color The color to match
+     * @param matcher The {@link MapColorMatcher} used to perform the match
+     * @return The closest {@link MapColor} to the provided color
+     */
+    public static MapColor of(Color color, MapColorMatcher matcher) {
+        return factory.of(color, matcher);
     }
 
     private MapColors() {

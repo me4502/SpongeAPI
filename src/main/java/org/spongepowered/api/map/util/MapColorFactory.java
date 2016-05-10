@@ -25,9 +25,7 @@
 package org.spongepowered.api.map.util;
 
 import com.google.common.collect.ImmutableCollection;
-import org.spongepowered.api.map.color.MapColors;
-import org.spongepowered.api.map.color.MapColor;
-import org.spongepowered.api.map.color.MapShade;
+import org.spongepowered.api.map.color.*;
 import org.spongepowered.api.util.Color;
 
 /**
@@ -55,11 +53,25 @@ public interface MapColorFactory {
 
     /**
      * Returns a {@link MapColor} that is closest matching to the given
-     * {@link Color}.
+     * {@link Color} using the {@link MapColorMatchers#RGB_UNWEIGHTED}
+     * match type.
      *
      * @param color The color to match
      * @return The closest {@link MapColor} to the provided color
      */
-    MapColor of(Color color);
+    default MapColor of(Color color) {
+        return of(color, MapColorMatchers.RGB_UNWEIGHTED);
+    }
+
+    /**
+     * Returns a {@link MapColor} that is closest matching to the given
+     * {@link Color} using the provided {@link MapColorMatcher} to perform
+     * the match.
+     *
+     * @param color The color to match
+     * @param matcher The {@link MapColorMatcher} used to perform the match
+     * @return The closest {@link MapColor} to the provided color
+     */
+    MapColor of(Color color, MapColorMatcher matcher);
 
 }

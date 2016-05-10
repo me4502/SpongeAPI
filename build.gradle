@@ -192,6 +192,7 @@ sortClassFields {
     add 'main', 'org.spongepowered.api.item.inventory.equipment.EquipmentTypes'
     add 'main', 'org.spongepowered.api.map.MapScales'
     add 'main', 'org.spongepowered.api.map.color.MapColors'
+    add 'main', 'org.spongepowered.api.map.color.MapColorMatchers'
     add 'main', 'org.spongepowered.api.map.color.MapShades'
     add 'main', 'org.spongepowered.api.map.cursor.MapCursorTypes'
     add 'main', 'org.spongepowered.api.scoreboard.Visibilities'

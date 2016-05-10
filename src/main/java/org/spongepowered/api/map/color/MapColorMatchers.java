@@ -24,8 +24,31 @@
  */
 package org.spongepowered.api.map.color;
 
+import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
+
 /**
  * An enumeration of all the built-in {@link MapColorMatcher}s.
  */
-public class MapColorMatchers {
+public final class MapColorMatchers {
+
+    //SORTFIELDS:ON
+
+    /**
+     * This is the default color matcher and simply minimizes the distance in RGB
+     * colorspace, this method is quite simple, but offers a fairly accurate match.
+     */
+    public static final MapColorMatcher RGB_UNWEIGHTED = dummy("RGB_UNWEIGHTED");
+
+    /**
+     * A matcher that matches to the {@link MapColor} with the smallest overall
+     * CIELab distance. This tends to be a much more accurate overall match, but
+     * the conversion is slightly more computationally intensive.
+     */
+    public static final MapColorMatcher CIELAB = dummy("CIELAB");
+
+    //SORTFIELDS:OFF
+
+    private static final MapColorMatcher dummy(String name) {
+        return DummyObjectProvider.createFor(MapColorMatcher.class, name);
+    }
 }
