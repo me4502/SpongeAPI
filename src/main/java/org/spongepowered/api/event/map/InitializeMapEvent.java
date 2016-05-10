@@ -27,12 +27,9 @@ package org.spongepowered.api.event.map;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
-import org.spongepowered.api.eventgencore.annotation.PropertySettings;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.map.MapView;
-
-import javax.annotation.Nullable;
 
 /**
  * Represents an event that is triggered when a {@link org.spongepowered.api.item.ItemTypes#MAP}
@@ -41,16 +38,16 @@ import javax.annotation.Nullable;
 public interface InitializeMapEvent extends Event, Cancellable {
 
     /**
-     * Called before {@link ReplaceMapItem}, by setting {@link #setUsingDefaultBehavior}
+     * Called before {@link Replace}, by setting {@link #setUsingDefaultBehavior}
      * in this event, plugins can override the creation of a new map on the disk
-     * and provide customized maps at initialization time. Plugins should use {@link ReplaceMapItem}
+     * and provide customized maps at initialization time. Plugins should use {@link Replace}
      * to set their own {@link MapView} if overriding vanilla map creation logic.
      *
      * <p>Cancelling this event will prevent any {@link MapView} from being created
-     * and will stop {@link ReplaceMapItem} from being fired. This allows for maps
-     * to be disabled or have their initialization overridden by cancelling {@link CreateMapView}.</p>
+     * and will stop {@link Replace} from being fired. This allows for maps
+     * to be disabled or have their initialization overridden by cancelling {@link Create}.</p>
      */
-    interface CreateMapView extends InitializeMapEvent {
+    interface Create extends InitializeMapEvent {
 
         /**
          * Gets if a new {@link MapView} will be created on the disk.
@@ -64,7 +61,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
          * which will create a new map data file stored on the disk with the world.
          *
          * <p>If a plugin wishes to provide a different map view, the plugin should
-         * provide false to this method, then modify the map view in the {@link ReplaceMapItem}
+         * provide false to this method, then modify the map view in the {@link Replace}
          * event.</p>
          *
          * @param createMapView True to let default map creation logic run
@@ -81,7 +78,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
      * {@link MapView}, or simply override vanilla behavior by cancelling this
      * event and using the new {@link MapView} elsewhere</p>
      */
-    interface ReplaceMapItem extends InitializeMapEvent {
+    interface Replace extends InitializeMapEvent {
 
         /**
          * Gets the {@link ItemStack} of the map being initialized.

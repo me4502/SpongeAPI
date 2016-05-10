@@ -22,23 +22,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.map.color;
+package org.spongepowered.api.map.cursor;
 
 import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.util.annotation.CatalogedBy;
 
 /**
- * A representation of the shading that an entry in {@link MapColor.Base} can
- * take on.
+ * Represents one of the types of cursor that can be overlaid on a map by the
+ * client. Only player held maps will show the cursors, the map rendering code
+ * for an ItemFrame disables cursor rendering in the client.
  */
-@CatalogedBy(MapShades.class)
-public interface MapShade extends CatalogType {
-
-    /**
-     * Returns this shade's multiplication factor to the base color.
-     *
-     * @return The multiplication factor
-     */
-    int getMultiplication();
-
+@CatalogedBy(MapCursorTypes.class)
+public interface MapCursorType extends CatalogType {
 }

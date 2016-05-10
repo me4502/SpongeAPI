@@ -28,9 +28,9 @@ import com.flowpowered.math.vector.Vector2i;
 import com.google.common.collect.ImmutableList;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.map.cursor.MapCursorType;
 import org.spongepowered.api.map.cursor.MapCursor;
-import org.spongepowered.api.map.cursor.MapCursorHandle;
-import org.spongepowered.api.map.cursor.MapCursors;
+import org.spongepowered.api.map.cursor.MapCursorTypes;
 import org.spongepowered.api.util.Identifiable;
 
 import java.util.Collection;
@@ -60,40 +60,40 @@ public interface MapView extends Identifiable, DataSerializable {
     void setUsesDefaultCursors(boolean usesDefaultCursors);
 
     /**
-     * Returns all the currently active cursors as {@link MapCursorHandle}s,
+     * Returns all the currently active cursors as {@link MapCursor}s,
      * including the ones used by vanilla. Removing a cursor handle from the
      * collection will handle removing the cursor from the map as well.
      *
      * @return All the cursor handles
      */
-    Collection<MapCursorHandle> getAllCursors();
+    Collection<MapCursor> getAllCursors();
 
     /**
-     * Sets the {@link MapCursor} used for players on the map when
+     * Sets the {@link MapCursorType} used for players on the map when
      * {@link #usesDefaultCursors()} is true. By default this is a
-     * {@link MapCursors#WHITE_POINTER}.
+     * {@link MapCursorTypes#WHITE_POINTER}.
      *
      * @param cursor The new cursor for player positions
      */
-    void setPlayerCursor(MapCursor cursor);
+    void setPlayerCursor(MapCursorType cursor);
 
     /**
-     * Sets the {@link MapCursor} used for item frame locations on the map when
+     * Sets the {@link MapCursorType} used for item frame locations on the map when
      * {@link #usesDefaultCursors()} is true. By default this is a
-     * {@link MapCursors#GREEN_POINTER}.
+     * {@link MapCursorTypes#GREEN_POINTER}.
      *
      * @param cursor The new cursor for item frame positions
      */
-    void setItemFrameCursor(MapCursor cursor);
+    void setItemFrameCursor(MapCursorType cursor);
 
     /**
-     * Sets the {@link MapCursor} used for player locations on the edge
+     * Sets the {@link MapCursorType} used for player locations on the edge
      * when players go out of bounds when  {@link #usesDefaultCursors()} is
-     * true. By default this is a {@link MapCursors#WHITE_CIRCLE}.
+     * true. By default this is a {@link MapCursorTypes#WHITE_CIRCLE}.
      *
      * @param cursor The new cursor for edge positions
      */
-    void setEdgeCursor(MapCursor cursor);
+    void setEdgeCursor(MapCursorType cursor);
 
     /**
      * Adds a new cursor to the map of the specified type, the position is pixel
@@ -104,7 +104,7 @@ public interface MapView extends Identifiable, DataSerializable {
      * @return A handle to the cursor that can be used for updating, removal and
      *         changing the type of cursor
      */
-    MapCursorHandle addCursor(MapCursor type, Vector2i position);
+    MapCursor addCursor(MapCursorType type, Vector2i position);
 
     /**
      * Gets the current scaling ratio of the map.
@@ -200,6 +200,10 @@ public interface MapView extends Identifiable, DataSerializable {
      * Inserts a renderer in the map at the specific index, shifting existing
      * renderers around it.
      *
+     * <p>The ordering is the layering of rendering with 0 being the bottom
+     * most layer rendered first, and the {@link List#size()}-1 entry being the
+     * latest rendered layer.</p>
+     *
      * @param index The index to insert the renderer at
      * @param renderer The renderer to insert
      * @throws IndexOutOfBoundsException If the provided index is out of bounds
@@ -229,17 +233,5 @@ public interface MapView extends Identifiable, DataSerializable {
      * Removes all renderers from this map.
      */
     void clearRenderers();
-
-    /**
-     * Returns a {@link List} of all the {@link MapRenderer}s stored on this
-     * map.
-     *
-     * <p>The ordering is the layering of rendering with 0 being the bottom
-     * most layer rendered first, and the {@link List#size()}-1 entry being the
-     * latest rendered layer.</p>
-     *
-     * @return An unmodifiable ordered list of all renderers
-     */
-    ImmutableList<MapRenderer> getAllRenderers();
 
 }

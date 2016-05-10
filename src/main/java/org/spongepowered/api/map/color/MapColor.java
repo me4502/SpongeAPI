@@ -25,9 +25,15 @@
 package org.spongepowered.api.map.color;
 
 import com.google.common.base.Optional;
+import org.spongepowered.api.CatalogType;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.util.Color;
+import org.spongepowered.api.util.annotation.CatalogedBy;
 
+/**
+ * An instance of MapColor represents the combination of a {@link MapColor.Base}
+ * which holds the palette
+ */
 public interface MapColor extends DataSerializable {
 
     /**
@@ -38,15 +44,12 @@ public interface MapColor extends DataSerializable {
     Color getColor();
 
     /**
-     * Creates a shaded representation of this color's <b>base color</b> using
-     * {@link MapPalette#getShade(MapColor, MapShade)} which will create a new
-     * instance if needed or return a cached instance for previously created
-     * shades.
+     * Creates a shaded representation of this color's <b>base color</b>.
      *
      * @param newShading The shading to use on the new variant of this color
      * @return The new map color with the specified shading
      */
-    MapColor createShade(MapShade newShading);
+    MapColor shade(MapShade newShading);
 
     /**
      * Returns the shading of this color.
@@ -56,11 +59,62 @@ public interface MapColor extends DataSerializable {
     MapShade getShade();
 
     /**
-     * Returns the name of this color, only the entries in {@link MapPalette}
-     * have names.
+     * Returns the {@link MapColor.Base} color that this MapColor is based on. The
+     * same as creating a {@link MapShades#BASE} shaded instance.
      *
-     * @return The name of this color, {@link Optional#absent()} otherwise
+     * @return The {@link MapColor.Base} of this map color
      */
-    Optional<String> getName();
+    MapColor.Base base();
+
+    /**
+     * Create a new instance of {@link MapColor} with this instance's base color
+     * and the shade set to {@link MapShades#DARK}.
+     *
+     * @return A {@link MapShades#DARK} shaded version of this color
+     */
+    MapColor dark();
+
+    /**
+     * Create a new instance of {@link MapColor} with this instance's base color
+     * and the shade set to {@link MapShades#DARKER}.
+     *
+     * @return A {@link MapShades#DARKER} shaded version of this color
+     */
+    MapColor darker();
+
+    /**
+     * Create a new instance of {@link MapColor} with this instance's base color
+     * and the shade set to {@link MapShades#DARKEST}.
+     *
+     * @return A {@link MapShades#DARKEST} shaded version of this color
+     */
+    MapColor darkest();
+
+    /**
+     * A MapColor.Base represents the singleton instances that refer to the non-shaded
+     * palette available. These colors
+     */
+    @CatalogedBy(MapColors.class)
+    interface Base extends MapColor, CatalogType {
+
+        /**
+         * A base color entry is always unshaded, so the shade is by definition is
+         * {@link MapShades#BASE}
+         *
+         * @return {@link MapShades#BASE}
+         */
+        @Override
+        default MapShade getShade() {
+            return MapShades.BASE;
+        }
+
+        /**
+         * A base color entry is always its own MapColor.Base
+         */
+        @Override
+        default MapColor.Base base() {
+            return this;
+        }
+    }
 
 }

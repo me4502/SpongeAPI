@@ -27,12 +27,12 @@ package org.spongepowered.api.map.cursor;
 import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 
 /**
- * An enumeration of all the possible vanilla {@link MapCursor}s. The rendering
+ * An enumeration of all the possible vanilla {@link MapCursorType}s. The rendering
  * code does allow the texture of the cursors (also known as decorations or icons)
  * to be modified by the resource packs including adding more, however this is unusual
  * and can fairly easily be added if eventually needed.
  */
-public final class MapCursors {
+public final class MapCursorTypes {
 
     //SORTFIELDS:ON
 
@@ -40,48 +40,48 @@ public final class MapCursors {
      * Not used by vanilla but looks exactly like the white and green pointers
      * except it's blue in color.
      */
-    public static final MapCursor BLUE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "BLUE_POINTER");
+    public static final MapCursorType BLUE_POINTER = DummyObjectProvider.createFor(MapCursorType.class, "BLUE_POINTER");
 
     /**
      * The green version of the pointer, in vanilla this is used to indicate
      * the positions and directions of ItemFrames containing the same map
      * the player is holding.
      */
-    public static final MapCursor GREEN_POINTER = DummyObjectProvider.createFor(MapCursor.class, "GREEN_POINTER");
+    public static final MapCursorType GREEN_POINTER = DummyObjectProvider.createFor(MapCursorType.class, "GREEN_POINTER");
 
     /**
      * Not used by vanilla but looks exactly like the white and green pointers
      * except it's red in color.
      */
-    public static final MapCursor RED_POINTER = DummyObjectProvider.createFor(MapCursor.class, "RED_POINTER");
+    public static final MapCursorType RED_POINTER = DummyObjectProvider.createFor(MapCursorType.class, "RED_POINTER");
 
     /**
      * Note used by vanilla, looks like a red wedge, centered on the middle of
      * the wedge not the tip.
      */
-    public static final MapCursor RED_WEDGE = DummyObjectProvider.createFor(MapCursor.class, "RED_WEDGE");
+    public static final MapCursorType RED_WEDGE = DummyObjectProvider.createFor(MapCursorType.class, "RED_WEDGE");
 
     /**
      * A white circle with the circle centered on cursor position. In vanilla
      * this is used for out of bound position indication.
      */
-    public static final MapCursor WHITE_CIRCLE = DummyObjectProvider.createFor(MapCursor.class, "WHITE_CIRCLE");
+    public static final MapCursorType WHITE_CIRCLE = DummyObjectProvider.createFor(MapCursorType.class, "WHITE_CIRCLE");
 
     /**
      * The white player pointer, in vanilla this is used to indicate other
      * players currently holding the same map and their directions.
      */
-    public static final MapCursor WHITE_POINTER = DummyObjectProvider.createFor(MapCursor.class, "WHITE_POINTER");
+    public static final MapCursorType WHITE_POINTER = DummyObjectProvider.createFor(MapCursorType.class, "WHITE_POINTER");
 
     /**
      * Not used by vanilla, looks like a white colored square X, centered on
      * the position of the cursor.
      */
-    public static final MapCursor WHITE_X = DummyObjectProvider.createFor(MapCursor.class, "WHITE_X");
+    public static final MapCursorType WHITE_X = DummyObjectProvider.createFor(MapCursorType.class, "WHITE_X");
 
     //SORTFIELDS:OFF
 
-    private MapCursors() {
+    private MapCursorTypes() {
     }
 
 }

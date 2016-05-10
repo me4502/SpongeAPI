@@ -24,14 +24,59 @@
  */
 package org.spongepowered.api.map.cursor;
 
-import org.spongepowered.api.CatalogType;
-import org.spongepowered.api.util.annotation.CatalogedBy;
+import com.flowpowered.math.vector.Vector2i;
+import org.spongepowered.api.map.MapView;
 
 /**
- * Represents one of the types of cursor that can be overlaid on a map by the
- * client. Only player held maps will show the cursors, the map rendering code
- * for an ItemFrame disables cursor rendering in the client.
+ * Holds a link between a {@link MapView} and the {@link MapCursorType} stored in it.
+ *
+ * <p>This is needed to allow easy repositioning of cursors and to allow
+ * removing specific cursors, as multiple cursors could be overlaid in the
+ * same position.</p>
  */
-@CatalogedBy(MapCursors.class)
-public interface MapCursor extends CatalogType {
+public interface MapCursor {
+
+    /**
+     * Returns the type of {@link MapCursorType} this handle represents.
+     *
+     * @return The type of cursor
+     */
+    MapCursorType getType();
+
+    /**
+     * Returns the center position of the cursor on the map. Relative to the
+     * map's pixels.
+     *
+     * @return The center position
+     */
+    Vector2i getCenter();
+
+    /**
+     * Updates the position of the cursor on the map. Relative to the map's
+     * pixels.
+     *
+     * @param center The new center position
+     * @throws IndexOutOfBoundsException If the center position provided is not within the map
+     */
+    default void update(Vector2i center) {
+        update(center.getX(), center.getY());
+    }
+
+    /**
+     * Updates the position of the cursor on the map. Relative to the map's
+     * pixels.
+     *
+     * @param centerX The new center x position
+     * @param centerY The new center y position
+     * @throws IndexOutOfBoundsException If the center position provided is not within the map
+     */
+    void update(int centerX, int centerY);
+
+    /**
+     * Removes this cursor from the map.
+     *
+     * @return True if the removal was successful, false otherwise
+     */
+    boolean remove();
+
 }

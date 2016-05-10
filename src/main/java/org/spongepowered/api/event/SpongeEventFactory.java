@@ -3824,33 +3824,33 @@ public class SpongeEventFactory {
     /**
      * AUTOMATICALLY GENERATED, DO NOT EDIT.
      * Creates a new instance of
-     * {@link org.spongepowered.api.event.map.InitializeMapEvent.CreateMapView}.
+     * {@link InitializeMapEvent.Create}.
      * 
      * @param cause The cause
      * @param usingDefaultBehavior The using default behavior
      * @return A new create map view initialize map event
      */
-    public static InitializeMapEvent.CreateMapView createInitializeMapEventCreateMapView(Cause cause, boolean usingDefaultBehavior) {
+    public static InitializeMapEvent.Create createInitializeMapEventCreateMapView(Cause cause, boolean usingDefaultBehavior) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
         values.put("usingDefaultBehavior", usingDefaultBehavior);
-        return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.CreateMapView.class, values);
+        return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.Create.class, values);
     }
 
     /**
      * AUTOMATICALLY GENERATED, DO NOT EDIT.
      * Creates a new instance of
-     * {@link org.spongepowered.api.event.map.InitializeMapEvent.ReplaceMapItem}.
+     * {@link InitializeMapEvent.Replace}.
      * 
      * @param cause The cause
      * @param initializedStack The initialized stack
      * @return A new replace map item initialize map event
      */
-    public static InitializeMapEvent.ReplaceMapItem createInitializeMapEventReplaceMapItem(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
+    public static InitializeMapEvent.Replace createInitializeMapEventReplaceMapItem(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
         values.put("initializedStack", initializedStack);
-        return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.ReplaceMapItem.class, values);
+        return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.Replace.class, values);
     }
 
     /**

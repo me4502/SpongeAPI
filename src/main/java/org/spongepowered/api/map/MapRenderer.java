@@ -31,6 +31,9 @@ import javax.annotation.Nullable;
 
 /**
  * Plugin classes should implement this to modify the image shown on a map.
+ *
+ * <p>These are layered on the {@link MapView} and are rendered from the bottom
+ * layer to the top layer, letting overlays be built</p>
  */
 public interface MapRenderer {
 

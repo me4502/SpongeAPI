@@ -36,22 +36,22 @@ public final class MapScales {
     /**
      * Represents a 4:1 block to pixel ratio scaling.
      */
-    public static final MapScale SCALE_1 = DummyObjectProvider.createFor(MapScale.class, "SCALE_1");
+    public static final MapScale SCALE_4 = DummyObjectProvider.createFor(MapScale.class, "SCALE_4");
 
     /**
      * Represents a 16:1 block to pixel ratio scaling, 4x4 blocks (1/16 chunk) per map pixel.
      */
-    public static final MapScale SCALE_2 = DummyObjectProvider.createFor(MapScale.class, "SCALE_2");
+    public static final MapScale SCALE_16 = DummyObjectProvider.createFor(MapScale.class, "SCALE_16");
 
     /**
      * Represents a 64:1 block to pixel ratio scaling, 8x8 blocks (1/4 chunk) per map pixel.
      */
-    public static final MapScale SCALE_3 = DummyObjectProvider.createFor(MapScale.class, "SCALE_3");
+    public static final MapScale SCALE_64 = DummyObjectProvider.createFor(MapScale.class, "SCALE_64");
 
     /**
      * Represents a 256:1 block to pixel ratio scaling, 16x16 blocks (1 chunk) per map pixel.
      */
-    public static final MapScale SCALE_4 = DummyObjectProvider.createFor(MapScale.class, "SCALE_4");
+    public static final MapScale SCALE_256 = DummyObjectProvider.createFor(MapScale.class, "SCALE_256");
 
     /**
      * The default scale of a newly crafted map, this scale represents a 1:1 block to pixel ratio.

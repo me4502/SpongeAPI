@@ -25,14 +25,14 @@
 package org.spongepowered.api.map.util;
 
 import com.google.common.collect.ImmutableCollection;
-import org.spongepowered.api.map.color.MapPalette;
+import org.spongepowered.api.map.color.MapColors;
 import org.spongepowered.api.map.color.MapColor;
 import org.spongepowered.api.map.color.MapShade;
 import org.spongepowered.api.util.Color;
 
 /**
  * Represents the required implementation for the static methods in
- * {@link MapPalette}.
+ * {@link MapColors}.
  */
 public interface MapPaletteFactory {
 
@@ -46,7 +46,7 @@ public interface MapPaletteFactory {
 
     /**
      * Returns all the possible named {@link MapColor}s available, this is
-     * basically just all the static entries in {@link MapPalette} but in an
+     * basically just all the static entries in {@link MapColors} but in an
      * {@link ImmutableCollection<MapColor>}.
      *
      * @return All the named map colors

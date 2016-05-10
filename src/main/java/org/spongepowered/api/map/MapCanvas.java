@@ -27,6 +27,7 @@ package org.spongepowered.api.map;
 import com.flowpowered.math.vector.Vector2i;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.map.color.MapColor;
+import org.spongepowered.api.map.color.MapColors;
 import org.spongepowered.api.map.font.MapFont;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Color;
@@ -107,7 +108,7 @@ public interface MapCanvas extends DataSerializable {
 
     /**
      * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
-     * {@link org.spongepowered.api.map.color.MapPalette#AIR}
+     * {@link MapColors#AIR}
      *
      * The coordinates start with 0,0 as the top left corner moving right and
      * down.
@@ -123,7 +124,7 @@ public interface MapCanvas extends DataSerializable {
 
     /**
      * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
-     * {@link org.spongepowered.api.map.color.MapPalette#AIR}
+     * {@link MapColors#AIR}
      *
      * The coordinates start with 0,0 as the top left corner moving right and
      * down.
