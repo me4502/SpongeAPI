@@ -29,6 +29,7 @@ import org.spongepowered.api.data.manipulator.mutable.item.MapItemData;
 import org.spongepowered.api.data.value.immutable.ImmutableValue;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
+import org.spongepowered.api.map.MapReference;
 import org.spongepowered.api.map.MapView;
 
 /**
@@ -37,10 +38,10 @@ import org.spongepowered.api.map.MapView;
  */
 public interface ImmutableMapItemData extends ImmutableDataManipulator<ImmutableMapItemData, MapItemData> {
     /**
-     * Gets the {@link ImmutableValue} for the {@link MapView} attached to this
+     * Gets the {@link ImmutableValue} for the {@link MapReference} attached to this
      * {@link ItemTypes#FILLED_MAP} {@link ItemStack}.
      *
      * @return The value for the attached map view
      */
-    ImmutableValue<MapView> attachedMapView();
+    ImmutableValue<MapReference> attachedMap();
 }

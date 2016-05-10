@@ -22,27 +22,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.api.data.manipulator.mutable.item;
-
-import org.spongepowered.api.data.manipulator.DataManipulator;
-import org.spongepowered.api.data.manipulator.immutable.item.ImmutableMapItemData;
-import org.spongepowered.api.data.value.mutable.Value;
-import org.spongepowered.api.item.ItemTypes;
-import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.map.MapReference;
-import org.spongepowered.api.map.MapView;
+package org.spongepowered.api.map;
 
 /**
- * Represents an {@link DataManipulator} hosting the specific map
- * information of an {@link ItemStack} of the type {@link ItemTypes#FILLED_MAP}.
+ * A MapReference represents the link between {@link MapView} and a map item that references it.
  */
-public interface MapItemData extends DataManipulator<MapItemData, ImmutableMapItemData> {
+public interface MapReference {
 
+    // TODO: Possibly need Optional here?
     /**
-     * Gets the {@link Value} for the {@link MapReference} attached to this
-     * {@link ItemTypes#FILLED_MAP} {@link ItemStack}.
+     * Returns the {@link MapView} that actually represents the data of the map.
      *
-     * @return The value for the attached map view
+     * @return The linked MapView
      */
-    Value<MapReference> attachedMap();
+    MapView getView();
+
 }
