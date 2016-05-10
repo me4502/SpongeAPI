@@ -124,7 +124,7 @@ public final class MapColors {
 
     /**
      * Returns a {@link MapColor} that is closest matching to the given
-     * {@link org.spongepowered.api.util.Color}.
+     * {@link Color}.
      *
      * @param color The color to match
      * @return The closest {@link MapColor} to the provided color

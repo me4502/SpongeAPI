@@ -27,13 +27,14 @@ package org.spongepowered.api.event.map;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
+import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.map.MapView;
 
 /**
- * Represents an event that is triggered when a {@link org.spongepowered.api.item.ItemTypes#MAP}
- * is initialized and replaced with a {@link org.spongepowered.api.item.ItemTypes#FILLED_MAP}.
+ * Represents an event that is triggered when a {@link ItemTypes#MAP}
+ * is initialized and replaced with a {@link ItemTypes#FILLED_MAP}.
  */
 public interface InitializeMapEvent extends Event, Cancellable {
 
@@ -86,7 +87,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
          * <p>Note: This is where you could attach a custom {@link MapView} through data
          * after changing the {@link MapView} creation logic to avoid creating the {@link MapView}.
          * If a plugin does not attach a {@link MapView} after cancelling the default logic
-         * the player will end up with a {@link org.spongepowered.api.item.ItemTypes#FILLED_MAP}
+         * the player will end up with a {@link ItemTypes#FILLED_MAP}
          * in an undefined state, as no data was ever initialized or attached.</p>
          *
          * @return The map being initialized
