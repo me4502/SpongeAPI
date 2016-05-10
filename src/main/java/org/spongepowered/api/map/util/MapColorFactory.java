@@ -25,7 +25,10 @@
 package org.spongepowered.api.map.util;
 
 import com.google.common.collect.ImmutableCollection;
-import org.spongepowered.api.map.color.*;
+import org.spongepowered.api.map.color.MapColor;
+import org.spongepowered.api.map.color.MapColorMatcher;
+import org.spongepowered.api.map.color.MapColorMatchers;
+import org.spongepowered.api.map.color.MapColors;
 import org.spongepowered.api.util.Color;
 
 /**

@@ -3824,13 +3824,13 @@ public class SpongeEventFactory {
     /**
      * AUTOMATICALLY GENERATED, DO NOT EDIT.
      * Creates a new instance of
-     * {@link InitializeMapEvent.Create}.
+     * {@link org.spongepowered.api.event.map.InitializeMapEvent.Create}.
      * 
      * @param cause The cause
      * @param usingDefaultBehavior The using default behavior
-     * @return A new create map view initialize map event
+     * @return A new create initialize map event
      */
-    public static InitializeMapEvent.Create createInitializeMapEventCreateMapView(Cause cause, boolean usingDefaultBehavior) {
+    public static InitializeMapEvent.Create createInitializeMapEventCreate(Cause cause, boolean usingDefaultBehavior) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
         values.put("usingDefaultBehavior", usingDefaultBehavior);
@@ -3840,13 +3840,13 @@ public class SpongeEventFactory {
     /**
      * AUTOMATICALLY GENERATED, DO NOT EDIT.
      * Creates a new instance of
-     * {@link InitializeMapEvent.Replace}.
+     * {@link org.spongepowered.api.event.map.InitializeMapEvent.Replace}.
      * 
      * @param cause The cause
      * @param initializedStack The initialized stack
-     * @return A new replace map item initialize map event
+     * @return A new replace initialize map event
      */
-    public static InitializeMapEvent.Replace createInitializeMapEventReplaceMapItem(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
+    public static InitializeMapEvent.Replace createInitializeMapEventReplace(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
         values.put("initializedStack", initializedStack);
