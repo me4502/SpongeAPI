@@ -34,7 +34,7 @@ import org.spongepowered.api.util.Color;
  * Represents the required implementation for the static methods in
  * {@link MapColors}.
  */
-public interface MapPaletteFactory {
+public interface MapColorFactory {
 
     /**
      * Returns all the possible {@link MapColor}s available, including the
@@ -45,15 +45,6 @@ public interface MapPaletteFactory {
     ImmutableCollection<MapColor> getAll();
 
     /**
-     * Returns all the possible named {@link MapColor}s available, this is
-     * basically just all the static entries in {@link MapColors} but in an
-     * {@link ImmutableCollection<MapColor>}.
-     *
-     * @return All the named map colors
-     */
-    ImmutableCollection<MapColor> getAllNamed();
-
-    /**
      * Returns a {@link MapColor} from all the colors (including shades) based
      * on the palette index. This allows easy lookup of colors from a raw map.
      *
@@ -61,20 +52,6 @@ public interface MapPaletteFactory {
      * @return The object represented by that color
      */
     MapColor getByIndex(int colorIndex);
-
-    /**
-     * Gets a new {@link MapColor} with the specified shaded value from the
-     * <b>base color</b> of the color provided.
-     *
-     * <p>If the value has already been created it will load a cached entry.
-     * This is not based on the color itself but rather the unshaded version of
-     * the color provided, this helps ensure consistency.</p>
-     *
-     * @param base The base color, not required to be an actual base color
-     * @param shade The shade to apply
-     * @return The shaded color
-     */
-    MapColor getShade(MapColor base, MapShade shade);
 
     /**
      * Returns a {@link MapColor} that is closest matching to the given

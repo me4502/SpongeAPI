@@ -25,7 +25,7 @@
 package org.spongepowered.api.map.color;
 
 import com.google.common.collect.ImmutableCollection;
-import org.spongepowered.api.map.util.MapPaletteFactory;
+import org.spongepowered.api.map.util.MapColorFactory;
 import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 
@@ -34,7 +34,7 @@ import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
  */
 public final class MapColors {
 
-    private static final MapPaletteFactory factory = null;
+    private static final MapColorFactory factory = null;
 
     // SORTFIELDS:ON
 
