@@ -26,10 +26,11 @@ package org.spongepowered.api.map.util;
 
 import com.google.common.collect.ImmutableCollection;
 import org.spongepowered.api.map.color.MapColor;
-import org.spongepowered.api.map.color.MapColorMatcher;
 import org.spongepowered.api.map.color.MapColorMatchers;
 import org.spongepowered.api.map.color.MapColors;
 import org.spongepowered.api.util.Color;
+
+import java.util.function.Function;
 
 /**
  * Represents the required implementation for the static methods in
@@ -68,13 +69,13 @@ public interface MapColorFactory {
 
     /**
      * Returns a {@link MapColor} that is closest matching to the given
-     * {@link Color} using the provided {@link MapColorMatcher} to perform
+     * {@link Color} applying the provided {@link Function} to perform
      * the match.
      *
      * @param color The color to match
-     * @param matcher The {@link MapColorMatcher} used to perform the match
+     * @param matcher The function applied to perform the match
      * @return The closest {@link MapColor} to the provided color
      */
-    MapColor of(Color color, MapColorMatcher matcher);
+    MapColor of(Color color, Function<Color, MapColor> matcher);
 
 }

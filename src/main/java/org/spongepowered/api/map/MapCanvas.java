@@ -33,6 +33,7 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.Color;
 
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 
 /**
  * A representation of the canvas (pixel surface) of a map.
@@ -138,13 +139,13 @@ public interface MapCanvas extends DataSerializable {
     MapColor getPixel(int x, int y);
 
     /**
-     * Create an {@link Image} out of the map allowing it to be viewed outside
+     * Create an {@link BufferedImage} out of the map allowing it to be viewed outside
      * the game in conventional image viewers and shared on the web. Simply
      * converts indexes in the map's canvas to the RGB values they represent.
      *
      * @return The rendered image
      */
-    Image toImage();
+    BufferedImage toImage();
 
     /**
      * Draws an image to the map, clipping it if it goes out of bounds.
@@ -152,7 +153,7 @@ public interface MapCanvas extends DataSerializable {
      * @param position The top left coordinate on the map
      * @param image The image to draw
      */
-    default void drawImage(Vector2i position, Image image) {
+    default void drawImage(Vector2i position, BufferedImage image) {
         drawImage(position.getX(), position.getY(), image);
     }
 
@@ -163,7 +164,7 @@ public interface MapCanvas extends DataSerializable {
      * @param y The top left y coordinate on the map
      * @param image The image to draw
      */
-    void drawImage(int x, int y, Image image);
+    void drawImage(int x, int y, BufferedImage image);
 
     /**
      * Draws text to the map, handling colors but not formatting.

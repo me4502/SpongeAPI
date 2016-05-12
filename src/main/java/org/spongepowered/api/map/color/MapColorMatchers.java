@@ -24,10 +24,13 @@
  */
 package org.spongepowered.api.map.color;
 
+import org.spongepowered.api.util.Color;
 import org.spongepowered.api.util.generator.dummy.DummyObjectProvider;
 
+import java.util.function.Function;
+
 /**
- * An enumeration of all the built-in {@link MapColorMatcher}s.
+ * An enumeration of all the built-in color matching functions.
  */
 public final class MapColorMatchers {
 
@@ -38,17 +41,18 @@ public final class MapColorMatchers {
      * CIELab distance. This tends to be a much more accurate overall match, but
      * the conversion is slightly more computationally intensive.
      */
-    public static final MapColorMatcher CIELAB = dummy("CIELAB");
+    public static final Function<Color, MapColor> CIELAB = dummy("CIELAB");
 
     /**
      * This is the default color matcher and simply minimizes the distance in RGB
      * colorspace, this method is quite simple, but offers a fairly accurate match.
      */
-    public static final MapColorMatcher RGB_UNWEIGHTED = dummy("RGB_UNWEIGHTED");
+    public static final Function<Color, MapColor> RGB_UNWEIGHTED = dummy("RGB_UNWEIGHTED");
 
     //SORTFIELDS:OFF
 
-    private static final MapColorMatcher dummy(String name) {
-        return DummyObjectProvider.createFor(MapColorMatcher.class, name);
+    @SuppressWarnings("unchecked")
+    private static final Function<Color, MapColor> dummy(String name) {
+        return (Function<Color, MapColor>) DummyObjectProvider.createFor(Function.class, name);
     }
 }
