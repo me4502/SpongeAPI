@@ -234,4 +234,12 @@ public interface MapView extends Identifiable, DataSerializable {
      */
     void clearRenderers();
 
+    /**
+     * Returns the {@link MapReference} for this MapView to allow it to be attached to
+     * compatible items.
+     *
+     * @return The reference to this map
+     */
+    MapReference getReference();
+    
 }
