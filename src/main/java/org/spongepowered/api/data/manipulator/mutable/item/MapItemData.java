@@ -37,10 +37,11 @@ import org.spongepowered.api.item.inventory.ItemStack;
 public interface MapItemData extends DataManipulator<MapItemData, ImmutableMapItemData> {
 
     /**
-     * Gets the {@link Value} for the {@link MapReference} attached to this
+     * Gets the {@link Value} for the attached map id for an
      * {@link ItemTypes#FILLED_MAP} {@link ItemStack}.
      *
-     * @return The value for the attached map view
+     * @return The attached map id
      */
-    Value<MapReference> attachedMap();
+    Value<String> attachedMap();
+
 }

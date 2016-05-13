@@ -113,10 +113,12 @@ public final class Keys {
     public static final Key<Value<Boolean>> ATTACHED = KeyFactory.fake("ATTACHED");
 
     /**
-     * Represents the {@link Key} for the backing {@link MapReference} attached to
-     * compatible {@link org.spongepowered.api.data.DataHolder}s.
+     * Represents the {@link Key} for the attached map id for an
+     * {@link ItemTypes#FILLED_MAP} {@link ItemStack}.
+     *
+     * @see MapItemData#attachedMap()
      */
-    public static final Key<Value<MapReference>> ATTACHED_MAP = KeyFactory.fake("ATTACHED_MAP");
+    public static final Key<Value<String>> ATTACHED_MAP = KeyFactory.fake("ATTACHED_MAP");
 
     public static final Key<MutableBoundedValue<Double>> ATTACK_DAMAGE = KeyFactory.fake("ATTACK_DAMAGE");
 
