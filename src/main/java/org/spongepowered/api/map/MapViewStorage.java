@@ -24,74 +24,50 @@
  */
 package org.spongepowered.api.map;
 
-import com.flowpowered.math.vector.Vector2i;
 import com.google.common.collect.ImmutableCollection;
 import org.spongepowered.api.item.inventory.ItemStack;
 
 import java.util.Optional;
-import java.util.UUID;
 
 /**
- * TODO: Rewrite
  * Represents a container for {@link MapView}s. Provides methods to create new
  * {@link MapView}s and to retrieve existing {@link MapView}s without attaching
  * them to a specific {@link ItemStack}.
  */
-public interface MapUniverse {
+public interface MapViewStorage {
 
     /**
-     * TODO: MapSettings -> MapView.Builder
-     * Returns a new {@link MapSettings} that is stored on the disk like a standard
-     * map.
+     * Creates a new map view from the given {@link MapSettings}. For the
+     * creation of the MapCreationSettings please see
+     * {@link MapSettings.Builder}.
      *
-     * @param centerPos The world relative x and z center coordinates to use
-     *        for the map
-     * @return The map view
+     * @param settings The settings to use when creating the map view
+     * @return The map view, if creation was successful
      */
-    default MapSettings createStoredMap(Vector2i centerPos) {
-        return createStoredMap(centerPos.getX(), centerPos.getY());
-    }
+    Optional<MapView> createMap(MapSettings settings);
 
     /**
-     * TODO: MapSettings -> MapView.Builder
-     * Returns a new {@link MapSettings} that is stored on the disk like a standard
-     * map.
+     * Returns a {@link MapView} for a map.
      *
-     * @param centerX The world relative x center coordinate to use for the map
-     * @param centerY The world relative y center coordinate to use for the map
-     * @return The map view
+     * @param mapId The id of the map view
+     * @return The map view, if found
      */
-    MapSettings createStoredMap(int centerX, int centerY);
+    Optional<MapView> getMap(String mapId);
 
     /**
      * Returns an unmodifiable collection of all the {@link MapView}s available
      * the {@link MapView}s themselves are modifiable and are not copies.
      *
-     * @return The collection of all the maps available
+     * @return A collection of all the maps available
      */
-    ImmutableCollection<MapView> getAllMaps();
+    ImmutableCollection<MapView> getMaps();
 
     /**
-     * Returns a {@link MapView} by it's {@link UUID} this allows easy storage
-     * of {@link MapView}s for plugins.
+     * Deletes the provided map's file from the disk.
      *
-     * @param uniqueId The UUID of the map view
-     * @return The {@link MapView} if found or {@link Optional#empty()} if missing
-     */
-    Optional<MapView> getMap(UUID uniqueId);
-
-    // TODO: createVirtualMap
-
-    // TODO: getMap(int mapId)
-
-    /**
-     * TODO: Defaulted convenience methods
-     * Removes the stored data for a map, this will also delete the file from
-     * the disk.
-     *
-     * @param reference The {@link MapReference} to delete
+     * @param mapId The id of the map to delete
      * @return True if the operation was successful, false otherwise
      */
-    boolean removeMap(MapReference reference);
+    boolean deleteMap(String mapId);
 
 }

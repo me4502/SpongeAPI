@@ -24,16 +24,12 @@
  */
 package org.spongepowered.api.map;
 
-import com.flowpowered.math.vector.Vector2i;
 import org.spongepowered.api.data.DataSerializable;
-import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.map.color.MapShade;
 import org.spongepowered.api.map.cursor.MapCursorType;
-import org.spongepowered.api.map.cursor.MapCursor;
 import org.spongepowered.api.map.cursor.MapCursorTypes;
 import org.spongepowered.api.util.Identifiable;
-
-import java.util.Collection;
-import java.util.List;
+import org.spongepowered.api.util.ResettableBuilder;
 
 /**
  * A representation of a specific map and all of it's properties.
@@ -63,27 +59,27 @@ public interface MapSettings extends Identifiable, DataSerializable {
      * {@link #usesDefaultCursors()} is true. By default this is a
      * {@link MapCursorTypes#WHITE_POINTER}.
      *
-     * @param cursor The new cursor for player positions
+     * @param cursorType The new cursor for player positions
      */
-    void setPlayerCursor(MapCursorType cursor);
+    void setPlayerCursor(MapCursorType cursorType);
 
     /**
      * Sets the {@link MapCursorType} used for item frame locations on the map when
      * {@link #usesDefaultCursors()} is true. By default this is a
      * {@link MapCursorTypes#GREEN_POINTER}.
      *
-     * @param cursor The new cursor for item frame positions
+     * @param cursortype The new cursor for item frame positions
      */
-    void setItemFrameCursor(MapCursorType cursor);
+    void setItemFrameCursor(MapCursorType cursortype);
 
     /**
      * Sets the {@link MapCursorType} used for player locations on the edge
      * when players go out of bounds when  {@link #usesDefaultCursors()} is
      * true. By default this is a {@link MapCursorTypes#WHITE_CIRCLE}.
      *
-     * @param cursor The new cursor for edge positions
+     * @param cursorType The new cursor for edge positions
      */
-    void setEdgeCursor(MapCursorType cursor);
+    void setEdgeCursor(MapCursorType cursorType);
 
     /**
      * Gets the current scaling ratio of the map.
@@ -136,6 +132,26 @@ public interface MapSettings extends Identifiable, DataSerializable {
      */
     void setUsesDefaultRenderer(boolean usesDefaultRenderer);
 
-    // TODO: Add builder
+    // TODO: Javadoc
+    interface Builder extends ResettableBuilder<MapSettings, Builder> {
+
+        Builder fill(MapSettings settings);
+
+        Builder usesDefaultCursors(boolean useDefaultCursors);
+
+        Builder playerCursor(MapCursorType cursorType);
+
+        Builder itemFrameCursor(MapCursorType cursorType);
+
+        Builder edgeCursor(MapCursorType cursorType);
+
+        Builder scale(MapShade scale);
+
+        Builder doesAutomaticUpdates(boolean doAutomaticUpdates);
+
+        Builder usesDefaultRenderer(boolean useDefaultRenderer);
+
+        MapSettings build();
+    }
     
 }

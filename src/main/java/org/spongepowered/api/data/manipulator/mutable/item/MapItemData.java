@@ -29,7 +29,6 @@ import org.spongepowered.api.data.manipulator.immutable.item.ImmutableMapItemDat
 import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
-import org.spongepowered.api.map.MapReference;
 
 /**
  * Represents an {@link DataManipulator} hosting the specific map

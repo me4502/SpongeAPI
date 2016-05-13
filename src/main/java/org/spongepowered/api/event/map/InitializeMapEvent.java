@@ -31,7 +31,6 @@ import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.map.MapSettings;
-import org.spongepowered.api.map.MapReference;
 import org.spongepowered.api.map.MapView;
 
 /**

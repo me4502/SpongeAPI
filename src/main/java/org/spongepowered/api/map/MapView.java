@@ -42,7 +42,7 @@ import java.util.List;
  * A representation of the map data as well as the canvas (pixel surface) of a
  * map.
  */
-public interface MapView extends MapSettings {
+public interface MapView {
 
     /**
      * Returns the width and height of the map's canvas.
@@ -298,11 +298,13 @@ public interface MapView extends MapSettings {
     void clearRenderers();
 
     /**
-     * Returns the {@link MapReference} for this MapView to allow it to be attached to
+     * Returns the id for this MapView to allow it to be attached to
      * compatible items.
      *
-     * @return The reference to this map
+     * @return The id for this map
      */
-    MapReference getReference();
+    String getId();
 
+    // TODO: Javadoc
+    MapSettings getSettings();
 }
