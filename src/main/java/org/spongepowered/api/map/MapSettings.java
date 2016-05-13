@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.map;
 
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.map.color.MapShade;
 import org.spongepowered.api.map.cursor.MapCursorType;
@@ -35,6 +36,15 @@ import org.spongepowered.api.util.ResettableBuilder;
  * A representation of a specific map and all of it's properties.
  */
 public interface MapSettings extends Identifiable, DataSerializable {
+
+    /**
+     * Gets a new {@link Builder} instance for MapSettings.
+     * 
+     * @return A new builder instance
+     */
+    static MapSettings.Builder builder() {
+        return Sponge.getGame().getRegistry().createBuilder(Builder.class);
+    }
 
     /**
      * Returns if vanilla Minecraft's default handling of cursors with item frames and
@@ -50,9 +60,9 @@ public interface MapSettings extends Identifiable, DataSerializable {
      * for a description of what the default handling does. When this is set to true, plugin
      * cursors are still functional, they just coexist with vanilla Minecraft's default cursors too.
      *
-     * @param usesDefaultCursors True to enable vanilla Minecraft default cursors, false to disable
+     * @param useDefaultCursors True to enable vanilla Minecraft default cursors, false to disable
      */
-    void setUsesDefaultCursors(boolean usesDefaultCursors);
+    void setUsesDefaultCursors(boolean useDefaultCursors);
 
     /**
      * Sets the {@link MapCursorType} used for players on the map when
@@ -68,9 +78,9 @@ public interface MapSettings extends Identifiable, DataSerializable {
      * {@link #usesDefaultCursors()} is true. By default this is a
      * {@link MapCursorTypes#GREEN_POINTER}.
      *
-     * @param cursortype The new cursor for item frame positions
+     * @param cursorType The new cursor for item frame positions
      */
-    void setItemFrameCursor(MapCursorType cursortype);
+    void setItemFrameCursor(MapCursorType cursorType);
 
     /**
      * Sets the {@link MapCursorType} used for player locations on the edge
@@ -109,10 +119,10 @@ public interface MapSettings extends Identifiable, DataSerializable {
      * is if plugins call on of the {@link MapView#sendUpdate} methods manually, which
      * could be useful for maps that should constantly update.
      *
-     * @param doesAutomaticUpdates True if vanilla behavior should be used,
+     * @param doAutomaticUpdates True if vanilla behavior should be used,
      *        false otherwise
      */
-    void setDoesAutomaticUpdates(boolean doesAutomaticUpdates);
+    void setDoesAutomaticUpdates(boolean doAutomaticUpdates);
 
     /**
      * Returns if before using any {@link MapRenderer}s the {@link MapView} should
@@ -127,30 +137,92 @@ public interface MapSettings extends Identifiable, DataSerializable {
      * Sets if vanilla's map rendering should be added to the {@link MapView} before
      * plugin {@link MapRenderer}s are run to allow overlaying.
      *
-     * @param usesDefaultRenderer True to enable vanilla rendering as a base, false
+     * @param useDefaultRenderer True to enable vanilla rendering as a base, false
      *        otherwise
      */
-    void setUsesDefaultRenderer(boolean usesDefaultRenderer);
+    void setUsesDefaultRenderer(boolean useDefaultRenderer);
 
-    // TODO: Javadoc
     interface Builder extends ResettableBuilder<MapSettings, Builder> {
 
+        /**
+         * Fills this {@link MapSettings} for creating {@link MapView}s or
+         * {@link MapSettings}s, the builder is then seeded with the values
+         * from the given {@link MapSettings} object.
+         *
+         * @param settings The seed settings
+         * @return A newly seeded builder
+         */
         Builder fill(MapSettings settings);
 
+        /**
+         * Sets if vanilla's default handling should be used, see {@link #usesDefaultCursors()}
+         * for a description of what the default handling does. When this is set to true, plugin
+         * cursors are still functional, they just coexist with vanilla Minecraft's default cursors too.
+         *
+         * @param useDefaultCursors True to enable vanilla Minecraft default cursors, false to disable
+         */
         Builder usesDefaultCursors(boolean useDefaultCursors);
 
+        /**
+         * Sets the {@link MapCursorType} used for players on the map when
+         * {@link #usesDefaultCursors()} is true. By default this is a
+         * {@link MapCursorTypes#WHITE_POINTER}.
+         *
+         * @param cursorType The new cursor for player positions
+         */
         Builder playerCursor(MapCursorType cursorType);
 
+        /**
+         * Sets the {@link MapCursorType} used for item frame locations on the map when
+         * {@link #usesDefaultCursors()} is true. By default this is a
+         * {@link MapCursorTypes#GREEN_POINTER}.
+         *
+         * @param cursorType The new cursor for item frame positions
+         */
         Builder itemFrameCursor(MapCursorType cursorType);
 
+        /**
+         * Sets the {@link MapCursorType} used for player locations on the edge
+         * when players go out of bounds when  {@link #usesDefaultCursors()} is
+         * true. By default this is a {@link MapCursorTypes#WHITE_CIRCLE}.
+         *
+         * @param cursorType The new cursor for edge positions
+         */
         Builder edgeCursor(MapCursorType cursorType);
 
+        /**
+         * Sets the scaling ratio for the map.
+         *
+         * @param scale The scaling ratio for the map
+         */
         Builder scale(MapShade scale);
 
+        /**
+         * Sets if vanilla behavior for map updates (slowing updating a few rows
+         * at a time) is being used. The only way a map will update if set to false
+         * is if plugins call on of the {@link MapView#sendUpdate} methods manually, which
+         * could be useful for maps that should constantly update.
+         *
+         * @param doAutomaticUpdates True if vanilla behavior should be used,
+         *        false otherwise
+         */
         Builder doesAutomaticUpdates(boolean doAutomaticUpdates);
 
+        /**
+         * Sets if vanilla's map rendering should be added to the {@link MapView} before
+         * plugin {@link MapRenderer}s are run to allow overlaying.
+         *
+         * @param useDefaultRenderer True to enable vanilla rendering as a base, false
+         *        otherwise
+         */
         Builder usesDefaultRenderer(boolean useDefaultRenderer);
 
+        /**
+         * Builds the {@link MapSettings} which can be used to create
+         * a {@link MapView} in {@link MapViewStorage#createMap(MapSettings)}.
+         *
+         * @return The settings
+         */
         MapSettings build();
     }
     
