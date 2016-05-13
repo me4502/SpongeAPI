@@ -3843,13 +3843,15 @@ public class SpongeEventFactory {
      * {@link org.spongepowered.api.event.map.InitializeMapEvent.Replace}.
      * 
      * @param cause The cause
-     * @param initializedStack The initialized stack
+     * @param itemStackTransaction The item stack transaction
+     * @param originalMap The original map
      * @return A new replace initialize map event
      */
-    public static InitializeMapEvent.Replace createInitializeMapEventReplace(Cause cause, Transaction<ItemStackSnapshot> initializedStack) {
+    public static InitializeMapEvent.Replace createInitializeMapEventReplace(Cause cause, Transaction<ItemStackSnapshot> itemStackTransaction, Optional<String> originalMap) {
         HashMap<String, Object> values = new HashMap<>();
         values.put("cause", cause);
-        values.put("initializedStack", initializedStack);
+        values.put("itemStackTransaction", itemStackTransaction);
+        values.put("originalMap", originalMap);
         return SpongeEventFactoryUtils.createEventImpl(InitializeMapEvent.Replace.class, values);
     }
 
