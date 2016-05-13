@@ -27,6 +27,8 @@ package org.spongepowered.api;
 import com.flowpowered.math.vector.Vector3d;
 import org.spongepowered.api.entity.Entity;
 import org.spongepowered.api.entity.living.player.Player;
+import org.spongepowered.api.map.MapView;
+import org.spongepowered.api.map.MapViewStorage;
 import org.spongepowered.api.text.channel.MessageChannel;
 import org.spongepowered.api.profile.GameProfileManager;
 import org.spongepowered.api.resourcepack.ResourcePack;
@@ -428,5 +430,12 @@ public interface Server {
      * @param timeout The player idle timeout
      */
     void setPlayerIdleTimeout(int timeout);
+
+    /**
+     * Gets the MapViewStorage used to create and retrieve {@link MapView}s.
+     *
+     * @return The server's map storage handler
+     */
+    MapViewStorage getMapViewStorage();
 
 }

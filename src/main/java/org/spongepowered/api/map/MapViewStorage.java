@@ -41,6 +41,11 @@ public interface MapViewStorage {
      * creation of the MapCreationSettings please see
      * {@link MapSettings.Builder}.
      *
+     * <p>After creating the {@link MapView} the {@link MapSettings} provided
+     * is no longer a live MapSettings object. To modify the settings on the
+     * newly created MapView, you must use {@link MapView#getSettings()} to
+     * get a mutable MapSettings instance.</p>
+     *
      * @param settings The settings to use when creating the map view
      * @return The map view, if creation was successful
      */

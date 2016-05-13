@@ -41,6 +41,10 @@ import java.util.List;
 /**
  * A representation of the map data as well as the canvas (pixel surface) of a
  * map.
+ *
+ * <p>Any changes to the canvas cause the map to update immediately in-game,
+ * these modifications will not be persisted back to the disk until the next
+ * level save by dimension 0 (the overworld).</p>
  */
 public interface MapView {
 
@@ -306,7 +310,9 @@ public interface MapView {
     String getId();
 
     /**
-     * Gets the settings for this map.
+     * Gets the settings for this map. These settings are mutable and will
+     * cause the map to update in-game immediately. The changes are persisted
+     * back to disk during level saving by dimension 0 (the overworld).
      *
      * @return This map's settings
      */
