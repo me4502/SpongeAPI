@@ -56,7 +56,7 @@ public final class MapCursorTypes {
     public static final MapCursorType RED_POINTER = DummyObjectProvider.createFor(MapCursorType.class, "RED_POINTER");
 
     /**
-     * Note used by vanilla, looks like a red wedge, centered on the middle of
+     * Not used by vanilla, looks like a red wedge, centered on the middle of
      * the wedge not the tip.
      */
     public static final MapCursorType RED_WEDGE = DummyObjectProvider.createFor(MapCursorType.class, "RED_WEDGE");
