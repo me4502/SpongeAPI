@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.event.map;
 
+import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.data.Transaction;
 import org.spongepowered.api.event.Cancellable;
 import org.spongepowered.api.event.Event;
@@ -106,6 +107,16 @@ public interface InitializeMapEvent extends Event {
          * @param mapId The id of the map to attach
          */
         void setAttachedMap(String mapId);
+
+        /**
+         * Gets the {@link Transaction} involved in replacing the original
+         * {@link ItemTypes#MAP} with a new {@link ItemTypes#FILLED_MAP}.
+         * This allows plugins to change the result to another item after
+         * canceling standard map behavior.
+         *
+         * @return The itemstack transaction
+         */
+        Transaction<ItemStackSnapshot> getItemStackTransaction();
 
     }
 
