@@ -24,6 +24,7 @@
  */
 package org.spongepowered.api.map;
 
+import com.flowpowered.math.vector.Vector2i;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.map.color.MapShade;
@@ -142,6 +143,39 @@ public interface MapSettings extends Identifiable, DataSerializable {
      */
     void setUsesDefaultRenderer(boolean useDefaultRenderer);
 
+    /**
+     * Sets the world x and z coordinates that the vanilla map renderer uses
+     * as its center position.
+     *
+     * <p>Note: The vector's X and Y components represent the X and Z
+     * center components respectively.</p>
+     *
+     * @param center The center position
+     */
+    default void setCenter(Vector2i center) {
+        setCenter(center.getX(), center.getY());
+    }
+
+    /**
+     * Sets the world x and z coordinates that the vanilla map renderer uses
+     * as its center position.
+     *
+     * @param centerX X coordinate of the center
+     * @param centerZ Z coordinate of the center
+     */
+    void setCenter(int centerX, int centerZ);
+
+    /**
+     * Gets the world x and z coordinates that the vanilla map renderer uses
+     * as its center position.
+     *
+     * <p>Note: The vector's X and Y components represent the X and Z
+     * center components respectively.</p>
+     *
+     * @return The center position
+     */
+    Vector2i getCenter();
+
     interface Builder extends ResettableBuilder<MapSettings, Builder> {
 
         /**
@@ -153,6 +187,28 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * @return A newly seeded builder
          */
         Builder fill(MapSettings settings);
+
+        /**
+         * Sets the world x and z coordinates that the vanilla map renderer uses
+         * as its center position.
+         *
+         * <p>Note: The vector's X and Y components represent the X and Z
+         * center components respectively.</p>
+         *
+         * @param center The center position
+         */
+        default void center(Vector2i center) {
+            setCenter(center.getX(), center.getY());
+        }
+
+        /**
+         * Sets the world x and z coordinates that the vanilla map renderer uses
+         * as its center position.
+         *
+         * @param centerX X coordinate of the center
+         * @param centerZ Z coordinate of the center
+         */
+        void center(int centerX, int centerZ);
 
         /**
          * Sets if vanilla's default handling should be used, see {@link #usesDefaultCursors()}
