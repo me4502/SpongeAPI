@@ -33,11 +33,13 @@ import org.spongepowered.api.item.inventory.ItemStackSnapshot;
 import org.spongepowered.api.map.MapSettings;
 import org.spongepowered.api.map.MapView;
 
+import java.util.Optional;
+
 /**
  * Represents an event that is triggered when a {@link ItemTypes#MAP}
  * is initialized and replaced with a {@link ItemTypes#FILLED_MAP}.
  */
-public interface InitializeMapEvent extends Event, Cancellable {
+public interface InitializeMapEvent extends Event {
 
     /**
      * Called before {@link Replace}, by setting {@link #setUsingDefaultBehavior}
@@ -49,7 +51,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
      * and will stop {@link Replace} from being fired. This allows for maps
      * to be disabled or have their initialization overridden by cancelling {@link Create}.</p>
      */
-    interface Create extends InitializeMapEvent {
+    interface Create extends InitializeMapEvent, Cancellable {
 
         /**
          * Gets if the map will be created with default Minecraft initialization logic
@@ -77,14 +79,23 @@ public interface InitializeMapEvent extends Event, Cancellable {
      * This is called after the view is set, but before modifications to the
      * player's inventory take place.
      *
-     * <p>Plugins can use this event to grab a handle into the newly created
-     * {@link MapView}, or simply override vanilla behavior by cancelling this
-     * event and using the new {@link MapView} elsewhere</p>
+     * <p>Plugins can use this event to grab a handle (map id) into the newly
+     * created {@link MapView}, or simply override vanilla behavior by
+     * cancelling this event and using the new map id elsewhere</p>
      */
     interface Replace extends InitializeMapEvent {
 
         /**
-         * Gets the {@link ItemStack} of the map being initialized.
+         * Gets the default id of the map being attached. This method returns
+         * {@link Optional#empty()} when the {@link Create} event is canceled.
+         *
+         * @return The id of map being attached, if it exists
+         */
+        Optional<String> getOriginalMap();
+
+        /**
+         * Sets the attached map id to the id provided. If this doesn't exist
+         * the behavior is undefined.
          *
          * <p>Note: This is where you could attach a custom {@link MapView} through data
          * after disabling the default creation logic to avoid creating the MapView.
@@ -92,9 +103,9 @@ public interface InitializeMapEvent extends Event, Cancellable {
          * the player will end up with a {@link ItemTypes#FILLED_MAP} in an undefined
          * state, as no data was ever initialized or attached.</p>
          *
-         * @return The map being initialized
+         * @param mapId The id of the map to attach
          */
-        Transaction<ItemStackSnapshot> getInitializedStack();
+        void setAttachedMap(String mapId);
 
     }
 
