@@ -198,7 +198,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * @param center The center position
          */
         default void center(Vector2i center) {
-            setCenter(center.getX(), center.getY());
+            center(center.getX(), center.getY());
         }
 
         /**
