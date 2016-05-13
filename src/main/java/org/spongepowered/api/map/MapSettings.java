@@ -184,7 +184,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * from the given {@link MapSettings} object.
          *
          * @param settings The seed settings
-         * @return A newly seeded builder
+         * @return A newly seeded builder for chaining
          */
         Builder fill(MapSettings settings);
 
@@ -196,9 +196,10 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * center components respectively.</p>
          *
          * @param center The center position
+         * @return The builder for chaining
          */
-        default void center(Vector2i center) {
-            center(center.getX(), center.getY());
+        default Builder center(Vector2i center) {
+            return center(center.getX(), center.getY());
         }
 
         /**
@@ -207,8 +208,9 @@ public interface MapSettings extends Identifiable, DataSerializable {
          *
          * @param centerX X coordinate of the center
          * @param centerZ Z coordinate of the center
+         * @return The builder for chaining
          */
-        void center(int centerX, int centerZ);
+        Builder center(int centerX, int centerZ);
 
         /**
          * Sets if vanilla's default handling should be used, see {@link #usesDefaultCursors()}
@@ -216,6 +218,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * cursors are still functional, they just coexist with vanilla Minecraft's default cursors too.
          *
          * @param useDefaultCursors True to enable vanilla Minecraft default cursors, false to disable
+         * @return The builder for chaining
          */
         Builder usesDefaultCursors(boolean useDefaultCursors);
 
@@ -225,6 +228,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * {@link MapCursorTypes#WHITE_POINTER}.
          *
          * @param cursorType The new cursor for player positions
+         * @return The builder for chaining
          */
         Builder playerCursor(MapCursorType cursorType);
 
@@ -234,6 +238,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * {@link MapCursorTypes#GREEN_POINTER}.
          *
          * @param cursorType The new cursor for item frame positions
+         * @return The builder for chaining
          */
         Builder itemFrameCursor(MapCursorType cursorType);
 
@@ -243,6 +248,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * true. By default this is a {@link MapCursorTypes#WHITE_CIRCLE}.
          *
          * @param cursorType The new cursor for edge positions
+         * @return The builder for chaining
          */
         Builder edgeCursor(MapCursorType cursorType);
 
@@ -250,6 +256,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          * Sets the scaling ratio for the map.
          *
          * @param scale The scaling ratio for the map
+         * @return The builder for chaining
          */
         Builder scale(MapShade scale);
 
@@ -261,6 +268,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          *
          * @param doAutomaticUpdates True if vanilla behavior should be used,
          *        false otherwise
+         * @return The builder for chaining
          */
         Builder doesAutomaticUpdates(boolean doAutomaticUpdates);
 
@@ -270,6 +278,7 @@ public interface MapSettings extends Identifiable, DataSerializable {
          *
          * @param useDefaultRenderer True to enable vanilla rendering as a base, false
          *        otherwise
+         * @return The builder for chaining
          */
         Builder usesDefaultRenderer(boolean useDefaultRenderer);
 
