@@ -25,39 +25,181 @@
 package org.spongepowered.api.map;
 
 import com.flowpowered.math.vector.Vector2i;
-import com.google.common.collect.ImmutableList;
-import org.spongepowered.api.data.DataSerializable;
 import org.spongepowered.api.entity.living.player.Player;
-import org.spongepowered.api.map.cursor.MapCursorType;
+import org.spongepowered.api.map.color.MapColor;
+import org.spongepowered.api.map.color.MapColors;
 import org.spongepowered.api.map.cursor.MapCursor;
-import org.spongepowered.api.map.cursor.MapCursorTypes;
-import org.spongepowered.api.util.Identifiable;
+import org.spongepowered.api.map.cursor.MapCursorType;
+import org.spongepowered.api.map.font.MapFont;
+import org.spongepowered.api.text.Text;
+import org.spongepowered.api.util.Color;
 
+import java.awt.image.BufferedImage;
 import java.util.Collection;
 import java.util.List;
 
 /**
- * A representation of a specific map and all of it's properties.
+ * A representation of the map data as well as the canvas (pixel surface) of a
+ * map.
  */
-public interface MapView extends Identifiable, DataSerializable {
+public interface MapView extends MapSettings {
 
     /**
-     * Returns if vanilla Minecraft's default handling of cursors with item frames and
-     * players should be used, if disabled all vanilla cursors are removed and
-     * plugins must manually update cursor positions.
+     * Returns the width and height of the map's canvas.
      *
-     * @return True when using vanilla Minecraft handling, false otherwise
+     * <p>The x value is the width and the y value is the height.</p>
+     *
+     * @return The map canvas's size
      */
-    boolean usesDefaultCursors();
+    Vector2i getSize();
 
     /**
-     * Sets if vanilla's default handling should be used, see {@link #usesDefaultCursors()}
-     * for a description of what the default handling does. When this is set to true, plugin
-     * cursors are still functional, they just coexist with vanilla Minecraft's default cursors too.
+     * Sets the specified pixel to the exact {@link MapColor} given.
      *
-     * @param usesDefaultCursors True to enable vanilla Minecraft default cursors, false to disable
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
+     * @param position The coordinates of the pixel to set
+     * @param color The color to set the pixel to
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
      */
-    void setUsesDefaultCursors(boolean usesDefaultCursors);
+    default void setPixelExact(Vector2i position, MapColor color) {
+        setPixelExact(position.getX(), position.getY(), color);
+    }
+
+    /**
+     * Sets the specified pixel to the exact {@link MapColor} given.
+     *
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
+     * @param x The x coordinate of the pixel
+     * @param y The y coordinate of the pixel
+     * @param color The color to set the pixel to
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
+     */
+    void setPixelExact(int x, int y, MapColor color);
+
+    /**
+     * Sets the specified pixel to the {@link MapColor} that is most similar to the {@link Color} provided.
+     *
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
+     * @param position The coordinates of the pixel to set
+     * @param color The color to be matched before setting the pixel to the closest {@link MapColor}
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
+     */
+    default void setPixelSimilar(Vector2i position, Color color) {
+        setPixelSimilar(position.getX(), position.getY(), color);
+    }
+
+    /**
+     * Sets the specified pixel to the {@link MapColor} that is most similar to the {@link Color} provided.
+     *
+     * <p>The coordinates start with 0,0 as the top left corner moving right
+     * and down.</p>
+     *
+     * @param x The x coordinate of the pixel
+     * @param y The y coordinate of the pixel
+     * @param color The color to be matched before setting the pixel to the closest {@link MapColor}
+     * @throws IndexOutOfBoundsException If the coordinates are greater than
+     *         the width and height of the map's canvas
+     */
+    void setPixelSimilar(int x, int y, Color color);
+
+    /**
+     * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
+     * {@link MapColors#AIR}
+     *
+     * The coordinates start with 0,0 as the top left corner moving right and
+     * down.
+     *
+     * @param position The coordinates of the pixel to get
+     * @return The color of the pixel at the specified coordinates
+     * @throws IndexOutOfBoundsException If the coordinates are greater than or equal to
+     * the width and height of the map's canvas
+     */
+    default MapColor getPixel(Vector2i position) {
+        return getPixel(position.getX(), position.getY());
+    }
+
+    /**
+     * Returns the {@link MapColor} at the specified pixel. An unset pixel will be returned as
+     * {@link MapColors#AIR}
+     *
+     * The coordinates start with 0,0 as the top left corner moving right and
+     * down.
+     *
+     * @param x The x coordinate of the pixel to get
+     * @param y The y coordinate of the pixel to get
+     * @return The color of the pixel at the specified coordinates
+     * @throws IndexOutOfBoundsException If the coordinates are greater than or equal to
+     * the width and height of the map's canvas
+     */
+    MapColor getPixel(int x, int y);
+
+    /**
+     * Create an {@link BufferedImage} out of the map allowing it to be viewed outside
+     * the game in conventional image viewers and shared on the web. Simply
+     * converts indexes in the map's canvas to the RGB values they represent.
+     *
+     * @return The rendered image
+     */
+    BufferedImage toImage();
+
+    /**
+     * Draws an image to the map, clipping it if it goes out of bounds.
+     *
+     * @param position The top left coordinate on the map
+     * @param image The image to draw
+     */
+    default void drawImage(Vector2i position, BufferedImage image) {
+        drawImage(position.getX(), position.getY(), image);
+    }
+
+    /**
+     * Draws an image to the map, clipping it if it goes out of bounds.
+     *
+     * @param x The top left x coordinate on the map
+     * @param y The top left y coordinate on the map
+     * @param image The image to draw
+     */
+    void drawImage(int x, int y, BufferedImage image);
+
+    /**
+     * Draws text to the map, handling colors but not formatting.
+     *
+     * <p>Clips text that goes out of bounds at the character before it's out of bounds.</p>
+     *
+     * @param position The top left coordinate of the drawn text
+     * @param text The text to draw
+     * @param font The font to use when drawing the text
+     *
+     * @throws IllegalArgumentException If the font is missing a character used
+     *         by the Text provided
+     */
+    default void drawText(Vector2i position, Text text, MapFont font) {
+        drawText(position.getX(), position.getY(), text, font);
+    }
+
+    /**
+     * Draws text to the map, handling colors but not formatting.
+     *
+     * <p>Clips text that goes out of bounds at the character before it's out of bounds.</p>
+     *
+     * @param x The top left x coordinate of the drawn text
+     * @param y The top left y coordinate of the drawn text
+     * @param text The text to draw
+     * @param font The font to use when drawing the text
+     *
+     * @throws IllegalArgumentException If the font is missing a character used
+     *         by the Text provided
+     */
+    void drawText(int x, int y, Text text, MapFont font);
 
     /**
      * Returns all the currently active cursors as {@link MapCursor}s,
@@ -69,33 +211,6 @@ public interface MapView extends Identifiable, DataSerializable {
     Collection<MapCursor> getAllCursors();
 
     /**
-     * Sets the {@link MapCursorType} used for players on the map when
-     * {@link #usesDefaultCursors()} is true. By default this is a
-     * {@link MapCursorTypes#WHITE_POINTER}.
-     *
-     * @param cursor The new cursor for player positions
-     */
-    void setPlayerCursor(MapCursorType cursor);
-
-    /**
-     * Sets the {@link MapCursorType} used for item frame locations on the map when
-     * {@link #usesDefaultCursors()} is true. By default this is a
-     * {@link MapCursorTypes#GREEN_POINTER}.
-     *
-     * @param cursor The new cursor for item frame positions
-     */
-    void setItemFrameCursor(MapCursorType cursor);
-
-    /**
-     * Sets the {@link MapCursorType} used for player locations on the edge
-     * when players go out of bounds when  {@link #usesDefaultCursors()} is
-     * true. By default this is a {@link MapCursorTypes#WHITE_CIRCLE}.
-     *
-     * @param cursor The new cursor for edge positions
-     */
-    void setEdgeCursor(MapCursorType cursor);
-
-    /**
      * Adds a new cursor to the map of the specified type, the position is pixel
      * relative and refers to the center position of the cursor.
      *
@@ -105,20 +220,6 @@ public interface MapView extends Identifiable, DataSerializable {
      *         changing the type of cursor
      */
     MapCursor addCursor(MapCursorType type, Vector2i position);
-
-    /**
-     * Gets the current scaling ratio of the map.
-     *
-     * @return The scaling ratio for the map
-     */
-    MapScale getScale();
-
-    /**
-     * Sets the current scaling ratio of the map.
-     *
-     * @param scale The new scaling ratio for the map
-     */
-    void setScale(MapScale scale);
 
     /**
      * Sends a forced update of the map to a player. This will send only the
@@ -143,44 +244,6 @@ public interface MapView extends Identifiable, DataSerializable {
      * @throws IndexOutOfBoundsException If the update region is not within the boundaries of the map
      */
     void sendUpdate(Iterable<Player> players, Vector2i min, Vector2i max);
-
-
-    /**
-     * Returns if the vanilla behavior for map updates (slowly updating a few
-     * rows) at a time is being used.
-     *
-     * @return True if vanilla behavior is being used, false otherwise
-     */
-    boolean doesAutomaticUpdates();
-
-    /**
-     * Sets if vanilla behavior for map updates (slowing updating a few rows
-     * at a time) is being used. The only way a map will update if set to false
-     * is if plugins call on of the {@link #sendUpdate} methods manually, which
-     * could be useful for maps that should constantly update.
-     *
-     * @param doesAutomaticUpdates True if vanilla behavior should be used,
-     *        false otherwise
-     */
-    void setDoesAutomaticUpdates(boolean doesAutomaticUpdates);
-
-    /**
-     * Returns if before using any {@link MapRenderer}s the {@link MapCanvas} should
-     * have the vanilla map copied into it so plugins can do overlay rendering on maps
-     * without implementing vanilla map behavior themselves.
-     *
-     * @return True if vanilla rendering is used as a base, false otherwise
-     */
-    boolean usesDefaultRenderer();
-
-    /**
-     * Sets if vanilla's map rendering should be added to the {@link MapCanvas} before
-     * plugin {@link MapRenderer}s are run to allow overlaying.
-     *
-     * @param usesDefaultRenderer True to enable vanilla rendering as a base, false
-     *        otherwise
-     */
-    void setUsesDefaultRenderer(boolean usesDefaultRenderer);
 
     /**
      * Adds a renderer to this map as the top layer.
@@ -241,5 +304,5 @@ public interface MapView extends Identifiable, DataSerializable {
      * @return The reference to this map
      */
     MapReference getReference();
-    
+
 }

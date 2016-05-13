@@ -39,8 +39,6 @@ import org.spongepowered.api.network.status.Favicon;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.registry.CatalogRegistryModule;
 import org.spongepowered.api.registry.RegistryModule;
-import org.spongepowered.api.map.MapView;
-import org.spongepowered.api.map.MapViewRegistry;
 import org.spongepowered.api.resourcepack.ResourcePack;
 import org.spongepowered.api.scoreboard.displayslot.DisplaySlot;
 import org.spongepowered.api.statistic.BlockStatistic;
@@ -385,13 +383,5 @@ public interface GameRegistry {
      * @return The {@link Translation} with the given ID or Optional.empty() if not found
      */
     Optional<Translation> getTranslationById(String id);
-
-    /**
-     * Returns the {@link MapViewRegistry} to use for creating and manipulating
-     * {@link MapView}s.
-     *
-     * @return The map view registry
-     */
-    MapViewRegistry getMapViewRegistry();
 
 }

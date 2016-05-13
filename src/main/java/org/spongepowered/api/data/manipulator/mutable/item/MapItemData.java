@@ -30,7 +30,6 @@ import org.spongepowered.api.data.value.mutable.Value;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.map.MapReference;
-import org.spongepowered.api.map.MapView;
 
 /**
  * Represents an {@link DataManipulator} hosting the specific map

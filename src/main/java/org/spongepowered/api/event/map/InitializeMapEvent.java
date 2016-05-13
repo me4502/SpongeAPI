@@ -30,6 +30,8 @@ import org.spongepowered.api.event.Event;
 import org.spongepowered.api.item.ItemTypes;
 import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.item.inventory.ItemStackSnapshot;
+import org.spongepowered.api.map.MapSettings;
+import org.spongepowered.api.map.MapReference;
 import org.spongepowered.api.map.MapView;
 
 /**
@@ -42,7 +44,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
      * Called before {@link Replace}, by setting {@link #setUsingDefaultBehavior}
      * in this event, plugins can override the creation of a new map on the disk
      * and provide customized maps at initialization time. Plugins should use {@link Replace}
-     * to set their own {@link MapView} if overriding vanilla map creation logic.
+     * to set their own {@link MapReference} if overriding vanilla map creation logic.
      *
      * <p>Cancelling this event will prevent any {@link MapView} from being created
      * and will stop {@link Replace} from being fired. This allows for maps
@@ -51,7 +53,7 @@ public interface InitializeMapEvent extends Event, Cancellable {
     interface Create extends InitializeMapEvent {
 
         /**
-         * Gets if a new {@link MapView} will be created on the disk.
+         * Gets if a new {@link MapSettings} will be created on the disk.
          *
          * @return If a new map will be created on the disk
          */
@@ -72,21 +74,22 @@ public interface InitializeMapEvent extends Event, Cancellable {
     }
 
     /**
+     * TODO: per-world maps and MapReference update
      * This is called after the view is set, but before modifications to the
      * player's inventory take place.
      *
      * <p>Plugins can use this event to grab a handle into the newly created
-     * {@link MapView}, or simply override vanilla behavior by cancelling this
-     * event and using the new {@link MapView} elsewhere</p>
+     * {@link MapSettings}, or simply override vanilla behavior by cancelling this
+     * event and using the new {@link MapSettings} elsewhere</p>
      */
     interface Replace extends InitializeMapEvent {
 
         /**
          * Gets the {@link ItemStack} of the map being initialized.
          *
-         * <p>Note: This is where you could attach a custom {@link MapView} through data
-         * after changing the {@link MapView} creation logic to avoid creating the {@link MapView}.
-         * If a plugin does not attach a {@link MapView} after cancelling the default logic
+         * <p>Note: This is where you could attach a custom {@link MapSettings} through data
+         * after changing the {@link MapSettings} creation logic to avoid creating the {@link MapSettings}.
+         * If a plugin does not attach a {@link MapSettings} after cancelling the default logic
          * the player will end up with a {@link ItemTypes#FILLED_MAP}
          * in an undefined state, as no data was ever initialized or attached.</p>
          *

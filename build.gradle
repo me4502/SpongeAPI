@@ -190,7 +190,6 @@ sortClassFields {
     add 'main', 'org.spongepowered.api.item.FireworkShapes'
     add 'main', 'org.spongepowered.api.item.ItemTypes'
     add 'main', 'org.spongepowered.api.item.inventory.equipment.EquipmentTypes'
-    add 'main', 'org.spongepowered.api.map.MapScales'
     add 'main', 'org.spongepowered.api.map.color.MapColors'
     add 'main', 'org.spongepowered.api.map.color.MapColorMatchers'
     add 'main', 'org.spongepowered.api.map.color.MapShades'

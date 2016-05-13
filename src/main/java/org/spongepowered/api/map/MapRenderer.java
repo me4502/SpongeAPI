@@ -49,7 +49,7 @@ public interface MapRenderer {
     boolean isContextual();
 
     /**
-     * Gives access to the {@link MapCanvas} for rendering onto a map, this also
+     * Gives access to the {@link MapView} for rendering onto a map, this also
      * provides a viewer and a reference to the original map data to allow
      * updating cursors and accessing relevant information to the render.
      *
@@ -57,9 +57,8 @@ public interface MapRenderer {
      * returns true.</p>
      *
      * @param viewer The player viewing this render, null otherwise
-     * @param view The map that's being rendered
-     * @param canvas The canvas that the renderer will draw onto
+     * @param map The map that's being rendered
      */
-    void render(@Nullable Player viewer, MapView view, MapCanvas canvas);
+    void render(@Nullable Player viewer, MapView map);
 
 }

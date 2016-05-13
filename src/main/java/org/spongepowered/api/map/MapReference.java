@@ -24,17 +24,13 @@
  */
 package org.spongepowered.api.map;
 
+import org.spongepowered.api.data.DataSerializable;
+
 /**
  * A MapReference represents the link between {@link MapView} and a map item that references it.
  */
-public interface MapReference {
+public interface MapReference extends DataSerializable {
 
-    // TODO: Possibly need Optional here?
-    /**
-     * Returns the {@link MapView} that actually represents the data of the map.
-     *
-     * @return The linked MapView
-     */
-    MapView getView();
+    // TODO: getId
 
 }

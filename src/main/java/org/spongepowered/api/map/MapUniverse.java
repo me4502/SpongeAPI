@@ -32,33 +32,36 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
+ * TODO: Rewrite
  * Represents a container for {@link MapView}s. Provides methods to create new
  * {@link MapView}s and to retrieve existing {@link MapView}s without attaching
  * them to a specific {@link ItemStack}.
  */
-public interface MapViewRegistry {
+public interface MapUniverse {
 
     /**
-     * Returns a new {@link MapView} that is stored on the disk like a standard
+     * TODO: MapSettings -> MapView.Builder
+     * Returns a new {@link MapSettings} that is stored on the disk like a standard
      * map.
      *
      * @param centerPos The world relative x and z center coordinates to use
      *        for the map
      * @return The map view
      */
-    default MapView createStoredMap(Vector2i centerPos) {
+    default MapSettings createStoredMap(Vector2i centerPos) {
         return createStoredMap(centerPos.getX(), centerPos.getY());
     }
 
     /**
-     * Returns a new {@link MapView} that is stored on the disk like a standard
+     * TODO: MapSettings -> MapView.Builder
+     * Returns a new {@link MapSettings} that is stored on the disk like a standard
      * map.
      *
      * @param centerX The world relative x center coordinate to use for the map
      * @param centerY The world relative y center coordinate to use for the map
      * @return The map view
      */
-    MapView createStoredMap(int centerX, int centerY);
+    MapSettings createStoredMap(int centerX, int centerY);
 
     /**
      * Returns an unmodifiable collection of all the {@link MapView}s available
@@ -75,15 +78,20 @@ public interface MapViewRegistry {
      * @param uniqueId The UUID of the map view
      * @return The {@link MapView} if found or {@link Optional#empty()} if missing
      */
-    Optional<MapView> get(UUID uniqueId);
+    Optional<MapView> getMap(UUID uniqueId);
+
+    // TODO: createVirtualMap
+
+    // TODO: getMap(int mapId)
 
     /**
-     * Removes a stored {@link MapView}, this will also delete the file from the
-     * disk.
+     * TODO: Defaulted convenience methods
+     * Removes the stored data for a map, this will also delete the file from
+     * the disk.
      *
-     * @param view The {@link MapView} to delete
+     * @param reference The {@link MapReference} to delete
      * @return True if the operation was successful, false otherwise
      */
-    boolean remove(MapView view);
+    boolean removeMap(MapReference reference);
 
 }
