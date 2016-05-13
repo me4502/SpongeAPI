@@ -305,6 +305,10 @@ public interface MapView {
      */
     String getId();
 
-    // TODO: Javadoc
+    /**
+     * Gets the settings for this map.
+     *
+     * @return This map's settings
+     */
     MapSettings getSettings();
 }
