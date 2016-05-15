@@ -49,9 +49,9 @@ public interface MapViewStorage {
      * get a mutable MapSettings instance.</p>
      *
      * @param settings The settings to use when creating the map view
-     * @return The map view, if creation was successful
+     * @return The map view created
      */
-    Optional<MapView> createMap(MapSettings settings);
+    MapView createMap(MapSettings settings);
 
     /**
      * Returns a {@link MapView} for a map.
