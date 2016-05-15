@@ -156,6 +156,16 @@ public interface MapView {
     BufferedImage toImage();
 
     /**
+     * Draws an image to the map, starting at the top left corner,
+     * clipping it if it goes out of bounds.
+     *
+     * @param image The image to draw
+     */
+    default void drawImage(BufferedImage image) {
+        drawImage(0, 0, image);
+    }
+    
+    /**
      * Draws an image to the map, clipping it if it goes out of bounds.
      *
      * @param position The top left coordinate on the map
