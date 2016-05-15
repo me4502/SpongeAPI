@@ -36,7 +36,7 @@ import org.spongepowered.api.util.ResettableBuilder;
 /**
  * A representation of a specific map and all of it's properties.
  */
-public interface MapSettings extends Identifiable, DataSerializable {
+public interface MapSettings extends DataSerializable {
 
     /**
      * Gets a new {@link Builder} instance for MapSettings.
