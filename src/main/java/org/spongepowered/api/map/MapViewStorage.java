@@ -27,7 +27,9 @@ package org.spongepowered.api.map;
 import com.google.common.collect.ImmutableCollection;
 import org.spongepowered.api.item.inventory.ItemStack;
 
+import java.util.Collection;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Represents a container for {@link MapView}s. Provides methods to create new
@@ -60,12 +62,27 @@ public interface MapViewStorage {
     Optional<MapView> getMap(String mapId);
 
     /**
-     * Returns an unmodifiable collection of all the {@link MapView}s available
+     * Returns a collection of the stored ids for all the {@link MapView}s
+     * available to be loaded by {@link #getMap(String)}. This prevents
+     * needed to load every map when retrieving the complete listing.
+     *
+     * <p>Note: Because the game only knows about loaded maps, this method will
+     * asynchronously attempt to retrieve the complete listing from the backing
+     * storage method.</p>
+     *
+     * @return A collection of all the map ids stored and loadable
+     * @see #getLoadedMaps()
+     */
+    CompletableFuture<Collection<String>> getStoredMaps();
+
+    /**
+     * Returns an collection of all the {@link MapView}s available
      * the {@link MapView}s themselves are modifiable and are not copies.
      *
-     * @return A collection of all the maps available
+     * @return A collection of all the loaded maps
+     * @see #getStoredMaps()
      */
-    ImmutableCollection<MapView> getMaps();
+    ImmutableCollection<MapView> getLoadedMaps();
 
     /**
      * Deletes the provided map's file from the disk.
