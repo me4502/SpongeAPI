@@ -34,7 +34,7 @@ import org.spongepowered.api.util.Identifiable;
 import org.spongepowered.api.util.ResettableBuilder;
 
 /**
- * A representation of a specific map and all of it's properties.
+ * A representation of a specific map's properties.
  */
 public interface MapSettings extends DataSerializable {
 
