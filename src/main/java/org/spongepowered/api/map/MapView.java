@@ -164,7 +164,7 @@ public interface MapView {
     default void drawImage(BufferedImage image) {
         drawImage(0, 0, image);
     }
-    
+
     /**
      * Draws an image to the map, clipping it if it goes out of bounds.
      *

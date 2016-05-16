@@ -47,15 +47,6 @@ public interface MapColorFactory {
     ImmutableCollection<MapColor> getAll();
 
     /**
-     * Returns a {@link MapColor} from all the colors (including shades) based
-     * on the palette index. This allows easy lookup of colors from a raw map.
-     *
-     * @param colorIndex The index of the color in the map palette
-     * @return The object represented by that color
-     */
-    MapColor getByIndex(int colorIndex);
-
-    /**
      * Returns a {@link MapColor} that is closest matching to the given
      * {@link Color} using the {@link MapColorMatchers#RGB_UNWEIGHTED}
      * match type.
