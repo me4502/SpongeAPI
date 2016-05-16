@@ -72,7 +72,9 @@ public interface MapColor extends DataSerializable {
      *
      * @return A {@link MapShades#DARK} shaded version of this color
      */
-    MapColor dark();
+    default MapColor dark() {
+        return shade(MapShades.DARK);
+    }
 
     /**
      * Create a new instance of {@link MapColor} with this instance's base color
@@ -80,7 +82,9 @@ public interface MapColor extends DataSerializable {
      *
      * @return A {@link MapShades#DARKER} shaded version of this color
      */
-    MapColor darker();
+    default MapColor darker() {
+        return shade(MapShades.DARKER);
+    }
 
     /**
      * Create a new instance of {@link MapColor} with this instance's base color
@@ -88,7 +92,9 @@ public interface MapColor extends DataSerializable {
      *
      * @return A {@link MapShades#DARKEST} shaded version of this color
      */
-    MapColor darkest();
+    default MapColor darkest() {
+        return shade(MapShades.DARKEST);
+    }
 
     /**
      * A MapColor.Base represents the singleton instances that refer to the non-shaded
